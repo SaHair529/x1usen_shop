@@ -30,7 +30,7 @@ class Product
     private ?float $total_balance = null;
 
     #[ORM\Column(length: 10, nullable: true)]
-    private ?string $ьmeasurement_unit = null;
+    private ?string $measurement_unit = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $additional_price = null;
@@ -109,14 +109,14 @@ class Product
         return $this;
     }
 
-    public function getьmeasurementUnit(): ?string
+    public function getMeasurementUnit(): ?string
     {
-        return $this->ьmeasurement_unit;
+        return $this->measurement_unit;
     }
 
-    public function setьmeasurementUnit(?string $ьmeasurement_unit): self
+    public function setMeasurementUnit(?string $measurement_unit): self
     {
-        $this->ьmeasurement_unit = $ьmeasurement_unit;
+        $this->measurement_unit = $measurement_unit;
 
         return $this;
     }

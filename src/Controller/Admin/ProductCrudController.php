@@ -46,7 +46,10 @@ class ProductCrudController extends AbstractCrudController
             $formData = $importForm->getData();
             /** @var UploadedFile $file */ $file = $formData['csv_file'];
             if ($file->getMimeType() !== 'text/csv') {
-                dd('Неверный формат файла'); # todo добавить норм валидацию
+                $this->addFlash('danger', 'Неверный формат файла');
+                return $this->render('admin/product/import_csv.html.twig', [
+                    'form' => $importForm
+                ]);
             }
             $csvImporter->importProducts($file);
 

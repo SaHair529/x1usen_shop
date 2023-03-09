@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -12,6 +13,23 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class CsvProductImporter
 {
     private ProductRepository $productRepo;
+
+    /**
+     * Словарь, с помощью которого можно определять
+     * к какому полю сущности Product относится та или иная колонка таблицы по заголовку колонки (первой строчке)
+     */
+    private const TABLE_TITLE_TO_PRODUCT_FIELD = [
+        'производитель' => 'brand',
+        'наименование' => 'name',
+        'артикул/oem' => 'article_number',
+        'цена' => 'price',
+        'общий остаток' => 'total_balance',
+        'ед измерения' => 'measurement_unit',
+        'цена по доп.прайс-листу' => 'additional_price',
+        'ссылка на изображение' => 'image_link',
+        'тех.описание' => 'technical_description',
+        'бу или новые' => 'used'
+    ];
 
     public function __construct(ProductRepository $productRepo)
     {
@@ -29,24 +47,45 @@ class CsvProductImporter
         foreach ($csvLines as $line) {
             $fullCsv[] = str_getcsv($line);
         }
+        $columnNums = $this->identifyColumnNumbers($fullCsv[0]);
         unset($fullCsv[0]);
         unset($fullCsv[array_key_last($fullCsv)]);
         $flush = false;
         foreach (array_filter($fullCsv) as $key => $line) {
             if ($key === array_key_last($fullCsv))
                 $flush = true;
-            $product = new Product();
-            $product->setBrand($line[0]);
-            $product->setName($line[1]);
-            $product->setArticleNumber($line[2]);
-            $product->setPrice((float) $line[3]);
-            $product->setTotalBalance((float) $line[4]);
-            $product->setMeasurementUnit($line[5]);
-            $product->setAdditionalPrice((float) $line[6]);
-            $product->setImageLink($line[7]);
-            $product->setTechnicalDescription($line[8]);
-            $product->setUsed($line[9] === 'новая' ? 1 : 0);
+            $product = $this->prepareProductEntityByCsvRow($line, $columnNums);
             $this->productRepo->save($product, $flush);
         }
+    }
+
+    private function prepareProductEntityByCsvRow($line, $columnNums): Product
+    {
+        $product = new Product();
+        $product->setBrand($line[$columnNums['brand']]);
+        $product->setName($line[$columnNums['name']]);
+        $product->setArticleNumber($line[$columnNums['article_number']]);
+        $product->setPrice((float) $line[$columnNums['price']]);
+        $product->setTotalBalance((float) $line[$columnNums['total_balance']]);
+        $product->setMeasurementUnit($line[$columnNums['measurement_unit']]);
+        $product->setAdditionalPrice((float) $line[$columnNums['additional_price']]);
+        $product->setImageLink($line[$columnNums['image_link']]);
+        $product->setTechnicalDescription($line[$columnNums['technical_description']]);
+        $product->setUsed($line[$columnNums['used']] === 'новая' ? 1 : 0);
+
+        return $product;
+    }
+
+    /**
+     * Определение номеров строк для дальнейшего сопоставления с полями сущности Product
+     */
+    private function identifyColumnNumbers($titleCsvRow): array
+    {
+        $columnNums = [];
+        foreach ($titleCsvRow as $num => $title) {
+            $columnNums[self::TABLE_TITLE_TO_PRODUCT_FIELD[mb_strtolower($title)]] = $num;
+        }
+
+        return $columnNums;
     }
 }

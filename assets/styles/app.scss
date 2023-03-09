@@ -1,0 +1,11 @@
+@import '~bootstrap/scss/bootstrap';
+
+.product-card {
+  &__title {
+    display: flex;
+    justify-content: space-between;
+  }
+  &__article {
+
+  }
+}

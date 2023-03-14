@@ -39,6 +39,17 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @throws \Exception
+     */
+    public final function getPaginator(int $page): \App\Service\Paginator
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->orderBy('p.id', 'DESC');
+
+        return (new \App\Service\Paginator($qb))->pagination($page);
+    }
+
 //    /**
 //     * @return Product[] Returns an array of Product objects
 //     */

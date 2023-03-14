@@ -4,8 +4,13 @@
 
 {% block body %}
 
-    <div class="container">
-        {{ include('pieces/product_card.html.twig') }}
-    </div>
+{#    <div class="container">#}
+{#        {{ include('pieces/product_card.html.twig') }}#}
+{#    </div>#}
 
+    {% for product in products.result %}
+        {{ dump(product) }}
+    {% endfor %}
+
+    {% include 'pieces/pagination.html.twig' with {'p': products} %}
 {% endblock %}

@@ -1,0 +1,16 @@
+<div class="container">
+    <ul class="groups-tree">
+        {% for parentGroup in detail_groups.childGroups %}
+            <li>
+                <details>
+                    <summary>{{ parentGroup.name }}</summary>
+                    <ul>
+                        {% for childGroup in parentGroup.childGroups %}
+                            <li>{{ childGroup.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </details>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

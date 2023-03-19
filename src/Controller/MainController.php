@@ -2,7 +2,12 @@
 
 namespace App\Controller;
 
+use App\Form\SearchFormType;
 use App\Repository\ProductRepository;
+use GuayaquilLib\Am;
+use GuayaquilLib\objects\oem\VehicleListObject;
+use GuayaquilLib\ServiceAm;
+use GuayaquilLib\ServiceOem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,9 +18,22 @@ class MainController extends AbstractController
     #[Route('/', name: 'homepage')]
     public function index(Request $req, ProductRepository $productRepo): Response
     {
-        $page = $req->query->getInt('page', 1);
+        $searchForm = $this->createForm(SearchFormType::class);
+        $searchForm->handleRequest($req);
+        if ($searchForm->isSubmitted()) {
+            $formData = $searchForm->getData();
+            $queryStr = $formData['query_string'];
+
+            $oem = new ServiceOem('ru926364', 'IoOrIIU5_f_HJqT');
+            $vehicle = $oem->findVehicle($queryStr)->getVehicles()[0] ?? [];
+            $detailGroups = $oem->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
+            return $this->render('main/search_response.html.twig', [
+                'detail_groups' => $detailGroups
+            ]);
+        }
         return $this->render('main/index.html.twig', [
-            'products' => $productRepo->getPaginator($page)
+            'search_form' => $searchForm
+//            'products' => $productRepo->getPaginator($page)
         ]);
     }
 

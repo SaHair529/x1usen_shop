@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "890cd8cdb700f4fe8bfb4b391d61e1b4",
+    "content-hash": "79f9a2f53f548a85669e0a879ec53648",
     "packages": [
         {
             "name": "blackfire/php-sdk",
@@ -1732,6 +1732,58 @@
                 }
             ],
             "time": "2023-01-14T14:17:03+00:00"
+        },
+        {
+            "name": "laximoru/guayaquillib",
+            "version": "v3.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laximoru/guayaquillib.git",
+                "reference": "1a02df3b5c02cb1752a83ba429f4c0700981c93a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laximoru/guayaquillib/zipball/1a02df3b5c02cb1752a83ba429f4c0700981c93a",
+                "reference": "1a02df3b5c02cb1752a83ba429f4c0700981c93a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "ext-soap": "*",
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "GuayaquilLib\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "laximo.ru",
+                    "email": "support@laximo.ru",
+                    "homepage": "https://laximo.ru/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laximo.OEM, Laximo.AM SDK",
+            "homepage": "https://laximo.ru/",
+            "keywords": [
+                "Laximo.AM",
+                "Laximo.Aftermarket",
+                "Laximo.OEM",
+                "guayaquillib",
+                "laximo"
+            ],
+            "support": {
+                "issues": "https://github.com/laximoru/guayaquillib/issues",
+                "source": "https://github.com/laximoru/guayaquillib/tree/v3.0.9"
+            },
+            "time": "2023-02-02T05:19:32+00:00"
         },
         {
             "name": "monolog/monolog",

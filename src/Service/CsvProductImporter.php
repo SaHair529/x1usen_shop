@@ -71,7 +71,7 @@ class CsvProductImporter
         $product->setAdditionalPrice((float) $line[$columnNums['additional_price']]);
         $product->setImageLink($line[$columnNums['image_link']]);
         $product->setTechnicalDescription($line[$columnNums['technical_description']]);
-        $product->setUsed($line[$columnNums['used']] === 'новая' ? 1 : 0);
+        $product->setUsed($line[$columnNums['used']] === 'новая' ? 0 : 1);
 
         return $product;
     }

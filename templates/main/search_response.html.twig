@@ -1,4 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    {% include 'pieces/details-tree.html.twig' with {'detail_groups': detail_groups} %}
+    <div class="container d-flex">
+        {% include 'pieces/details-tree.html.twig' with {'detail_groups': detail_groups, 'vehicle': vehicle} %}
+        <div id="details-window">
+
+        </div>
+    </div>
 {% endblock %}

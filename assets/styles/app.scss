@@ -1,12 +1,26 @@
 @import '~bootstrap/scss/bootstrap';
 
 .product-card {
-  &__title {
+  &__img {
+    transition: width .1s;
+    width: 0;
+  }
+  &__info {
     display: flex;
     justify-content: space-between;
+    width: 100%;
+    transition: .1s;
   }
-  &__article {
-
+  &:hover {
+    & .product-card__img {
+      width: 50%;
+    }
+    & .product-card__info {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 50%;
+    }
   }
 }
 
@@ -36,6 +50,7 @@
 .groups-tree {
   --spacing : 1.5rem;
   --radius  : 10px;
+  padding-left: 0;
   & ul li {
     border-left: 2px solid #ddd;
     &:last-child {

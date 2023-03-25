@@ -25,10 +25,14 @@ class MainController extends AbstractController
             $queryStr = $formData['query_string'];
 
             $oem = new ServiceOem('ru926364', 'IoOrIIU5_f_HJqT');
-            $vehicle = $oem->findVehicle($queryStr)->getVehicles()[0] ?? [];
+            // vin Z94K241CBMR252528
+//            $vehicle = $oem->findVehicle($queryStr)->getVehicles()[0] ?? []; # todo uncomment
+//            file_put_contents(__DIR__.'/serialized_vehicle.txt', serialize($vehicle)); # todo remove
+            $vehicle = unserialize(file_get_contents(__DIR__.'/serialized_vehicle.txt')); # todo remove
             $detailGroups = $oem->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
             return $this->render('main/search_response.html.twig', [
-                'detail_groups' => $detailGroups
+                'vehicle' => $vehicle,
+                'detail_groups' => $detailGroups,
             ]);
         }
         return $this->render('main/index.html.twig', [

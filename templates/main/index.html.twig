@@ -1,16 +1,29 @@
 {% extends 'base.html.twig' %}
 
+{% set search_form_class = 'search-form' %}
+{% set search_form_id = 'search-form' %}
+{% set search_form_query_ph = 'VIN | Номер кузова | Номер з/ч' %}
+
 {% block title %}Главная{% endblock %}
 
 {% block body %}
 
-{#    <div class="container">#}
-{#        {{ include('pieces/product_card.html.twig') }}#}
-{#    </div>#}
+    <div class="search-form-container container">
+        <h2>IGG Motors</h2>
+        {{ form_start(search_form, { 'attr': {'class': 'search-form', 'id': search_form_id} }) }}
+        {{ form_widget(search_form.query_string, { 'attr': {'class': 'form-control search-form__query', 'placeholder': search_form_query_ph} }) }}
+        {{ form_end(search_form) }}
+    </div>
+{% endblock %}
 
-    {% for product in products.result %}
-        {{ dump(product) }}
-    {% endfor %}
-
-    {% include 'pieces/pagination.html.twig' with {'p': products} %}
+{% block javascripts %}
+    <script>
+        document.addEventListener('keydown', function (e) {
+            const queryInput = document.getElementById('search_form_query_string')
+            if (e.key === 'Enter' && queryInput === document.activeElement) {
+                e.preventDefault()
+                document.getElementById('{{ search_form_id }}').submit()
+            }
+        })
+    </script>
 {% endblock %}

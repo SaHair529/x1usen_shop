@@ -1,10 +1,15 @@
-<div class="card product-card" style="max-width: 15rem;">
-{#    <img class="card-img-top" src="https://proprikol.ru/wp-content/uploads/2021/11/fordy-krasivye-kartinki-45.jpg" alt="Card image cap">#}
-    <div class="card-body">
-        <h5 class="card-title small product-card__title"><span>391 ₽</span>
-            <span class="text-muted small product-card__article" title="VIN">345lskfja</span>
-        </h5>
-        <p class="card-text small">Наконечник рулевой правый SKODA FABIA 99></p>
-        <a href="#" class="small">Go somewhere</a>
+<div class="product-card small">
+    <p class="product-card__used small" title="code">
+        {% if product.used == 1 %}Б/У{% endif %}
+    </p>
+    <div class="product-card__img-wrapper">
+        <img class="product-card__img" src="{{ product.imageLink }}" alt="Card image cap">
+    </div>
+    <div class="product-card__info">
+        <h5 class="product-card__price">{{ product.price }} ₽</h5>
+        <p class="product-card__name">{{ product.name|replace({"Б/У": "", "б/у": ""}) }}</p>
+        <div class="product-card__actions">
+            <i class="fa-sharp fa-solid fa-cart-shopping product-card__actions-basket"></i>
+        </div>
     </div>
 </div>

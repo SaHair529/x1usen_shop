@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <div class="container d-flex">
+
+    <div id="search-response">
         {% include 'pieces/details-tree.html.twig' with {'detail_groups': detail_groups, 'vehicle': vehicle} %}
         <div id="details-window">
 

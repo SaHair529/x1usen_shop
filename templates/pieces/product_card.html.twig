@@ -1,14 +1,15 @@
-<div class="card product-card" style="max-width: 15rem;">
-    <div class="card-header d-flex product-card__header">
-        <img class="card-img-top product-card__img" src="{{ product.imageLink }}" alt="Card image cap">
-        <div class="product-card__info">
-            <h5 class="card-title small product-card__cost">{{ product.price }} ₽</h5>
-            <h5 class="text-muted small product-card__used" title="code">
-                {% if product.used == 1 %}Б/У{% endif %}
-            </h5>
-        </div>
+<div class="product-card small">
+    <p class="product-card__used small" title="code">
+        {% if product.used == 1 %}Б/У{% endif %}
+    </p>
+    <div class="product-card__img-wrapper">
+        <img class="product-card__img" src="{{ product.imageLink }}" alt="Card image cap">
     </div>
-    <div class="card-body">
-        <p class="card-text small">{{ product.name }}</p>
+    <div class="product-card__info">
+        <h5 class="product-card__price">{{ product.price }} ₽</h5>
+        <p class="product-card__name">{{ product.name|replace({"Б/У": "", "б/у": ""}) }}</p>
+        <div class="product-card__actions">
+            <i class="fa-sharp fa-solid fa-cart-shopping product-card__actions-basket"></i>
+        </div>
     </div>
 </div>

@@ -31,6 +31,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     private ?string $name = null;
 
+    #[ORM\OneToOne(inversedBy: 'owner', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Cart $cart = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -109,6 +113,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCart(): ?Cart
+    {
+        return $this->cart;
+    }
+
+    public function setCart(Cart $cart): self
+    {
+        $this->cart = $cart;
 
         return $this;
     }

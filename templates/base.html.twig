@@ -24,9 +24,12 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <form class="d-flex search-form search-form--mini">
+                        <form class="nav-item d-flex search-form search-form--mini">
                             <input class="form-control me-2 search-form__query" type="search" placeholder="VIN | Номер кузова | Номер з/ч" aria-label="Search">
                         </form>
+                        <div class="nav-item">
+                            <a href="{{ path('cart_items') }}" class="nav-link">Корзина</a>
+                        </div>
                     </div>
                 </div>
             </nav>

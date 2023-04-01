@@ -8,6 +8,9 @@ export default class ProductController {
                         if (responseText === 'ok') {
                             alert('Успешно')
                         }
+                        else if (responseText === 'almost in cart') {
+                            alert('Товар уже в корзине')
+                        }
                     })
                     break
                 case 403:
@@ -16,6 +19,7 @@ export default class ProductController {
                             alert('Требуется авторизация')
                         }
                     })
+                    break
             }
         })
     }

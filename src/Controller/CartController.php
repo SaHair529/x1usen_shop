@@ -58,6 +58,9 @@ class CartController extends AbstractController
         if (!is_null($itemId) && !is_null($item = $productRep->findOneBy(['id'=>$itemId]))) {
             /** @var Cart $cart */
             $cart = $this->getUser()->getCart();
+            if ($cart->getProducts()->contains($item))
+                return new Response('almost in cart');
+
             $cart->addProduct($item);
             $cartRep->save($cart, true);
         }

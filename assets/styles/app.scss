@@ -140,3 +140,11 @@
     width: 65%;
   }
 }
+
+#cart-items {
+  display: flex;
+  flex-wrap: wrap;
+  & .card {
+    margin-right: 1rem;
+  }
+}

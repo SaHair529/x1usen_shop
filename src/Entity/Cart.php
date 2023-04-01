@@ -21,9 +21,13 @@ class Cart
     #[ORM\OneToOne(mappedBy: 'cart', cascade: ['persist', 'remove'])]
     private ?User $owner = null;
 
+    #[ORM\ManyToMany(targetEntity: CartItem::class, mappedBy: 'cart')]
+    private Collection $items;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
+        $this->items = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -68,6 +72,33 @@ class Cart
         }
 
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CartItem>
+     */
+    public function getItems(): Collection
+    {
+        return $this->items;
+    }
+
+    public function addItem(CartItem $item): self
+    {
+        if (!$this->items->contains($item)) {
+            $this->items->add($item);
+            $item->addCart($this);
+        }
+
+        return $this;
+    }
+
+    public function removeItem(CartItem $item): self
+    {
+        if ($this->items->removeElement($item)) {
+            $item->removeCart($this);
+        }
 
         return $this;
     }

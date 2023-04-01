@@ -44,4 +44,24 @@ class CartController extends AbstractController
 
         return $this->redirectToRoute('cart_items');
     }
+
+    /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+    #[Route('/add_item', name: 'cart_add_item', methods: 'GET')]
+    public function addItem(Request $req, ProductRepository $productRep, CartRepository $cartRep): Response
+    {
+        if (is_null($this->getUser())) {
+            return (new Response('not authorized'))
+                ->setStatusCode(Response::HTTP_FORBIDDEN);
+        }
+
+        $itemId = $req->query->get('item_id');
+        if (!is_null($itemId) && !is_null($item = $productRep->findOneBy(['id'=>$itemId]))) {
+            /** @var Cart $cart */
+            $cart = $this->getUser()->getCart();
+            $cart->addProduct($item);
+            $cartRep->save($cart, true);
+        }
+
+        return new Response('ok');
+    }
 }

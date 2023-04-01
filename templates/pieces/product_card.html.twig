@@ -1,3 +1,5 @@
+{% set addToCartBtnClass = 'product-card__actions-add_to_cart' %}
+
 <div class="product-card small">
     <p class="product-card__used small" title="code">
         {% if product.used == 1 %}Б/У{% endif %}
@@ -9,7 +11,7 @@
         <h5 class="product-card__price">{{ product.price }} ₽</h5>
         <p class="product-card__name">{{ product.name|replace({"Б/У": "", "б/у": ""}) }}</p>
         <div class="product-card__actions">
-            <i class="fa-sharp fa-solid fa-cart-shopping product-card__actions-basket"></i>
+            <i class="fa-sharp fa-solid fa-cart-shopping {{ addToCartBtnClass }}" data-product-id="{{ product.id }}"></i>
         </div>
     </div>
 </div>

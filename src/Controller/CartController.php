@@ -55,11 +55,15 @@ class CartController extends AbstractController
 
         $productId = $req->query->get('item_id');
         if (!is_null($productId) && !is_null($product = $productRep->findOneBy(['id'=>$productId]))) {
+            if ($product->getTotalBalance() <= 0)
+                return new Response('out of stock');
+
+            $product->decrementTotalBalance();
+            $productRep->save($product);
+
             /** @var Cart $cart */
             $cart = $this->getUser()->getCart();
-            $cartItem = new CartItem();
-            $cartItem->setProduct($product);
-            $cartItem->setQuantity(1);
+            $cartItem = new CartItem($product, 1);
             $cart->addItem($cartItem);
             $cartItemRep->save($cartItem, true);
         }

@@ -8,8 +8,11 @@ export default class ProductController {
                         if (responseText === 'ok') {
                             alert('Успешно')
                         }
-                        else if (responseText === 'almost in cart') {
+                        else if (responseText === 'already in cart') {
                             alert('Товар уже в корзине')
+                        }
+                        else if (responseText === 'out of stock') {
+                            alert('Товара нет в наличии');
                         }
                     })
                     break

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\CartItemRepository;
 use App\Repository\CartRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,48 +16,20 @@ class Cart
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToMany(targetEntity: Product::class)]
-    private Collection $products;
-
     #[ORM\OneToOne(mappedBy: 'cart', cascade: ['persist', 'remove'])]
     private ?User $owner = null;
 
-    #[ORM\ManyToMany(targetEntity: CartItem::class, mappedBy: 'cart')]
+    #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartItem::class)]
     private Collection $items;
 
     public function __construct()
     {
-        $this->products = new ArrayCollection();
         $this->items = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return Collection<int, Product>
-     */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    public function addProduct(Product $product): self
-    {
-        if (!$this->products->contains($product)) {
-            $this->products->add($product);
-        }
-
-        return $this;
-    }
-
-    public function removeProduct(Product $product): self
-    {
-        $this->products->removeElement($product);
-
-        return $this;
     }
 
     public function getOwner(): ?User
@@ -88,16 +61,7 @@ class Cart
     {
         if (!$this->items->contains($item)) {
             $this->items->add($item);
-            $item->addCart($this);
-        }
-
-        return $this;
-    }
-
-    public function removeItem(CartItem $item): self
-    {
-        if ($this->items->removeElement($item)) {
-            $item->removeCart($this);
+            $item->setCart($this);
         }
 
         return $this;

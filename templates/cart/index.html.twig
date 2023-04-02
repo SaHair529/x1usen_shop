@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Корзина{% endblock %}
+
+{% block body %}
+<div id="cart-items">
+    {% for cart_item in cart_items %}
+        <div class="card" style="width: 11rem">
+            <img src="{{ cart_item.product.imageLink }}" alt="" class="card-img-top">
+            <div class="card-body">
+                <h5 class="card-title small">{{ cart_item.product.brand }}</h5>
+                <h5 class="card-title small">{{ cart_item.product.price }}р.</h5>
+                <p class="card-text small">{{ cart_item.product.name }}</p>
+                <a href="{{ path('cart_remove_item', { item_id: cart_item.id }) }}" class="btn btn-primary">Удалить из корзины</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

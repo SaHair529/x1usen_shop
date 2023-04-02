@@ -14,3 +14,17 @@ import bsCustomFileInput from "bs-custom-file-input";
 import './bootstrap';
 
 bsCustomFileInput.init();
+
+import ProductController from './ProductController'
+
+document.addEventListener('DOMContentLoaded', function()
+{
+    const productsWindow = document.getElementById('details-window')
+    if (productsWindow != null) {
+        productsWindow.addEventListener('click', function (e) {
+            if (e.target.classList.contains('product-card__actions-add_to_cart')) {
+                ProductController.addToCart(e.target.dataset.productId)
+            }
+        })
+    }
+})

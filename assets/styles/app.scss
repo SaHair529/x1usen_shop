@@ -25,7 +25,7 @@
   }
   &__actions {
     margin-top: 1rem;
-    &-basket {
+    &-add_to_cart {
       color: #ff9e9e;
       cursor: pointer;
       &:hover {
@@ -138,5 +138,13 @@
 
   #details-window {
     width: 65%;
+  }
+}
+
+#cart-items {
+  display: flex;
+  flex-wrap: wrap;
+  & .card {
+    margin-right: 1rem;
   }
 }

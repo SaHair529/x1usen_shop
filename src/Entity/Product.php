@@ -168,4 +168,11 @@ class Product
 
         return $this;
     }
+
+    public function decrementTotalBalance()
+    {
+        if ($this->total_balance !== 0) {
+            $this->total_balance = --$this->total_balance;
+        }
+    }
 }

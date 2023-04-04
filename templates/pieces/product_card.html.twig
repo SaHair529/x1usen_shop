@@ -1,6 +1,6 @@
 {% set addToCartBtnClass = 'product-card__actions-add_to_cart' %}
 
-<div class="product-card small">
+<div class="product-card small" id="{{ product.id }}" data-product="{{ product|serialize(format='json') }}">
     <p class="product-card__used small" title="code">
         {% if product.used == 1 %}Б/У{% endif %}
     </p>

@@ -34,10 +34,13 @@ class CartController extends AbstractController
 
     /** @noinspection PhpPossiblePolymorphicInvocationInspection */
     #[Route('/remove_item', name: 'cart_remove_item', methods: 'GET')]
-    public function removeItem(Request $req, CartItemRepository $cartItemRep): Response
+    public function removeItem(Request $req, CartItemRepository $cartItemRep, ProductRepository $productRep): Response
     {
         $itemId = $req->query->get('item_id');
         if (!is_null($itemId) && !is_null($item = $cartItemRep->findOneBy(['id'=>$itemId]))) {
+            $itemProduct = $item->getProduct();
+            $itemProduct->incrementTotalBalance();
+            $productRep->save($itemProduct);
             $cartItemRep->remove($item, true);
         }
 

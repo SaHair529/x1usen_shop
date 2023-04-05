@@ -33,6 +33,9 @@ class CartController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Route('/decrease_quantity', name: 'cart_decrease_quantity')]
     public function decreaseQuantity(Request $req, CartItemRepository $cartItemRep, ProductRepository $productRep): Response
     {
@@ -70,7 +73,7 @@ class CartController extends AbstractController
 
     /** @noinspection PhpPossiblePolymorphicInvocationInspection */
     #[Route('/add_item', name: 'cart_add_item', methods: 'GET')]
-    public function addItem(Request $req, ProductRepository $productRep, CartRepository $cartRep, CartItemRepository $cartItemRep): Response
+    public function addItem(Request $req, ProductRepository $productRep, CartItemRepository $cartItemRep): Response
     {
         if (is_null($this->getUser())) {
             return (new Response('not authorized'))
@@ -82,7 +85,7 @@ class CartController extends AbstractController
             if ($product->getTotalBalance() <= 0)
                 return new Response('out of stock');
 
-            $product->decrementTotalBalance();
+            $product->decreaseTotalBalance();
             $productRep->save($product);
 
             /** @var Cart $cart */

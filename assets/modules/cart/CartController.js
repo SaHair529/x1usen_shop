@@ -1,5 +1,6 @@
 import ElementsCreator from "./DOMElementsCreator"
 import AttributesNaming from './HTMLAttributesNaming'
+import ResponseHandler from "./ResponseHandler";
 
 export default class CartController {
     static init() {
@@ -36,8 +37,11 @@ export default class CartController {
         const productInfoModal = document.getElementById('product-info-modal')
         if (productInfoModal != null) {
             productInfoModal.addEventListener('click', function (e) {
-                if (e.target.classList.contains('add-to-cart')) {
+                if (e.target.classList.contains(AttributesNaming.BUTTONS.ADD_TO_CART.CLASS)) {
                     CartController.addToCart(productInfoModal.dataset.productId)
+                }
+                else if (e.target.classList.contains(AttributesNaming.BUTTONS.REMOVE_FROM_CART.CLASS)) {
+                    CartController.decreaseCartItemQuantity(productInfoModal.dataset.productId)
                 }
                 else {
                     productInfoModal.classList.add('hidden')
@@ -54,12 +58,10 @@ export default class CartController {
                 case 200:
                     resp.text().then(responseText => {
                         if (responseText === 'ok') {
-                            const removeOneBtn = ElementsCreator.createRemoveFromCartButton()
-                            const addOneBtn = ElementsCreator.createAddToCartButton()
-                            const buttonsContainer = document.getElementById('product-info-modal').querySelector('.product-info-modal-buttons')
-
-                            buttonsContainer.prepend(removeOneBtn)
-                            buttonsContainer.querySelector('.'+AttributesNaming.CLASSES.BUTTONS.ADD_TO_CART).replaceWith(addOneBtn)
+                            const newButtonsContainer = ElementsCreator.createNewModalButtonsContainer()
+                            const buttonsContainer = document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
+                                .querySelector('.'+AttributesNaming.CONTAINERS.MODAL_BUTTONS.CLASS)
+                            buttonsContainer.replaceWith(newButtonsContainer)
                             alert('Успешно')
                         }
                         else if (responseText === 'already in cart') {
@@ -80,8 +82,15 @@ export default class CartController {
             }
         })
     }
+
+    static decreaseCartItemQuantity(productId) {
+        fetch(`/cart/decrease_quantity?product_id=${productId}`).then(resp => {
+            ResponseHandler.handleDecreaseCartItemQuantityResponse(resp)
+        })
+    }
     static showProductInfo() {
 
     }
+
     // ______________________________
 }

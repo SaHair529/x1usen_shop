@@ -61,6 +61,14 @@ class CartItem
         return $this;
     }
 
+    public function decreaseQuantity($quantity = 1): self
+    {
+        if ($this->quantity >= $quantity)
+            $this->quantity -= $quantity;
+
+        return $this;
+    }
+
     public function getCart(): ?Cart
     {
         return $this->cart;

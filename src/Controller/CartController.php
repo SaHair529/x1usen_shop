@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\ControllerHelper\CartController\ResponseCreator;
 use App\Entity\Cart;
 use App\Entity\CartItem;
 use App\Entity\User;
@@ -32,6 +33,26 @@ class CartController extends AbstractController
         ]);
     }
 
+    #[Route('/decrease_quantity', name: 'cart_decrease_quantity')]
+    public function decreaseQuantity(Request $req, CartItemRepository $cartItemRep, ProductRepository $productRep): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $cartItems = $user->getCart()->getItems();
+        /** @var CartItem $item */
+        foreach ($cartItems->getIterator() as $item) {
+            if($item->getProduct()->getId() === (int) $req->get('product_id')) {
+                $item->decreaseQuantity();
+                $item->getProduct()->increaseTotalBalance();
+                $item->getQuantity() === 0 ? $cartItemRep->remove($item, true) : $cartItemRep->save($item, true);
+                $productRep->save($item->getProduct(), true);
+                return ResponseCreator::decreaseQuantity_ok($item->getQuantity());
+            }
+        }
+
+        return ResponseCreator::decreaseQuantity_cartItemNotFound();
+    }
+
     /** @noinspection PhpPossiblePolymorphicInvocationInspection */
     #[Route('/remove_item', name: 'cart_remove_item', methods: 'GET')]
     public function removeItem(Request $req, CartItemRepository $cartItemRep, ProductRepository $productRep): Response
@@ -39,7 +60,7 @@ class CartController extends AbstractController
         $itemId = $req->query->get('item_id');
         if (!is_null($itemId) && !is_null($item = $cartItemRep->findOneBy(['id'=>$itemId]))) {
             $itemProduct = $item->getProduct();
-            $itemProduct->incrementTotalBalance();
+            $itemProduct->increaseTotalBalance();
             $productRep->save($itemProduct);
             $cartItemRep->remove($item, true);
         }

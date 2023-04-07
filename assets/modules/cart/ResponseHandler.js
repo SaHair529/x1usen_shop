@@ -53,6 +53,12 @@ export default class ResponseHandler {
                 responsePromise.json().then(responseData => {
                     if (responseData['quantity'] > 0) {
                         Renderer.replaceToCartButtonWithCounter(responseData['quantity'])
+                        if (!responseData['has_more_product'])
+                            Renderer.disableIncreaseButton()
+                    }
+                    else {
+                        if (document.querySelector('.'+AttributesNaming.CART_ITEM_COUNTER.CLASS))
+                            Renderer.replaceCounterWithToCartButton();
                     }
                 })
                 break

@@ -39,4 +39,20 @@ class ResponseCreator
             'message' => 'cart item or its related product not found',
         ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
+
+    public static function getProductRelatedCartItem_ok(CartItem $item): JsonResponse
+    {
+        return new JsonResponse([
+            'id' => $item->getId(),
+            'quantity' => $item->getQuantity(),
+            'has_more_product' => $item->getProduct()->getTotalBalance() > 0
+        ]);
+    }
+
+    public static function getProductRelatedCartItem_cartItemNotFound(): JsonResponse
+    {
+        return new JsonResponse([
+            'message' => 'cart item of product not found'
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
 }

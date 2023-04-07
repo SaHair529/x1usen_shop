@@ -7,8 +7,10 @@ export default class ResponseHandler {
             case 200:
                 responsePromise.json().then(responseData => {
                     if (responseData['quantity'] === 0)
-                        Renderer.disableDecreaseButton()
-                    Renderer.updateCounterValue(responseData['quantity'])
+                        Renderer.replaceCounterWithToCartButton()
+
+                    if (document.querySelector('.'+AttributesNaming.CART_ITEM_COUNTER.CLASS))
+                        Renderer.updateCounterValue(responseData['quantity'])
                 })
                 break
             case 422:
@@ -21,7 +23,12 @@ export default class ResponseHandler {
             case 200:
                 responsePromise.json().then(responseData => {
                     if (responseData['message'] === 'ok') {
-                        Renderer.replaceToCartButtonWithCounter(responseData['quantity'])
+                        if (document.querySelector('.'+AttributesNaming.CART_ITEM_COUNTER.CLASS))
+                            Renderer.updateCounterValue(responseData['quantity'])
+                        else
+                            Renderer.replaceToCartButtonWithCounter(responseData['quantity'])
+                        if (!responseData['has_more_product'])
+                            Renderer.disableIncreaseButton()
                     }
                 })
                 break

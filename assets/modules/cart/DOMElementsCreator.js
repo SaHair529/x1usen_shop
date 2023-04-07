@@ -12,9 +12,19 @@ export default class DOMElementsCreator {
         cartItemCounter.className = AttributesNaming.CONTAINERS.MODAL_BUTTONS.CLASS+' new'
         cartItemCounter.appendChild(this.createRemoveFromCartButton())
         cartItemCounter.appendChild(this.createCounter(itemQuantity))
-        cartItemCounter.appendChild(this.createAddToCartButton())
+        cartItemCounter.appendChild(this.createIncreaseCartItemQuantityButton())
 
         return cartItemCounter
+    }
+
+    static createToCartButton() {
+        const buttonsContainer = document.createElement('div')
+        buttonsContainer.className = AttributesNaming.CONTAINERS.MODAL_BUTTONS.CLASS
+        const btnAttrs = AttributesNaming.BUTTONS.ADD_TO_CART
+        const button = this.createButton('btn btn-primary '+btnAttrs.CLASS, btnAttrs.TEXT)
+        buttonsContainer.appendChild(button)
+
+        return buttonsContainer
     }
 
     /**
@@ -33,8 +43,8 @@ export default class DOMElementsCreator {
         return this.createButton('btn btn-outline-danger '+btnAttrs.CLASS, btnAttrs.TEXT)
     }
 
-    static createAddToCartButton() {
-        const btnAttrs = AttributesNaming.BUTTONS.ADD_TO_CART
+    static createIncreaseCartItemQuantityButton() {
+        const btnAttrs = AttributesNaming.BUTTONS.INCREASE_CART_ITEM
         return this.createButton('btn btn-outline-primary '+btnAttrs.CLASS, btnAttrs.TEXT)
     }
 

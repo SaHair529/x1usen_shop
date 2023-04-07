@@ -1,5 +1,5 @@
-import ElementsCreator from "./DOMElementsCreator"
 import AttributesNaming from './HTMLAttributesNaming'
+import ResponseHandler from "./ResponseHandler";
 
 export default class CartController {
     static init() {
@@ -19,12 +19,7 @@ export default class CartController {
                 else {
                     const productCard = e.target.classList.contains('product-card') ? e.target : e.target.closest('.product-card')
                     if (productCard !== null) {
-                        const productInfoModal = document.getElementById('product-info-modal')
-                        const productInfo = JSON.parse(productCard.dataset.product)
-                        productInfoModal.dataset.productId = productInfo['id']
-                        productInfoModal.querySelector('.name').innerHTML = '<b>Наименование: </b>'+productInfo['name']
-                        productInfoModal.querySelector('.price').innerHTML = '<b>Стоимость: </b>'+productInfo['price']
-                        productInfoModal.classList.remove('hidden')
+                        CartController.showProductModal(JSON.parse(productCard.dataset.product))
                     }
                 }
             })
@@ -36,8 +31,11 @@ export default class CartController {
         const productInfoModal = document.getElementById('product-info-modal')
         if (productInfoModal != null) {
             productInfoModal.addEventListener('click', function (e) {
-                if (e.target.classList.contains('add-to-cart')) {
+                if (e.target.classList.contains(AttributesNaming.BUTTONS.ADD_TO_CART.CLASS)) {
                     CartController.addToCart(productInfoModal.dataset.productId)
+                }
+                else if (e.target.classList.contains(AttributesNaming.BUTTONS.REMOVE_FROM_CART.CLASS)) {
+                    CartController.decreaseCartItemQuantity(productInfoModal.dataset.productId)
                 }
                 else {
                     productInfoModal.classList.add('hidden')
@@ -50,38 +48,21 @@ export default class CartController {
     // button handles actions--------
     static addToCart(productId) {
         fetch(`/cart/add_item?item_id=${productId}`).then(resp => {
-            switch (resp.status) {
-                case 200:
-                    resp.text().then(responseText => {
-                        if (responseText === 'ok') {
-                            const removeOneBtn = ElementsCreator.createRemoveFromCartButton()
-                            const addOneBtn = ElementsCreator.createAddToCartButton()
-                            const buttonsContainer = document.getElementById('product-info-modal').querySelector('.product-info-modal-buttons')
-
-                            buttonsContainer.prepend(removeOneBtn)
-                            buttonsContainer.querySelector('.'+AttributesNaming.CLASSES.BUTTONS.ADD_TO_CART).replaceWith(addOneBtn)
-                            alert('Успешно')
-                        }
-                        else if (responseText === 'already in cart') {
-                            alert('Товар уже в корзине')
-                        }
-                        else if (responseText === 'out of stock') {
-                            alert('Товара нет в наличии');
-                        }
-                    })
-                    break
-                case 403:
-                    resp.text().then(responseText => {
-                        if (responseText === 'not authorized') {
-                            alert('Требуется авторизация')
-                        }
-                    })
-                    break
-            }
+            ResponseHandler.handleAddToCartResponse(resp)
         })
     }
-    static showProductInfo() {
 
+    static decreaseCartItemQuantity(productId) {
+        fetch(`/cart/decrease_quantity?product_id=${productId}`).then(resp => {
+            ResponseHandler.handleDecreaseCartItemQuantityResponse(resp)
+        })
     }
+
+    static showProductModal(productInfo) {
+        fetch(`/cart/get_product_cart_item?product_id=${productInfo['id']}`).then(resp => {
+            ResponseHandler.handleShowProductModalResponse(resp, productInfo)
+        })
+    }
+
     // ______________________________
 }

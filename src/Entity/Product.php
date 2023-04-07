@@ -169,15 +169,14 @@ class Product
         return $this;
     }
 
-    public function incrementTotalBalance(int $quantity = 1)
+    public function increaseTotalBalance(int $quantity = 1)
     {
         $this->total_balance += $quantity;
     }
 
-    public function decrementTotalBalance(int $quantity = 1)
+    public function decreaseTotalBalance(int $quantity = 1)
     {
-        if ($this->total_balance !== 0) {
+        if ($this->total_balance >= $quantity)
             $this->total_balance -= $quantity;
-        }
     }
 }

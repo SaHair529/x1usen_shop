@@ -61,6 +61,12 @@ class CartItem
         return $this;
     }
 
+    public function increaseQuantity($quantity = 1): self
+    {
+        $this->quantity += $quantity;
+        return $this;
+    }
+
     public function decreaseQuantity($quantity = 1): self
     {
         if ($this->quantity >= $quantity)

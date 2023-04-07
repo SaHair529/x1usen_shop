@@ -1,4 +1,3 @@
-import ElementsCreator from "./DOMElementsCreator"
 import AttributesNaming from './HTMLAttributesNaming'
 import ResponseHandler from "./ResponseHandler";
 
@@ -20,12 +19,7 @@ export default class CartController {
                 else {
                     const productCard = e.target.classList.contains('product-card') ? e.target : e.target.closest('.product-card')
                     if (productCard !== null) {
-                        const productInfoModal = document.getElementById('product-info-modal')
-                        const productInfo = JSON.parse(productCard.dataset.product)
-                        productInfoModal.dataset.productId = productInfo['id']
-                        productInfoModal.querySelector('.name').innerHTML = '<b>Наименование: </b>'+productInfo['name']
-                        productInfoModal.querySelector('.price').innerHTML = '<b>Стоимость: </b>'+productInfo['price']
-                        productInfoModal.classList.remove('hidden')
+                        CartController.showProductModal(JSON.parse(productCard.dataset.product))
                     }
                 }
             })
@@ -54,32 +48,7 @@ export default class CartController {
     // button handles actions--------
     static addToCart(productId) {
         fetch(`/cart/add_item?item_id=${productId}`).then(resp => {
-            switch (resp.status) {
-                case 200:
-                    resp.text().then(responseText => {
-                        if (responseText === 'ok') {
-                            const newButtonsContainer = ElementsCreator.createNewModalButtonsContainer()
-                            const buttonsContainer = document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
-                                .querySelector('.'+AttributesNaming.CONTAINERS.MODAL_BUTTONS.CLASS)
-                            buttonsContainer.replaceWith(newButtonsContainer)
-                            alert('Успешно')
-                        }
-                        else if (responseText === 'already in cart') {
-                            alert('Товар уже в корзине')
-                        }
-                        else if (responseText === 'out of stock') {
-                            alert('Товара нет в наличии');
-                        }
-                    })
-                    break
-                case 403:
-                    resp.text().then(responseText => {
-                        if (responseText === 'not authorized') {
-                            alert('Требуется авторизация')
-                        }
-                    })
-                    break
-            }
+            ResponseHandler.handleAddToCartResponse(resp)
         })
     }
 
@@ -88,8 +57,11 @@ export default class CartController {
             ResponseHandler.handleDecreaseCartItemQuantityResponse(resp)
         })
     }
-    static showProductInfo() {
 
+    static showProductModal(productInfo) {
+        fetch(`/cart/get_product_cart_item?product_id=${productInfo['id']}`).then(resp => {
+            ResponseHandler.handleShowProductModalResponse(resp, productInfo)
+        })
     }
 
     // ______________________________

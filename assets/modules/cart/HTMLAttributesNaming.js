@@ -21,4 +21,8 @@ export default class HTMLAttributesNaming {
             TEXT: '-1'
         }
     }
+
+    static CART_ITEM_COUNTER = {
+        CLASS: 'product-modal-counter'
+    }
 }

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Оформление заказа{% endblock %}
+
+{% block body %}
+    <h1>Оформление заказа</h1>
+    {{ form_start(form) }}
+    {{ form_row(form.phone_number) }}
+    <button type="submit" class="btn btn-primary">Оформить заказ</button>
+    {{ form_end(form) }}
+{% endblock %}

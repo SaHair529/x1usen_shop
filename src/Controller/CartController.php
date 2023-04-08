@@ -109,7 +109,7 @@ class CartController extends AbstractController
         $itemId = $req->query->get('item_id');
         if (!is_null($itemId) && !is_null($item = $cartItemRep->findOneBy(['id'=>$itemId]))) {
             $itemProduct = $item->getProduct();
-            $itemProduct->increaseTotalBalance();
+            $itemProduct->increaseTotalBalance($item->getQuantity());
             $productRep->save($itemProduct);
             $cartItemRep->remove($item, true);
         }
@@ -123,7 +123,7 @@ class CartController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/get_product_cart_item', name: 'cart_get_product_cart_item')]
-    public function getProductRelatedCartItem(Request $req, SerializerInterface $serializer): JsonResponse
+    public function getProductRelatedCartItem(Request $req, ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -132,14 +132,10 @@ class CartController extends AbstractController
         $serializerContext->setSerializeNull(true);
         foreach ($cartItems->getIterator() as $item) {
             if($item->getProduct()->getId() === (int) $req->get('product_id')) {
-//                return new JsonResponse(json_decode($serializer->serialize($item, JsonEncoder::FORMAT)));
-                return new JsonResponse([
-                    'id' => $item->getId(),
-                    'quantity' => $item->getQuantity()
-                ]);
+                return ResponseCreator::getProductRelatedCartItem_ok($item);
             }
         }
 
-        return new JsonResponse([]);
+        return ResponseCreator::getProductRelatedCartItem_cartItemNotFound();
     }
 }

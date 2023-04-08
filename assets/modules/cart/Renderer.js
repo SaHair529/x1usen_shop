@@ -7,6 +7,11 @@ export default class Renderer {
         decreaseBtn.setAttribute('disabled', '')
     }
 
+    static disableIncreaseButton() {
+        const increaseBtn = document.querySelector('.'+AttributesNaming.BUTTONS.INCREASE_CART_ITEM.CLASS)
+        increaseBtn.setAttribute('disabled', '')
+    }
+
     /**
      * Смена кнопки "В корзину" на кнопку увеличения и уменьшения количества товара в корзине
      */
@@ -15,6 +20,13 @@ export default class Renderer {
         const buttonsContainer = document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
             .querySelector('.'+AttributesNaming.CONTAINERS.MODAL_BUTTONS.CLASS)
         buttonsContainer.replaceWith(cartItemCounter)
+    }
+
+    static replaceCounterWithToCartButton() {
+        const newButtonsContainer = ElementsCreator.createToCartButton()
+        const buttonsContainer = document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
+            .querySelector('.'+AttributesNaming.CONTAINERS.MODAL_BUTTONS.CLASS)
+        buttonsContainer.replaceWith(newButtonsContainer)
     }
 
     static updateCounterValue(itemQuantity) {

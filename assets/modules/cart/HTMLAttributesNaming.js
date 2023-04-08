@@ -12,13 +12,17 @@ export default class HTMLAttributesNaming {
     }
 
     static BUTTONS = {
-        ADD_TO_CART: {
+        INCREASE_CART_ITEM: {
             CLASS: 'add-to-cart',
             TEXT: '+1'
         },
         REMOVE_FROM_CART: {
             CLASS: 'remove-from-cart',
             TEXT: '-1'
+        },
+        ADD_TO_CART: {
+            CLASS: 'add-to-cart',
+            TEXT: 'В корзину'
         }
     }
 

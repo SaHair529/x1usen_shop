@@ -31,7 +31,7 @@ export default class CartController {
         const productInfoModal = document.getElementById('product-info-modal')
         if (productInfoModal != null) {
             productInfoModal.addEventListener('click', function (e) {
-                if (e.target.classList.contains(AttributesNaming.BUTTONS.ADD_TO_CART.CLASS)) {
+                if (e.target.classList.contains(AttributesNaming.BUTTONS.INCREASE_CART_ITEM.CLASS)) {
                     CartController.addToCart(productInfoModal.dataset.productId)
                 }
                 else if (e.target.classList.contains(AttributesNaming.BUTTONS.REMOVE_FROM_CART.CLASS)) {

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Мои заказы{% endblock %}
+
+{% block body %}
+    <div id="orders">
+        {% for order in orders %}
+            <div class="card" style="width: 11rem">
+                <div class="card-body">
+                    <h5 class="card-title small"><b>Номер телефона: </b>{{ order.phoneNumber }}</h5>
+                    <p class="card-text small"><b>Город: </b>{{ order.city }}</p>
+                    <p class="card-text small"><b>Адрес: </b>{{ order.address }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

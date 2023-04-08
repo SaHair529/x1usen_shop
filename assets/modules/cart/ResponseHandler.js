@@ -11,6 +11,10 @@ export default class ResponseHandler {
 
                     if (document.querySelector('.'+AttributesNaming.CART_ITEM_COUNTER.CLASS))
                         Renderer.updateCounterValue(responseData['quantity'])
+
+                    const increaseBtn = document.querySelector('.'+AttributesNaming.BUTTONS.INCREASE_CART_ITEM.CLASS)
+                    if (increaseBtn.getAttribute('disabled') !== null)
+                        Renderer.enableIncreaseButton()
                 })
                 break
             case 422:

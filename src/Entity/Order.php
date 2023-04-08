@@ -25,6 +25,12 @@ class Order
     #[ORM\Column(length: 20)]
     private ?string $phone_number = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $address = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $city = null;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -85,6 +91,30 @@ class Order
     public function setPhoneNumber(string $phone_number): self
     {
         $this->phone_number = $phone_number;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }

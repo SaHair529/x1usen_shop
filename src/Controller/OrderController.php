@@ -26,6 +26,8 @@ class OrderController extends AbstractController
         if ($form->isSubmitted()) {
             $order->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')));
             $order->setPhoneNumber($form->get('phone_number')->getData());
+            $order->setCity($form->get('city')->getData());
+            $order->setAddress($form->get('address')->getData());
 
             # Добавление товаров из корзины
             /** @var User $user */

@@ -6,6 +6,8 @@
     <h1>Оформление заказа</h1>
     {{ form_start(form) }}
     {{ form_row(form.phone_number) }}
+    {{ form_row(form.city) }}
+    {{ form_row(form.address) }}
     <button type="submit" class="btn btn-primary">Оформить заказ</button>
     {{ form_end(form) }}
 {% endblock %}

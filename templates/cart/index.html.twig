@@ -11,11 +11,14 @@
                     <h5 class="card-title small">{{ cart_item.product.brand }}</h5>
                     <h5 class="card-title small">{{ cart_item.product.price }}р.</h5>
                     <p class="card-text small">{{ cart_item.product.name }}</p>
-                    <a href="{{ path('cart_remove_item', { item_id: cart_item.id }) }}" class="btn btn-primary">Удалить из корзины</a>
+                    <a href="{{ path('cart_remove_item', { item_id: cart_item.id }) }}" class="btn btn-danger">Удалить из корзины</a>
                 </div>
             </div>
         {% endfor %}
     </div>
 
-    <a href="{{ path('order_create') }}" class="btn btn-primary create_order-btn">Оформить заказ</a>
+    <div id="cart-action-buttons">
+        <a href="{{ path('order_create') }}" class="btn btn-primary create_order-btn">Оформить заказ</a>
+        <a href="{{ path('order_my_orders') }}" class="btn btn-success create_order-btn">Мои заказы</a>
+    </div>
 {% endblock %}

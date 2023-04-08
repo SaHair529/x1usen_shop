@@ -31,6 +31,9 @@ class Order
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    private ?User $customer = null;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -115,6 +118,18 @@ class Order
     public function setCity(string $city): self
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    public function getCustomer(): ?User
+    {
+        return $this->customer;
+    }
+
+    public function setCustomer(?User $customer): self
+    {
+        $this->customer = $customer;
 
         return $this;
     }

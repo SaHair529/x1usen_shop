@@ -12,6 +12,11 @@ export default class Renderer {
         increaseBtn.setAttribute('disabled', '')
     }
 
+    static enableIncreaseButton() {
+        const increaseBtn = document.querySelector('.'+AttributesNaming.BUTTONS.INCREASE_CART_ITEM.CLASS)
+        increaseBtn.removeAttribute('disabled')
+    }
+
     /**
      * Смена кнопки "В корзину" на кнопку увеличения и уменьшения количества товара в корзине
      */

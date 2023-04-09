@@ -1,5 +1,6 @@
 import HTMLElements from "./HTMLElements";
 import ResponseHandler from "./ResponseHandler";
+import Renderer from "./Renderer";
 
 export default class MainController {
     static init() {
@@ -43,6 +44,7 @@ export default class MainController {
     }
 
     static renderDetailItems(detailLinkTag) {
+        Renderer.renderLoaderInDetailsWindow()
         fetch(detailLinkTag.getAttribute('href')).then(resp => {
             ResponseHandler.handleGetDetailItemsResponse(resp)
         })

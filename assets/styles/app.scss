@@ -156,6 +156,24 @@
   }
   #details-window {
     width: 65%;
+    .loader {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-height: 83vh;
+    }
+    .details404 {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-height: 83vh;
+      &icon {
+        width: 100px;
+        color: gray;
+      }
+    }
   }
 }
 

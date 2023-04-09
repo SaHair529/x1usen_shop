@@ -1,65 +1,43 @@
-<ul class="groups-tree">
-    <li>
-        <details open>
-            <summary>{{ vehicle.brand~' '~vehicle.name }}</summary>
+<div class="tree">
+    <div class="root">
+        <div class="head">
+            <div class="icon"><div class="arrow"></div></div>
+            <p class="title">{{ vehicle.brand~' '~vehicle.name }}</p>
+        </div>
+        <div class="children">
             {% import _self as macros %}
-            <ul>
-                {% for group in detail_groups.childGroups %}
-                    {{ macros.displayMultilevel(group, vehicle.catalog, vehicle.vehicleId, vehicle.ssd) }}
-                {% endfor %}
-            </ul>
-        </details>
-    </li>
-</ul>
 
-{% block javascripts %}
-    <script>
-        const links = document.getElementsByClassName('detail-link')
-        for (let linkKey in links) {
-            const listDetailsLink = links[linkKey]
-            try {
-                const href = listDetailsLink.getAttribute('href')
-                listDetailsLink.addEventListener('click', (e) => {
-                    e.preventDefault()
-                    console.log(href)
-                    return fetch(href).then(resp => {
-                        resp.text().then(detailCards => renderDetailCards(detailCards))
-                    })
-                })
-            } catch (e) {}
-        }
+            {% for group in detail_groups.childGroups %}
+                {{ macros.displayMultilevel(group, vehicle.catalog, vehicle.vehicleId, vehicle.ssd) }}
+            {% endfor %}
+        </div>
+    </div>
+</div>
 
-        /**
-         * @param detailCards - html of cards
-         */
-        function renderDetailCards (detailCards)
-        {
-            const detailsWindow = document.getElementById('details-window')
-            detailsWindow.innerHTML = detailCards
-        }
-    </script>
-{% endblock %}
+
 
 {# Рекурсивная функция для отображения всех подгрупп многоуровневых групп #}
 {% macro displayMultilevel(groupObjects, catalog, vehicle_id, ssd) %}
-    <li>
-        <details>
-            <summary>{{ groupObjects.name }}</summary>
-            <ul>
-                {% for childGroup in groupObjects.childGroups %}
-                    {% if childGroup.childGroups is empty %}
-
-                        <li><a href="{{ path('list_details', {
-                                'catalog': catalog,
-                                'vehicle_id': vehicle_id,
-                                'vehicle_ssd': ssd,
-                                'group_id': childGroup.quickGroupId
-                            }) }}" class="detail-link">{{ childGroup.name }}</a></li>
-                    {% else %}
-                        {{ macros.displayMultilevel(childGroup, catalog, vehicle_id, ssd) }}
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </details>
-    </li>
+    <div class="parent action-open">
+        <div class="head action-open">
+            <div class="icon action-open"><div class="arrow action-open"></div></div>
+            <p class="title action-open">{{ groupObjects.name }}</p>
+        </div>
+        <div class="children">
+            {% for childGroup in groupObjects.childGroups %}
+                {% if childGroup.childGroups is empty %}
+                    <div class="child">
+                        <a href="{{ path('list_details', {
+                            'catalog': catalog,
+                            'vehicle_id': vehicle_id,
+                            'vehicle_ssd': ssd,
+                            'group_id': childGroup.quickGroupId
+                        }) }}" class="detail-link">{{ childGroup.name }}</a>
+                    </div>
+                {% else %}
+                    {{ macros.displayMultilevel(childGroup, catalog, vehicle_id, ssd) }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
 {% endmacro %}

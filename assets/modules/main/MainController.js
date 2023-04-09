@@ -11,9 +11,9 @@ export default class MainController {
         const detailsTree = document.querySelector('.'+HTMLElements.detailsTree.class)
         if (detailsTree != null) {
             detailsTree.addEventListener('click', function(e) {
-                if (e.target.classList.contains(HTMLElements.detailsTree.actionClasses.openItem))
+                if (e.target['classList'].contains(HTMLElements.detailsTree.actionClasses.openItem))
                     MainController.toggleTreeItem(e.target)
-                else if (e.target.classList.contains(HTMLElements.detailsTree.parentItem.detailLink.class)) {
+                else if (e.target['classList'].contains(HTMLElements.detailsTree.parentItem.detailLink.class)) {
                     e.preventDefault()
                     MainController.renderDetailItems(e.target)
                 }

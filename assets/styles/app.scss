@@ -94,83 +94,66 @@
 #search-response {
   display: flex;
   justify-content: space-between;
-  .groups-tree {
-    --spacing : 1.5rem;
-    --radius  : 10px;
-    padding-left: 0;
-    width: 30%;
-    color: #444;
-    box-shadow: 0 0 5px #d6d6d6;
-    & a {
+  .tree {
+    width: 40%;
+    a {
+      display: block;
       color: grey;
+      padding: 3px 3px;
       &:hover {
-        color: #ed2d2f;
+        color: red;
       }
     }
-    & ul li {
-      border-left: 2px solid #ddd;
-      &:last-child {
-        border-color: transparent;
+    .title {
+      margin: 0;
+    }
+    .parent, .root {
+      .head {
+        display: flex;
+        align-items: center;
+        .icon {
+          margin-right: 1rem;
+          .arrow {
+            width: 10px;
+            height: 10px;
+          }
+        }
       }
-      &::before {
-        content: '';
-        display: block;
-        position: absolute;
-        top: calc(var(--spacing) / -2);
-        left: -2px;
-        width: calc(var(--spacing) + 2px);
-        height: calc(var(--spacing) + 1px);
-        border: solid #ddd;
-        border-width: 0 0 2px 2px;;
-      }
     }
-    & li {
-      display: block;
-      position: relative;
-      padding-left: calc(2 * var(--spacing) - var(--radius) - 2px);
-    }
-    & ul {
-      margin-left: calc(var(--radius) - var(--spacing));
-      padding-left: 0;
-    }
-    & summary {
-      display: block;
+    .root .parent {
       cursor: pointer;
-      border-top: solid 1px #d6d6d6;
-      border-bottom: solid 1px #d6d6d6;
-      padding: 3px;
-      border-radius: 3px;
-      &::marker, &::-webkit-details-marker {
+      .head {
+        padding: 3px 6px;
+      }
+      &:hover {
+        & > .head {
+          background: #f0f0f0;
+        }
+      }
+      & > .children {
         display: none;
       }
-      &:hover {
-        background: #f6f6f6;
+      &.opened {
+        & > .head > .icon .arrow {
+          background: red;
+          transform: rotate(45deg);
+        }
+        & > .children {
+          display: block;
+        }
+      }
+      .icon .arrow {
+        transition: .1s;
+        background: #767676;
       }
     }
-    & li::after, & summary::before {
-      content       : '';
-      display       : block;
-      position      : absolute;
-      top           : calc(var(--spacing) / 2 - var(--radius));
-      left          : calc(var(--spacing) - var(--radius) - 1px);
-      width         : calc(2 * var(--radius));
-      height        : calc(2 * var(--radius));
-      border-radius : 50%;
+    .root .icon .arrow {
+      background: black;
     }
-    & summary::before {
-      content     : '>';
-      z-index     : 1;
-      color: #ed2d2f;
-      background  : #fff;
-      line-height : calc(2 * var(--radius) - 2px);
-      text-align  : center;
-    }
-    & details[open] > summary::before {
-      content: 'v';
-      color: red;
+    .children {
+      padding-left: 3rem;
     }
   }
-
   #details-window {
     width: 65%;
   }

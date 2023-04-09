@@ -14,9 +14,12 @@ import bsCustomFileInput from "bs-custom-file-input";
 import './bootstrap';
 
 bsCustomFileInput.init();
+
 import CartController from './modules/cart/CartController'
+import MainController from "./modules/main/MainController";
 
 document.addEventListener('DOMContentLoaded', function()
 {
     CartController.init()
+    MainController.init()
 })

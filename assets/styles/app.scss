@@ -98,7 +98,15 @@
     --spacing : 1.5rem;
     --radius  : 10px;
     padding-left: 0;
-    max-width: 30%;
+    width: 30%;
+    color: #444;
+    box-shadow: 0 0 5px #d6d6d6;
+    & a {
+      color: grey;
+      &:hover {
+        color: #ed2d2f;
+      }
+    }
     & ul li {
       border-left: 2px solid #ddd;
       &:last-child {
@@ -128,8 +136,15 @@
     & summary {
       display: block;
       cursor: pointer;
+      border-top: solid 1px #d6d6d6;
+      border-bottom: solid 1px #d6d6d6;
+      padding: 3px;
+      border-radius: 3px;
       &::marker, &::-webkit-details-marker {
         display: none;
+      }
+      &:hover {
+        background: #f6f6f6;
       }
     }
     & li::after, & summary::before {
@@ -141,18 +156,18 @@
       width         : calc(2 * var(--radius));
       height        : calc(2 * var(--radius));
       border-radius : 50%;
-      background    : #ddd;
     }
     & summary::before {
-      content     : '+';
+      content     : '>';
       z-index     : 1;
-      background  : #696;
-      color       : #fff;
+      color: #ed2d2f;
+      background  : #fff;
       line-height : calc(2 * var(--radius) - 2px);
       text-align  : center;
     }
     & details[open] > summary::before {
-      content: '-';
+      content: 'v';
+      color: red;
     }
   }
 

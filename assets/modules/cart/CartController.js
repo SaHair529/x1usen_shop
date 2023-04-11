@@ -37,7 +37,7 @@ export default class CartController {
                 else if (e.target.classList.contains(AttributesNaming.BUTTONS.REMOVE_FROM_CART.CLASS)) {
                     CartController.decreaseCartItemQuantity(productInfoModal.dataset.productId)
                 }
-                else {
+                else if (e.target.classList.contains('close-product-modal')) {
                     productInfoModal.classList.add('hidden')
                 }
             })

@@ -49,14 +49,16 @@ export default class ResponseHandler {
     static handleShowProductModalResponse(responsePromise, productInfo) {
         const productInfoModal = document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
         productInfoModal.dataset.productId = productInfo['id']
-        productInfoModal.querySelector('.name').innerHTML = '<b>Наименование: </b>'+productInfo['name']
-        productInfoModal.querySelector('.price').innerHTML = '<b>Стоимость: </b>'+productInfo['price']
+        productInfoModal.querySelector('.name').textContent = productInfo['name']
+        productInfoModal.querySelector('.price').textContent = '0'
 
         switch (responsePromise.status) {
             case 200:
                 responsePromise.json().then(responseData => {
                     if (responseData['quantity'] > 0) {
                         Renderer.replaceToCartButtonWithCounter(responseData['quantity'])
+                        productInfoModal.querySelector('.price').textContent =
+                            'Суммарная стоимость: '+(productInfo['price'] * responseData['quantity'])+'₽'
                         if (!responseData['has_more_product'])
                             Renderer.disableIncreaseButton()
                     }

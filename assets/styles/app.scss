@@ -63,8 +63,14 @@
   align-items: center;
   background: rgba(0, 0, 0, 0.3);
   .inner {
-    min-width: 1000px;
+    width: 40%;
+    padding: 1rem;
+    border-radius: 4px;
     background: #fff;
+    .product-modal-counter {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
   }
 }
 

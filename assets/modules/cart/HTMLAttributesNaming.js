@@ -29,4 +29,7 @@ export default class HTMLAttributesNaming {
     static CART_ITEM_COUNTER = {
         CLASS: 'product-modal-counter'
     }
+    static productSumPriceCounter = {
+        class: 'sum-price'
+    }
 }

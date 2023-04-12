@@ -38,4 +38,9 @@ export default class Renderer {
         document.querySelector('.'+AttributesNaming.CART_ITEM_COUNTER.CLASS)
             .textContent = itemQuantity
     }
+
+    static updateSumPrice(sumPrice) {
+        document.querySelector('.'+AttributesNaming.productSumPriceCounter.class)
+            .textContent = sumPrice
+    }
 }

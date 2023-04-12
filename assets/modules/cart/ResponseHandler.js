@@ -6,11 +6,15 @@ export default class ResponseHandler {
         switch (responsePromise.status) {
             case 200:
                 responsePromise.json().then(responseData => {
-                    if (responseData['quantity'] === 0)
+                    if (responseData['quantity'] === 0) {
                         Renderer.replaceCounterWithToCartButton()
+                        Renderer.updateSumPrice(0)
+                    }
 
-                    if (document.querySelector('.'+AttributesNaming.CART_ITEM_COUNTER.CLASS))
+                    if (document.querySelector('.'+AttributesNaming.CART_ITEM_COUNTER.CLASS)) {
                         Renderer.updateCounterValue(responseData['quantity'])
+                        Renderer.updateSumPrice(responseData['quantity'] * responseData['product_price'])
+                    }
 
                     const increaseBtn = document.querySelector('.'+AttributesNaming.BUTTONS.INCREASE_CART_ITEM.CLASS)
                     if (increaseBtn.getAttribute('disabled') !== null)
@@ -27,8 +31,10 @@ export default class ResponseHandler {
             case 200:
                 responsePromise.json().then(responseData => {
                     if (responseData['message'] === 'ok') {
-                        if (document.querySelector('.'+AttributesNaming.CART_ITEM_COUNTER.CLASS))
+                        Renderer.updateSumPrice(responseData['product_price'] * responseData['quantity'])
+                        if (document.querySelector('.'+AttributesNaming.CART_ITEM_COUNTER.CLASS)) {
                             Renderer.updateCounterValue(responseData['quantity'])
+                        }
                         else
                             Renderer.replaceToCartButtonWithCounter(responseData['quantity'])
                         if (!responseData['has_more_product'])
@@ -57,8 +63,8 @@ export default class ResponseHandler {
                 responsePromise.json().then(responseData => {
                     if (responseData['quantity'] > 0) {
                         Renderer.replaceToCartButtonWithCounter(responseData['quantity'])
-                        productInfoModal.querySelector('.price').textContent =
-                            'Суммарная стоимость: '+(productInfo['price'] * responseData['quantity'])+'₽'
+                        productInfoModal.querySelector('.price').innerHTML =
+                            'Суммарная стоимость: <span class="sum-price">'+(productInfo['price'] * responseData['quantity'])+'</span>₽'
                         if (!responseData['has_more_product'])
                             Renderer.disableIncreaseButton()
                     }
@@ -68,6 +74,9 @@ export default class ResponseHandler {
                     }
                 })
                 break
+            case 422:
+                productInfoModal.querySelector('.price').innerHTML =
+                    'Суммарная стоимость: <span class="sum-price">0</span>₽'
         }
         productInfoModal.classList.remove('hidden')
     }

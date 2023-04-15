@@ -60,7 +60,8 @@ Encore
     .enableSassLoader()
 
     // uncomment if you use TypeScript
-    //.enableTypeScriptLoader()
+    .addEntry('main', './assets/main.ts')
+    .enableTypeScriptLoader()
 
     // uncomment if you use React
     //.enableReactPreset()

@@ -4,6 +4,13 @@
   display: none !important;
 }
 
+header {
+  .brand-form {
+    display: flex;
+    align-items: center;
+  }
+}
+
 .product-card {
   position: relative;
   width: 100%;
@@ -82,6 +89,7 @@
   flex-direction: column;
   & .search-form {
     width: 30%;
+    height: 30px;
   }
 }
 
@@ -92,7 +100,8 @@
   }
   &--mini {
     & .search-form__query {
-      font-size: 10px;
+      font-size: 13px;
+      height: 25px;
     }
   }
 }

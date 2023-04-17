@@ -4,7 +4,11 @@
     <div id="search-response">
         {% include 'pieces/details-tree.html.twig' with {'detail_groups': detail_groups, 'vehicle': vehicle} %}
         <div id="details-window">
-
+            <div class="details404">
+                <p class="details404icon">
+                    Выберите узел слева
+                </p>
+            </div>
         </div>
         <div id="product-info-modal" class="hidden close-product-modal">
             <div class="inner">

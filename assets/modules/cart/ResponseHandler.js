@@ -72,12 +72,16 @@ export default class ResponseHandler {
                         if (document.querySelector('.'+AttributesNaming.CART_ITEM_COUNTER.CLASS))
                             Renderer.replaceCounterWithToCartButton();
                     }
+                    productInfoModal.classList.remove('hidden')
                 })
                 break
             case 422:
                 productInfoModal.querySelector('.price').innerHTML =
                     'Суммарная стоимость: <span class="sum-price">0</span>₽'
+                productInfoModal.classList.remove('hidden')
+                break
+            case 403:
+                alert('Не авторизован')
         }
-        productInfoModal.classList.remove('hidden')
     }
 }

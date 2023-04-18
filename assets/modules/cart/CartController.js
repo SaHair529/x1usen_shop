@@ -1,10 +1,12 @@
 import AttributesNaming from './HTMLAttributesNaming'
 import ResponseHandler from "./ResponseHandler";
+import HTMLElements from "../main/HTMLElements";
 
 export default class CartController {
     static init() {
         this.productCardPressHandle()
         this.productInfoModalPressHandle()
+        this.notAuthorizedModalPressHandle()
     }
 
     // button handles------------------------
@@ -26,7 +28,6 @@ export default class CartController {
         }
     }
 
-    // обработка всех нажатий в модалке продукта
     static productInfoModalPressHandle() {
         const productInfoModal = document.getElementById('product-info-modal')
         if (productInfoModal != null) {
@@ -43,6 +44,18 @@ export default class CartController {
             })
         }
     }
+
+    static notAuthorizedModalPressHandle() {
+        const notAuthorizedModal = document.getElementById(AttributesNaming.MODALS.NOT_AUTHORIZED_MODAL.ID)
+        if (notAuthorizedModal != null) {
+            notAuthorizedModal.addEventListener('click', function (e) {
+                if (e.target.classList.contains('close-not-authorized-modal')) {
+                    notAuthorizedModal.classList.add('hidden')
+                }
+            })
+        }
+    }
+
     // ______________________________________
 
     // button handles actions--------

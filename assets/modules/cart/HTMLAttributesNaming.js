@@ -2,6 +2,9 @@ export default class HTMLAttributesNaming {
     static MODALS = {
         PRODUCT_MODAL: {
             ID: 'product-info-modal'
+        },
+        NOT_AUTHORIZED_MODAL: {
+            ID: 'not-authorized-alert-modal'
         }
     }
 

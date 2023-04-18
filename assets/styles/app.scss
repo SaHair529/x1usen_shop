@@ -58,7 +58,7 @@ header {
     flex-grow: 1;
   }
 }
-#product-info-modal {
+#product-info-modal, #not-authorized-alert-modal {
   position: absolute;
   width: 100%;
   height: 100%;

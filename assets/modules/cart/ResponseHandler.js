@@ -81,7 +81,8 @@ export default class ResponseHandler {
                 productInfoModal.classList.remove('hidden')
                 break
             case 403:
-                alert('Не авторизован')
+                const notAuthorizedModal = document.getElementById(AttributesNaming.MODALS.NOT_AUTHORIZED_MODAL.ID)
+                notAuthorizedModal.classList.remove('hidden')
         }
     }
 }

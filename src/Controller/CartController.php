@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 #[Route('/cart')]
@@ -25,6 +26,7 @@ class CartController extends AbstractController
      * @throws Exception
      */
     #[Route('/items', name: 'cart_items')]
+    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         /** @var User $user */
@@ -42,6 +44,9 @@ class CartController extends AbstractController
     #[Route('/decrease_quantity', name: 'cart_decrease_quantity')]
     public function decreaseQuantity(Request $req, CartItemRepository $cartItemRep, ProductRepository $productRep): Response
     {
+        if (is_null($this->getUser()))
+            return ResponseCreator::notAuthorized();
+
         /** @var User $user */
         $user = $this->getUser();
         $cartItems = $user->getCart()->getItems();
@@ -52,7 +57,7 @@ class CartController extends AbstractController
                 $item->getProduct()->increaseTotalBalance();
                 $item->getQuantity() === 0 ? $cartItemRep->remove($item, true) : $cartItemRep->save($item, true);
                 $productRep->save($item->getProduct(), true);
-                return ResponseCreator::decreaseQuantity_ok($item->getQuantity());
+                return ResponseCreator::decreaseQuantity_ok($item->getQuantity(), $item->getProduct()->getPrice());
             }
         }
 
@@ -63,16 +68,13 @@ class CartController extends AbstractController
     #[Route('/add_item', name: 'cart_add_item', methods: 'GET')]
     public function addItem(Request $req, ProductRepository $productRep, CartItemRepository $cartItemRep): Response
     {
-        if (is_null($this->getUser())) {
-            return (new Response('not authorized'))
-                ->setStatusCode(Response::HTTP_FORBIDDEN);
-        }
+        if (is_null($this->getUser()))
+            return ResponseCreator::notAuthorized();
 
         $productId = $req->query->get('item_id');
         $product = $productRep->findOneBy(['id'=>$productId]);
-        if (is_null($productId) && is_null($product)) {
+        if (is_null($productId) && is_null($product))
             return ResponseCreator::addItem_productNotFound();
-        }
 
         if ($product->getTotalBalance() <= 0)
             return new Response('out of stock');
@@ -104,6 +106,7 @@ class CartController extends AbstractController
 
     /** @noinspection PhpPossiblePolymorphicInvocationInspection */
     #[Route('/remove_item', name: 'cart_remove_item', methods: 'GET')]
+    #[IsGranted('ROLE_USER')]
     public function removeItem(Request $req, CartItemRepository $cartItemRep, ProductRepository $productRep): Response
     {
         $itemId = $req->query->get('item_id');
@@ -125,6 +128,9 @@ class CartController extends AbstractController
     #[Route('/get_product_cart_item', name: 'cart_get_product_cart_item')]
     public function getProductRelatedCartItem(Request $req, ): JsonResponse
     {
+        if (is_null($this->getUser()))
+            return ResponseCreator::notAuthorized();
+
         /** @var User $user */
         $user = $this->getUser();
         $cartItems = $user->getCart()->getItems();

@@ -10,7 +10,6 @@
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
-            {{ encore_entry_script_tags('main') }}
             <script src="https://kit.fontawesome.com/2fbf3fbf33.js" crossorigin="anonymous"></script>
         {% endblock %}
     </head>
@@ -18,20 +17,15 @@
     <header class="mb-3">
 
         <div class="container">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="container-fluid">
+            <nav class="navbar navbar-light">
+                <div class="brand-form">
                     <a class="navbar-brand" href="{{ path('homepage') }}">IGG</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <form class="nav-item d-flex search-form search-form--mini">
-                            <input class="form-control me-2 search-form__query" type="search" placeholder="VIN | Номер кузова | Номер з/ч" aria-label="Search">
-                        </form>
-                        <div class="nav-item">
-                            <a href="{{ path('cart_items') }}" class="nav-link">Корзина</a>
-                        </div>
-                    </div>
+                    <form class="nav-item d-flex search-form search-form--mini">
+                        <input class="form-control me-2 search-form__query" type="search" placeholder="VIN | Номер кузова | Номер з/ч" aria-label="Search">
+                    </form>
+                </div>
+                <div class="nav-item">
+                    <a href="{{ path('cart_items') }}" class="nav-link">Корзина</a>
                 </div>
             </nav>
         </div>

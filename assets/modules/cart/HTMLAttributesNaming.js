@@ -2,6 +2,9 @@ export default class HTMLAttributesNaming {
     static MODALS = {
         PRODUCT_MODAL: {
             ID: 'product-info-modal'
+        },
+        NOT_AUTHORIZED_MODAL: {
+            ID: 'not-authorized-alert-modal'
         }
     }
 
@@ -28,5 +31,8 @@ export default class HTMLAttributesNaming {
 
     static CART_ITEM_COUNTER = {
         CLASS: 'product-modal-counter'
+    }
+    static productSumPriceCounter = {
+        class: 'sum-price'
     }
 }

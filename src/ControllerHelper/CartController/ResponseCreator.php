@@ -57,4 +57,11 @@ class ResponseCreator
             'message' => 'cart item of product not found'
         ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
+
+    public static function notAuthorized(): JsonResponse
+    {
+        return new JsonResponse([
+            'message' => 'not authorized'
+        ], Response::HTTP_FORBIDDEN);
+    }
 }

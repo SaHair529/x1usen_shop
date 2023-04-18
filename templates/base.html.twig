@@ -24,8 +24,17 @@
                         <input class="form-control me-2 search-form__query" type="search" placeholder="VIN | Номер кузова | Номер з/ч" aria-label="Search">
                     </form>
                 </div>
-                <div class="nav-item">
-                    <a href="{{ path('cart_items') }}" class="nav-link">Корзина</a>
+                <div class="nav-item user-button">
+                    <i class="fa-solid fa-user"></i>
+                    <div class="user-menu">
+                        <div class="user-menu-item">
+                            <a class="btn btn-outline-dark" href="{{ path('cart_items') }}">Регистрация</a>
+                            <a class="btn btn-outline-dark" href="{{ path('cart_items') }}">Вход</a>
+                        </div>
+{#                        <div class="user-menu-item">#}
+{#                            <a class="btn btn-outline-dark cart-link" href="{{ path('cart_items') }}">Корзина</a>#}
+{#                        </div>#}
+                    </div>
                 </div>
             </nav>
         </div>

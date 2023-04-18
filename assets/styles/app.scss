@@ -9,6 +9,24 @@ header {
     display: flex;
     align-items: center;
   }
+  .user-button {
+    position: relative;
+    .user-menu {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      box-shadow: 0 0 5px #d6d6d6;
+      &-item {
+        display: flex;
+        .btn {
+          border-radius: 0;
+        }
+        .cart-link {
+          width: 100%;
+        }
+      }
+    }
+  }
 }
 
 .product-card {

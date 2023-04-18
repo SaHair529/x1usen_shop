@@ -10,7 +10,6 @@
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
-            <script src="https://kit.fontawesome.com/2fbf3fbf33.js" crossorigin="anonymous"></script>
         {% endblock %}
     </head>
     <body>
@@ -24,23 +23,40 @@
                         <input class="form-control me-2 search-form__query" type="search" placeholder="VIN | Номер кузова | Номер з/ч" aria-label="Search">
                     </form>
                 </div>
-                <div class="nav-item user-button">
-                    <i class="fa-solid fa-user"></i>
-                    <div class="user-menu">
-                        <div class="user-menu-item">
-                            <a class="btn btn-outline-dark" href="{{ path('cart_items') }}">Регистрация</a>
-                            <a class="btn btn-outline-dark" href="{{ path('cart_items') }}">Вход</a>
+
+
+
+                {% if is_granted('ROLE_USER') %}
+                    <div class="nav-item user-button">
+                        <i class="fa-solid fa-user"></i>
+                        <div class="user-menu">
+                            <div class="user-menu-item user-info">
+                                <p class="user-fullname">Хайрулев Шамиль</p>
+                            </div>
+                            <div class="user-menu-item">
+                                <a class="btn btn-outline-dark" href="{{ path('cart_items') }}">Корзина</a>
+                                <a class="btn btn-outline-dark" href="{{ path('order_my_orders') }}">Заказы</a>
+                            </div>
+                            <div class="user-menu-item">
+                                <a class="btn btn-outline-danger w-100" href="{{ path('app_logout') }}">Выход</a>
+                            </div>
                         </div>
-{#                        <div class="user-menu-item">#}
-{#                            <a class="btn btn-outline-dark cart-link" href="{{ path('cart_items') }}">Корзина</a>#}
-{#                        </div>#}
                     </div>
-                </div>
+                {% else %}
+                    <div class="auth-item">
+                        <a class="btn btn-outline-dark" href="{{ path('app_register') }}">Регистрация</a><a
+                                class="btn btn-outline-dark" href="{{ path('app_login') }}">Вход</a>
+                    </div>
+                {% endif %}
             </nav>
         </div>
     </header>
         <div class="container">
             {% block body %}{% endblock %}
         </div>
+
+    {% block fakit %}
+        <script src="https://kit.fontawesome.com/2fbf3fbf33.js" crossorigin="anonymous"></script>
+    {% endblock %}
     </body>
 </html>

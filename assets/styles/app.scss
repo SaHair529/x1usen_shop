@@ -9,6 +9,35 @@ header {
     display: flex;
     align-items: center;
   }
+  .auth-item {
+    .btn {
+      border-radius: 0;
+    }
+  }
+  .user-button {
+    position: relative;
+    .user-menu {
+      position: absolute;
+      right: 0;
+      top: 0;
+      background: #fff;
+      box-shadow: 0 0 5px #d6d6d6;
+      .user-info {
+        padding: 10px;
+        .user-fullname {
+          margin: 0;
+        }
+      }
+      &-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .btn {
+          border-radius: 0;
+        }
+      }
+    }
+  }
 }
 
 .product-card {

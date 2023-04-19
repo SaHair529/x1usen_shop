@@ -19,7 +19,8 @@ header {
     .user-menu {
       position: absolute;
       right: 0;
-      top: 100%;
+      top: 0;
+      background: #fff;
       box-shadow: 0 0 5px #d6d6d6;
       .user-info {
         padding: 10px;

@@ -16,4 +16,12 @@ export default class HTMLElements {
     static detailsWindow = {
         id: 'details-window'
     }
+
+    static userIcon = {
+        class: 'user-button'
+    }
+
+    static userMenu = {
+        class: 'user-menu'
+    }
 }

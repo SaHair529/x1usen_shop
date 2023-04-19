@@ -5,6 +5,7 @@ import Renderer from "./Renderer";
 export default class MainController {
     static init() {
         this.detailsTreePressHandle()
+        this.userMenuHoverHandle()
     }
 
     // button handlers
@@ -21,10 +22,15 @@ export default class MainController {
             })
         }
     }
+
+    static userMenuHoverHandle() {
+        const userIcon = document.querySelector('.'+HTMLElements.userIcon.class)
+        userIcon.onmouseover = userIcon.onmouseout = this.toggleUserMenuVisibility
+    }
     // _________________________
 
 
-    // button handlers actions
+    // handlers actions
     static toggleTreeItem(item) {
         // открытие/закрытие родительского элемента дерева
         if (item.classList.contains(HTMLElements.detailsTree.parentItem.class)) {
@@ -42,11 +48,20 @@ export default class MainController {
                 parentItem.classList.add('opened')
         }
     }
-
     static renderDetailItems(detailLinkTag) {
         Renderer.renderLoaderInDetailsWindow()
         fetch(detailLinkTag.getAttribute('href')).then(resp => {
             ResponseHandler.handleGetDetailItemsResponse(resp)
         })
+    }
+
+    static toggleUserMenuVisibility(e) {
+        const userMenu = document.querySelector('.'+HTMLElements.userMenu.class)
+        if (e.type === 'mouseover') {
+            userMenu.classList.remove('hidden')
+        }
+        else if (e.type === 'mouseout') {
+            userMenu.classList.add('hidden')
+        }
     }
 }

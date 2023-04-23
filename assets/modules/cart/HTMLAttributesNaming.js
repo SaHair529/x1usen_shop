@@ -5,6 +5,9 @@ export default class HTMLAttributesNaming {
         },
         NOT_AUTHORIZED_MODAL: {
             ID: 'not-authorized-alert-modal'
+        },
+        imageModal: {
+            id: 'detail-image-modal'
         }
     }
 
@@ -31,6 +34,12 @@ export default class HTMLAttributesNaming {
 
     static CART_ITEM_COUNTER = {
         CLASS: 'product-modal-counter'
+    }
+
+    static productCard = {
+        imageZoomBtn: {
+            class: 'action-zoom-img'
+        }
     }
     static productSumPriceCounter = {
         class: 'sum-price'

@@ -1,6 +1,5 @@
 import AttributesNaming from './HTMLAttributesNaming'
 import ResponseHandler from "./ResponseHandler";
-import HTMLElements from "../main/HTMLElements";
 
 export default class CartController {
     static init() {
@@ -17,6 +16,11 @@ export default class CartController {
             productsWindow.addEventListener('click', function (e) {
                 if (e.target.classList.contains('product-card__actions-add_to_cart')) {
                     CartController.addToCart(e.target.dataset.productId)
+                }
+                else if (e.target.classList.contains(AttributesNaming.productCard.imageZoomBtn.class)) {
+                    let imageTag = e.target.nextElementSibling || e.target.parentElement.nextElementSibling
+                    const imageUrl = imageTag.getAttribute('src')
+                    CartController.showProductImageModal(imageUrl)
                 }
                 else {
                     const productCard = e.target.classList.contains('product-card') ? e.target : e.target.closest('.product-card')
@@ -75,6 +79,13 @@ export default class CartController {
         fetch(`/cart/get_product_cart_item?product_id=${productInfo['id']}`).then(resp => {
             ResponseHandler.handleShowProductModalResponse(resp, productInfo)
         })
+    }
+
+    static showProductImageModal(imgUrl) {
+        const modal = document.getElementById(AttributesNaming.MODALS.imageModal.id)
+        const modalImage = modal.querySelector('img')
+        modalImage.setAttribute('src', imgUrl)
+        modal.classList.remove('hidden')
     }
 
     // ______________________________

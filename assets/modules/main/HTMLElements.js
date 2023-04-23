@@ -1,4 +1,10 @@
 export default class HTMLElements {
+    static GLOBAL_ACTION_BUTTONS = {
+        closeModal: {
+            class: 'action-close-modal'
+        }
+    }
+
     static detailsTree = {
         class: 'tree',
         parentItem: {

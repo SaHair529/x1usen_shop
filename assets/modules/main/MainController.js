@@ -6,6 +6,7 @@ export default class MainController {
     static init() {
         this.detailsTreePressHandle()
         this.userMenuHoverHandle()
+        this.closeModalButtonPressHandle()
     }
 
     // button handlers
@@ -25,7 +26,19 @@ export default class MainController {
 
     static userMenuHoverHandle() {
         const userIcon = document.querySelector('.'+HTMLElements.userIcon.class)
-        userIcon.onmouseover = userIcon.onmouseout = this.toggleUserMenuVisibility
+        if (userIcon != null)
+            userIcon.onmouseover = userIcon.onmouseout = this.toggleUserMenuVisibility
+    }
+
+    static closeModalButtonPressHandle() {
+        const closeModalButtons = document.getElementsByClassName(HTMLElements.GLOBAL_ACTION_BUTTONS.closeModal.class)
+        console.log(closeModalButtons)
+        for (let i = 0; i < closeModalButtons.length; i++) {
+            closeModalButtons[i].addEventListener('click', function (e) {
+                if (e.target != null)
+                    e.target.classList.add('hidden')
+            })
+        }
     }
     // _________________________
 

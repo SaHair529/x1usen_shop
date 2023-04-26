@@ -25,7 +25,9 @@ export default class CartController {
                 else {
                     const productCard = e.target.classList.contains('product-card') ? e.target : e.target.closest('.product-card')
                     if (productCard !== null) {
-                        CartController.showProductModal(JSON.parse(productCard.dataset.product))
+                        let productInfo = JSON.parse(productCard.dataset.product)
+                        productInfo.route = productCard.dataset.productRoute
+                        CartController.showProductModal(productInfo)
                     }
                 }
             })

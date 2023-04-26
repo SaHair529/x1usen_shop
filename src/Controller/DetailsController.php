@@ -43,4 +43,16 @@ class DetailsController extends AbstractController
             'products' => $products
         ]);
     }
+
+    #[Route('/{id}', name: 'detail_page')]
+    public function info($id, ProductRepository $productRep): Response
+    {
+        if (!is_numeric($id))
+            return $this->redirectToRoute('homepage');
+
+        $product = $productRep->find($id);
+        return $this->render('details/detail_page.html.twig', [
+            'product' => $product
+        ]);
+    }
 }

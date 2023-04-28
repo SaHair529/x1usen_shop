@@ -35,7 +35,7 @@ export default class CartController {
     }
 
     static productInfoModalPressHandle() {
-        const productInfoModal = document.getElementById('product-info-modal')
+        const productInfoModal = document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
         if (productInfoModal != null) {
             productInfoModal.addEventListener('click', function (e) {
                 if (e.target.classList.contains(AttributesNaming.BUTTONS.INCREASE_CART_ITEM.CLASS)) {
@@ -46,6 +46,10 @@ export default class CartController {
                 }
                 else if (e.target.classList.contains('close-product-modal')) {
                     productInfoModal.classList.add('hidden')
+                }
+                else if (e.target.classList.contains(AttributesNaming.MODALS.PRODUCT_MODAL.detailInfoLink.class)) {
+                    e.preventDefault()
+                    CartController.showProductFullInfoModal(e.target.getAttribute('href'))
                 }
             })
         }
@@ -80,6 +84,12 @@ export default class CartController {
     static showProductModal(productInfo) {
         fetch(`/cart/get_product_cart_item?product_id=${productInfo['id']}`).then(resp => {
             ResponseHandler.handleShowProductModalResponse(resp, productInfo)
+        })
+    }
+
+    static showProductFullInfoModal(productLink) {
+        fetch(productLink).then(resp => {
+            ResponseHandler.handleShowProductFullInfoModal(resp)
         })
     }
 

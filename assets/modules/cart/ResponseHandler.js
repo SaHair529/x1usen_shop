@@ -86,4 +86,10 @@ export default class ResponseHandler {
                 notAuthorizedModal.classList.remove('hidden')
         }
     }
+
+    static handleShowProductFullInfoModal(responsePromise) {
+        responsePromise.text().then(productInfoTemplate => {
+            Renderer.showProductFullInfoModal(productInfoTemplate)
+        })
+    }
 }

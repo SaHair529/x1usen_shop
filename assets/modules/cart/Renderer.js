@@ -43,4 +43,10 @@ export default class Renderer {
         document.querySelector('.'+AttributesNaming.productSumPriceCounter.class)
             .textContent = sumPrice
     }
+
+    static showProductFullInfoModal(infoTemplate) {
+        const modal = ElementsCreator.createModal()
+        modal.innerHTML = infoTemplate
+        document.querySelector('body').append(modal)
+    }
 }

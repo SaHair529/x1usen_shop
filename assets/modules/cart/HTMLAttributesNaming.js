@@ -1,13 +1,19 @@
 export default class HTMLAttributesNaming {
     static MODALS = {
         PRODUCT_MODAL: {
-            ID: 'product-info-modal'
+            ID: 'product-info-modal',
+            detailInfoLink: {
+                class: 'detail-link'
+            }
         },
         NOT_AUTHORIZED_MODAL: {
             ID: 'not-authorized-alert-modal'
         },
         imageModal: {
             id: 'detail-image-modal'
+        },
+        customModal: {
+            class: 'custom-modal'
         }
     }
 

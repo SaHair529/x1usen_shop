@@ -13,7 +13,7 @@ export default class HTMLAttributesNaming {
             id: 'detail-image-modal'
         },
         customModal: {
-            class: 'custom-modal'
+            class: 'custom-modal js-delete-modal'
         }
     }
 

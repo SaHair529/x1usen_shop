@@ -58,7 +58,7 @@ export default class DOMElementsCreator {
 
     static createModal() {
         const modal = document.createElement('div')
-        modal.classList.add(AttributesNaming.MODALS.customModal.class)
+        modal.className = AttributesNaming.MODALS.customModal.class
 
         return modal
     }

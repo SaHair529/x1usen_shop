@@ -49,7 +49,7 @@ export default class CartController {
                 }
                 else if (e.target.classList.contains(AttributesNaming.MODALS.PRODUCT_MODAL.detailInfoLink.class)) {
                     e.preventDefault()
-                    CartController.showProductFullInfoModal(e.target.getAttribute('href'))
+                    // CartController.showProductFullInfoModal(e.target.getAttribute('href'))
                 }
             })
         }

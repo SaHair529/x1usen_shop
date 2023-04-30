@@ -4,6 +4,18 @@
   display: none !important;
 }
 
+.shake {
+  animation: shake .2s 5;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(0); }
+  75% { transform: translateX(3px); }
+  100% { transform: translateX(0); }
+}
+
 header {
   .brand-form {
     display: flex;
@@ -199,6 +211,11 @@ header {
   &__plus-btn {
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;
+  }
+  &__minus-btn.disabled, &__plus-btn.disabled {
+    background: #f2f2f2 !important;
+    color: grey !important;
+    cursor: default !important;
   }
   &__minus-btn:hover, &__plus-btn:hover {
     background: black;

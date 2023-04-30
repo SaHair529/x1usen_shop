@@ -77,7 +77,7 @@ class CartController extends AbstractController
             return ResponseCreator::addItem_productNotFound();
 
         if ($product->getTotalBalance() <= 0)
-            return new Response('out of stock');
+            return ResponseCreator::outOfStock();
 
         /** @var Cart $cart */
         $cart = $this->getUser()->getCart();

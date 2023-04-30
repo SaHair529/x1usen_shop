@@ -2,6 +2,13 @@ import AttributesNaming from "./HTMLAttributesNaming"
 import ElementsCreator from "./DOMElementsCreator";
 
 export default class Renderer {
+    static shakeElement(element) {
+        element.classList.add('shake')
+        setTimeout(() => {
+            element.classList.remove('shake')
+        }, 1000)
+    }
+
     static disableDecreaseButton() {
         const decreaseBtn = document.querySelector('.'+AttributesNaming.BUTTONS.REMOVE_FROM_CART.CLASS)
         decreaseBtn.setAttribute('disabled', '')
@@ -10,6 +17,11 @@ export default class Renderer {
     static disableIncreaseButton() {
         const increaseBtn = document.querySelector('.'+AttributesNaming.BUTTONS.INCREASE_CART_ITEM.CLASS)
         increaseBtn.setAttribute('disabled', '')
+    }
+
+    static disableCartItemCardIncreaseButton(cartItemCard) {
+        const increaseBtn = cartItemCard.querySelector('.'+AttributesNaming.cartItemCard.increaseBtn.class)
+        increaseBtn.classList.add('disabled')
     }
 
     static enableIncreaseButton() {

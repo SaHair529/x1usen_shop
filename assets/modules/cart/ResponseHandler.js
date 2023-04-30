@@ -52,12 +52,36 @@ export default class ResponseHandler {
         }
     }
 
+    static handleCartItemCardDecreaseCartItemQuantityResponse(responsePromise, cartItemCard) {
+        switch (responsePromise.status) {
+            case 200:
+                responsePromise.json().then(responseData => {
+                    if (responseData['message'] === 'ok') {
+                        if (responseData['quantity'] > 0) {
+                            Renderer.updateCartItemCardData(cartItemCard, responseData)
+                        }
+                        else {
+                            cartItemCard.remove()
+                        }
+                    }
+                })
+                break
+        }
+    }
+
     static handleCartItemCardIncreaseCartItemQuantityResponse(responsePromise, cartItemCard) {
         switch (responsePromise.status) {
             case 200:
                 responsePromise.json().then(responseData => {
                     if (responseData['message'] === 'ok') {
                         Renderer.updateCartItemCardData(cartItemCard, responseData)
+                    }
+                    else if (responseData['message'] === 'out of stock') {
+                        Renderer.shakeElement(cartItemCard.querySelector('.cart-item-card__amount'))
+                        Renderer.disableCartItemCardIncreaseButton(cartItemCard)
+                    }
+                    if (responseData['has_more_product'] === false) {
+                        Renderer.disableCartItemCardIncreaseButton(cartItemCard)
                     }
                 })
                 break

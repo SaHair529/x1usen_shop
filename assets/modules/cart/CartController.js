@@ -77,16 +77,22 @@ export default class CartController {
         const cartItems = document.getElementById('cart-items')
         if (cartItems != null) {
             cartItems.addEventListener('click', function (e) {
-                if (e.target.classList.contains(AttributesNaming.cartItemCard.increaseBtn.class)) {
-                    const productId = e.target.closest('.'+AttributesNaming.cartItemCard.class).dataset.productId
-                    const cartItemCard = e.target.closest('.cart-item-card')
+                const productId = e.target.closest('.'+AttributesNaming.cartItemCard.class).dataset.productId
+                const cartItemCard = e.target.closest('.cart-item-card')
+
+                if (e.target.classList.contains(AttributesNaming.cartItemCard.increaseBtn.class) &&
+                    !e.target.classList.contains('disabled'))
+                {
                     CartController.addToCart(productId).then(resp => {
                         ResponseHandler.handleCartItemCardIncreaseCartItemQuantityResponse(resp, cartItemCard)
                     })
                 }
-                else if (e.target.classList.contains(AttributesNaming.cartItemCard.decreaseBtn.class)) {
-                    const productId = e.target.closest('.'+AttributesNaming.cartItemCard.class).dataset.productId
-                    CartController.decreaseCartItemQuantity(productId)
+                else if (e.target.classList.contains(AttributesNaming.cartItemCard.decreaseBtn.class) &&
+                        !e.target.classList.contains('disabled'))
+                {
+                    CartController.decreaseCartItemQuantity(productId).then(resp => {
+                        ResponseHandler.handleCartItemCardDecreaseCartItemQuantityResponse(resp, cartItemCard)
+                    })
                 }
             })
         }

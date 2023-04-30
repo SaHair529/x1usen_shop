@@ -64,4 +64,11 @@ class ResponseCreator
             'message' => 'not authorized'
         ], Response::HTTP_FORBIDDEN);
     }
+
+    public static function outOfStock(): JsonResponse
+    {
+        return new JsonResponse([
+            'message' => 'out of stock'
+        ]);
+    }
 }

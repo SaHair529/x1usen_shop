@@ -52,6 +52,18 @@ export default class ResponseHandler {
         }
     }
 
+    static handleCartItemCardIncreaseCartItemQuantityResponse(responsePromise, cartItemCard) {
+        switch (responsePromise.status) {
+            case 200:
+                responsePromise.json().then(responseData => {
+                    if (responseData['message'] === 'ok') {
+                        Renderer.updateCartItemCardData(cartItemCard, responseData)
+                    }
+                })
+                break
+        }
+    }
+
     static handleShowProductModalResponse(responsePromise, productInfo) {
         const productInfoModal = document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
         productInfoModal.dataset.productId = productInfo['id']

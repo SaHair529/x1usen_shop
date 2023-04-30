@@ -47,6 +47,17 @@ export default class HTMLAttributesNaming {
             class: 'action-zoom-img'
         }
     }
+
+    static cartItemCard = {
+        class: 'cart-item-card',
+        decreaseBtn: {
+            class: 'js-decrease-cart-item'
+        },
+        increaseBtn: {
+            class: 'js-increase-cart-item'
+        }
+    }
+
     static productSumPriceCounter = {
         class: 'sum-price'
     }

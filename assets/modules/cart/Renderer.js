@@ -44,6 +44,11 @@ export default class Renderer {
             .textContent = sumPrice
     }
 
+    static updateCartItemCardData(cartItemCard, data) {
+        cartItemCard.querySelector('.cart-item-card__amount').textContent = data['quantity']
+        cartItemCard.querySelector('.cart-item-card__price').textContent = (data['quantity'] * data['product_price'])+' ₽'
+    }
+
     static showProductFullInfoModal(infoTemplate) {
         const modal = ElementsCreator.createModal()
         modal.innerHTML = infoTemplate

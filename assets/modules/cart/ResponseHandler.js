@@ -52,6 +52,18 @@ export default class ResponseHandler {
         }
     }
 
+    static handleCartItemCardRemoveCartItemQuantityResponse(responsePromise, cartItemCard) {
+        switch (responsePromise.status) {
+            case 200:
+                responsePromise.json().then(responseData => {
+                    if (responseData['message'] === 'ok') {
+                        cartItemCard.remove()
+                    }
+                })
+                break
+        }
+    }
+
     static handleCartItemCardDecreaseCartItemQuantityResponse(responsePromise, cartItemCard) {
         switch (responsePromise.status) {
             case 200:

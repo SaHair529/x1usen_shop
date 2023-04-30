@@ -117,7 +117,7 @@ class CartController extends AbstractController
             $cartItemRep->remove($item, true);
         }
 
-        return $this->redirectToRoute('cart_items');
+        return ResponseCreator::ok();
     }
 
     /**

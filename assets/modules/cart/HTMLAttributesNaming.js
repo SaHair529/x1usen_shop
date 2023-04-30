@@ -55,6 +55,9 @@ export default class HTMLAttributesNaming {
         },
         increaseBtn: {
             class: 'js-increase-cart-item'
+        },
+        delButton: {
+            class: 'js-delete-cart-item'
         }
     }
 

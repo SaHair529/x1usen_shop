@@ -19,6 +19,13 @@ class ResponseCreator
         ]);
     }
 
+    public static function ok(): JsonResponse
+    {
+        return new JsonResponse([
+            'message' => 'ok'
+        ]);
+    }
+
     public static function addItem_productNotFound(): JsonResponse
     {
         return new JsonResponse([

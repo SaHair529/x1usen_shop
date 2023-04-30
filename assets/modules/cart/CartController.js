@@ -94,6 +94,12 @@ export default class CartController {
                         ResponseHandler.handleCartItemCardDecreaseCartItemQuantityResponse(resp, cartItemCard)
                     })
                 }
+                else if (e.target.classList.contains(AttributesNaming.cartItemCard.delButton.class)) {
+                    const cartItemId = e.target.closest('.'+AttributesNaming.cartItemCard.class).dataset.cartItemId
+                    CartController.deleteCartItem(cartItemId).then(resp => {
+                        ResponseHandler.handleCartItemCardRemoveCartItemQuantityResponse(resp, cartItemCard)
+                    })
+                }
             })
         }
     }
@@ -106,6 +112,10 @@ export default class CartController {
 
     static decreaseCartItemQuantity(productId) {
         return fetch(`/cart/decrease_quantity?product_id=${productId}`)
+    }
+
+    static deleteCartItem(cartItemId) {
+        return fetch(`/cart/remove_item?item_id=${cartItemId}`)
     }
 
     static showProductModal(productInfo) {

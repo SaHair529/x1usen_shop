@@ -59,6 +59,7 @@ export default class ResponseHandler {
                     if (responseData['message'] === 'ok') {
                         if (responseData['quantity'] > 0) {
                             Renderer.updateCartItemCardData(cartItemCard, responseData)
+                            Renderer.enableCartItemCardIncreaseButton(cartItemCard)
                         }
                         else {
                             cartItemCard.remove()

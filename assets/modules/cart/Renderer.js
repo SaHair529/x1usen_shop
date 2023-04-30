@@ -24,6 +24,11 @@ export default class Renderer {
         increaseBtn.classList.add('disabled')
     }
 
+    static enableCartItemCardIncreaseButton(cartItemCard) {
+        const increaseBtn = cartItemCard.querySelector('.'+AttributesNaming.cartItemCard.increaseBtn.class)
+        increaseBtn.classList.remove('disabled')
+    }
+
     static enableIncreaseButton() {
         const increaseBtn = document.querySelector('.'+AttributesNaming.BUTTONS.INCREASE_CART_ITEM.CLASS)
         increaseBtn.removeAttribute('disabled')

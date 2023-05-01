@@ -21,6 +21,12 @@
             <button type="submit" class="btn btn-dark">Оформить заказ</button>
             {{ form_end(order_form) }}
         </div>
+    {% else %}
+        <div class="empty-cart-message-wrapper">
+            <h5>
+                Корзина пуста :(
+            </h5>
+        </div>
     {% endif %}
 
 {#    <div id="cart-action-buttons">#}

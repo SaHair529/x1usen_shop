@@ -34,6 +34,7 @@ header {
       top: 0;
       background: #fff;
       box-shadow: 0 0 5px #d6d6d6;
+      z-index: 10;
       .user-info {
         padding: 10px;
         .user-fullname {
@@ -239,6 +240,15 @@ header {
   }
 }
 
+#orders {
+  display: flex;
+  flex-wrap: wrap;
+  .order-card {
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+  }
+}
+
 #product-info-modal, #not-authorized-alert-modal, .custom-modal {
   position: fixed;
   width: 100%;
@@ -403,4 +413,12 @@ header {
 #cart-action-buttons {
   position: fixed;
   bottom: 2rem;
+}
+
+.empty-cart-message-wrapper {
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: grey;
 }

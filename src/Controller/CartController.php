@@ -92,7 +92,7 @@ class CartController extends AbstractController
         $cartItems = $user->getCart()->getItems();
         /** @var CartItem $item */
         foreach ($cartItems->getIterator() as $item) {
-            if($item->getProduct()->getId() === (int) $req->get('product_id')) {
+            if(!$item->isInOrder() && $item->getProduct()->getId() === (int) $req->get('product_id')) {
                 $item->decreaseQuantity();
                 $item->getProduct()->increaseTotalBalance();
                 $item->getQuantity() === 0 ? $cartItemRep->remove($item, true) : $cartItemRep->save($item, true);
@@ -124,7 +124,7 @@ class CartController extends AbstractController
         $cartItem = null;
         /** @var CartItem $item */
         foreach ($cart->getItems()->getIterator() as $item) {
-            if ($item->getProduct()->getId() === $product->getId()) {
+            if (!$item->isInOrder() && $item->getProduct()->getId() === $product->getId()) {
                 $cartItem = $item;
                 break;
             }
@@ -164,6 +164,7 @@ class CartController extends AbstractController
      * Получение CartItem продукта
      * @param Request $req
      * @return JsonResponse
+     * @throws Exception
      */
     #[Route('/get_product_cart_item', name: 'cart_get_product_cart_item')]
     public function getProductRelatedCartItem(Request $req, ): JsonResponse
@@ -177,7 +178,7 @@ class CartController extends AbstractController
         $serializerContext = SerializationContext::create();
         $serializerContext->setSerializeNull(true);
         foreach ($cartItems->getIterator() as $item) {
-            if($item->getProduct()->getId() === (int) $req->get('product_id')) {
+            if(!$item->isInOrder() && $item->getProduct()->getId() === (int) $req->get('product_id')) {
                 return ResponseCreator::getProductRelatedCartItem_ok($item);
             }
         }

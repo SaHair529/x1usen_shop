@@ -3,9 +3,17 @@
 {% block title %}Мои заказы{% endblock %}
 
 {% block body %}
-    <div id="orders">
-        {% for order in orders %}
-            {% include 'pieces/order_card.html.twig' with { 'order': order } %}
-        {% endfor %}
-    </div>
+    {% if orders|length > 0 %}
+        <div id="orders">
+            {% for order in orders %}
+                {% include 'pieces/order_card.html.twig' with { 'order': order } %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-cart-message-wrapper">
+            <h5 style="width: 150px; text-align: center">
+                Вашей машине грустно, когда тут пусто :(
+            </h5>
+        </div>
+    {% endif %}
 {% endblock %}

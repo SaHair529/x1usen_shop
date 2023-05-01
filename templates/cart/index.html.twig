@@ -16,16 +16,36 @@
         {{ form_row(order_form.phone_number) }}
         {{ form_row(order_form.city) }}
         {{ form_row(order_form.address) }}
+        <input type="hidden" id="cart_items_ids" name="cart_items_ids" value="">
         <button type="submit" class="btn btn-dark">Оформить заказ</button>
         {{ form_end(order_form) }}
     </div>
 
-    <div id="cart-action-buttons">
-        <a href="{{ path('order_create') }}" class="btn btn-primary create_order-btn">Оформить заказ</a>
-        <a href="{{ path('order_my_orders') }}" class="btn btn-success create_order-btn">Мои заказы</a>
-    </div>
+{#    <div id="cart-action-buttons">#}
+{#        <a href="{{ path('order_create') }}" class="btn btn-primary create_order-btn">Оформить заказ</a>#}
+{#        <a href="{{ path('order_my_orders') }}" class="btn btn-success create_order-btn">Мои заказы</a>#}
+{#    </div>#}
 
     <script>
+        const cartItemsIdsInput = document.getElementById('cart_items_ids')
 
+        document.getElementById('cart-items').addEventListener('change', function (e) {
+            const checkedItemId = e.target.getAttribute('value')
+            const cartItemsIds = cartItemsIdsInput.getAttribute('value')
+
+            if (e.target["checked"]) {
+                if (cartItemsIds.indexOf(checkedItemId) === -1) {
+                    if (cartItemsIds === '')
+                        cartItemsIdsInput.setAttribute('value', checkedItemId)
+                    else
+                        cartItemsIdsInput.setAttribute('value', cartItemsIds+' '+checkedItemId)
+                }
+            }
+            else {
+                if (cartItemsIds.indexOf(checkedItemId) !== -1) {
+                    cartItemsIdsInput.setAttribute('value', cartItemsIds.replace(checkedItemId, ''))
+                }
+            }
+        })
     </script>
 {% endblock %}

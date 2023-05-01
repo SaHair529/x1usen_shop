@@ -34,6 +34,12 @@ class Order
     #[ORM\ManyToOne(inversedBy: 'orders')]
     private ?User $customer = null;
 
+    #[ORM\Column(length: 30)]
+    private ?string $payment_type = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $status = null;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -130,6 +136,30 @@ class Order
     public function setCustomer(?User $customer): self
     {
         $this->customer = $customer;
+
+        return $this;
+    }
+
+    public function getPaymentType(): ?string
+    {
+        return $this->payment_type;
+    }
+
+    public function setPaymentType(string $payment_type): self
+    {
+        $this->payment_type = $payment_type;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

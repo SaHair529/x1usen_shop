@@ -9,8 +9,23 @@
         {% endfor %}
     </div>
 
+    <div class="order-form-container">
+        <h3>Оформление заказа</h3>
+        <p>Выделите товары сверху, заполните форму и нажмите на "Оформить заказ"</p>
+        {{ form_start(order_form) }}
+        {{ form_row(order_form.phone_number) }}
+        {{ form_row(order_form.city) }}
+        {{ form_row(order_form.address) }}
+        <button type="submit" class="btn btn-dark">Оформить заказ</button>
+        {{ form_end(order_form) }}
+    </div>
+
     <div id="cart-action-buttons">
         <a href="{{ path('order_create') }}" class="btn btn-primary create_order-btn">Оформить заказ</a>
         <a href="{{ path('order_my_orders') }}" class="btn btn-success create_order-btn">Мои заказы</a>
     </div>
+
+    <script>
+
+    </script>
 {% endblock %}

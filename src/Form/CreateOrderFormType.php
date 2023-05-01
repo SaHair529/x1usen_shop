@@ -16,15 +16,24 @@ class CreateOrderFormType extends AbstractType
     {
         $builder
             ->add('phone_number', TextType::class, [
-                'attr' => ['placeholder' => 'Номер телефона'],
+                'attr' => [
+                    'placeholder' => 'Номер телефона',
+                    'class' => 'form-control'
+                ],
                 'label' => false
             ])
             ->add('city', TextType::class, [
-                'attr' => ['placeholder' => 'Город'],
+                'attr' => [
+                    'placeholder' => 'Город',
+                    'class' => 'form-control'
+                ],
                 'label' => false
             ])
             ->add('address', TextType::class, [
-                'attr' => ['placeholder' => 'Адрес'],
+                'attr' => [
+                    'placeholder' => 'Адрес',
+                    'class' => 'form-control'
+                ],
                 'label' => false
             ])
         ;

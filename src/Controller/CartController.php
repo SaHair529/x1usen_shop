@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\ControllerHelper\CartController\ResponseCreator;
 use App\Entity\Cart;
 use App\Entity\CartItem;
+use App\Entity\Order;
 use App\Entity\User;
+use App\Form\CreateOrderFormType;
 use App\Repository\CartItemRepository;
 use App\Repository\ProductRepository;
 use Exception;
@@ -27,14 +29,19 @@ class CartController extends AbstractController
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $req): Response
     {
         /** @var User $user */
         $user = $this->getUser();
         $cartItems = $user->getCart()->getItems();
 
+        $order = new Order();
+        $orderForm = $this->createForm(CreateOrderFormType::class, $order);
+        $orderForm->handleRequest($req);
+
         return $this->render('cart/index.html.twig', [
-            'cart_items' => $cartItems->getIterator()
+            'cart_items' => $cartItems->getIterator(),
+            'order_form' => $orderForm
         ]);
     }
 

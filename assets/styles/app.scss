@@ -66,6 +66,13 @@ header {
   }
 }
 
+.order-form-container {
+  input {
+    margin-bottom: .3rem;
+    max-width: 600px;
+  }
+}
+
 .product-card {
   position: relative;
   width: 100%;
@@ -387,6 +394,7 @@ header {
 #cart-items {
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 3rem;
   & .card {
     margin-right: 1rem;
   }

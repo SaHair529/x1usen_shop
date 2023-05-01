@@ -52,7 +52,7 @@ export default class ResponseHandler {
         }
     }
 
-    static handleCartItemCardRemoveCartItemQuantityResponse(responsePromise, cartItemCard) {
+    static handleCartItemCardRemoveCartItemResponse(responsePromise, cartItemCard) {
         switch (responsePromise.status) {
             case 200:
                 responsePromise.json().then(responseData => {

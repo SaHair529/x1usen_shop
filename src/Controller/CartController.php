@@ -9,7 +9,10 @@ use App\Entity\Order;
 use App\Entity\User;
 use App\Form\CreateOrderFormType;
 use App\Repository\CartItemRepository;
+use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
+use DateTimeImmutable;
+use DateTimeZone;
 use Exception;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
@@ -29,18 +32,48 @@ class CartController extends AbstractController
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $req): Response
+    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep): Response
     {
         /** @var User $user */
         $user = $this->getUser();
-        $cartItems = $user->getCart()->getItems();
 
         $order = new Order();
         $orderForm = $this->createForm(CreateOrderFormType::class, $order);
         $orderForm->handleRequest($req);
 
+        if ($orderForm->isSubmitted()) {
+            /** @var User $user */
+            $user = $this->getUser();
+
+            $order->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')));
+            $order->setPhoneNumber($orderForm->get('phone_number')->getData());
+            $order->setCity($orderForm->get('city')->getData());
+            $order->setAddress($orderForm->get('address')->getData());
+            $order->setCustomer($user);
+
+            # Добавление товаров из корзины
+            $cartItemsIds = explode(' ', $req->request->get('cart_items_ids'));
+            $cartItems = $cartItemRep->findBy(['id' => $cartItemsIds]);
+            for ($i = 0; $i < count($cartItems); $i++) {
+
+                $cartItems[$i]->setInOrder(true);
+                $cartItemRep->save($cartItems[$i], $i+1 === count($cartItems));
+
+                $order->addItem($cartItems[$i]);
+            }
+
+            $orderRep->save($order, true);
+        }
+
+        $cartItems = [];
+        $allCartItems = $user->getCart()->getItems()->getIterator();
+        foreach ($allCartItems as $item) {
+            if (!$item->isInOrder())
+                $cartItems[] = $item;
+        }
+
         return $this->render('cart/index.html.twig', [
-            'cart_items' => $cartItems->getIterator(),
+            'cart_items' => $cartItems,
             'order_form' => $orderForm
         ]);
     }

@@ -9,17 +9,19 @@
         {% endfor %}
     </div>
 
-    <div class="order-form-container">
-        <h3>Оформление заказа</h3>
-        <p>Выделите товары сверху, заполните форму и нажмите на "Оформить заказ"</p>
-        {{ form_start(order_form) }}
-        {{ form_row(order_form.phone_number) }}
-        {{ form_row(order_form.city) }}
-        {{ form_row(order_form.address) }}
-        <input type="hidden" id="cart_items_ids" name="cart_items_ids" value="">
-        <button type="submit" class="btn btn-dark">Оформить заказ</button>
-        {{ form_end(order_form) }}
-    </div>
+    {% if cart_items|length > 0 %}
+        <div class="order-form-container">
+            <h3>Оформление заказа</h3>
+            <p>Выделите товары сверху, заполните форму и нажмите на "Оформить заказ"</p>
+            {{ form_start(order_form) }}
+            {{ form_row(order_form.phone_number) }}
+            {{ form_row(order_form.city) }}
+            {{ form_row(order_form.address) }}
+            <input type="hidden" id="cart_items_ids" name="cart_items_ids" value="">
+            <button type="submit" class="btn btn-dark">Оформить заказ</button>
+            {{ form_end(order_form) }}
+        </div>
+    {% endif %}
 
 {#    <div id="cart-action-buttons">#}
 {#        <a href="{{ path('order_create') }}" class="btn btn-primary create_order-btn">Оформить заказ</a>#}

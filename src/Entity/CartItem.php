@@ -27,6 +27,9 @@ class CartItem
     #[ORM\ManyToOne(inversedBy: 'items')]
     private ?Order $parent_order = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $in_order = null;
+
     public function __construct(Product $product = null, int $quantity = null)
     {
         if (!is_null($product))
@@ -98,6 +101,18 @@ class CartItem
     public function setParentOrder(?Order $parent_order): self
     {
         $this->parent_order = $parent_order;
+
+        return $this;
+    }
+
+    public function isInOrder(): ?bool
+    {
+        return $this->in_order;
+    }
+
+    public function setInOrder(?bool $in_order): self
+    {
+        $this->in_order = $in_order;
 
         return $this;
     }

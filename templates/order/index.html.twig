@@ -10,6 +10,9 @@
                     <h5 class="card-title small"><b>Номер телефона: </b>{{ order.phoneNumber }}</h5>
                     <p class="card-text small"><b>Город: </b>{{ order.city }}</p>
                     <p class="card-text small"><b>Адрес: </b>{{ order.address }}</p>
+                    {% for item in order.items %}
+                        <p><b>Количество: </b>{{ item.quantity }}</p>
+                    {% endfor %}
                 </div>
             </div>
         {% endfor %}

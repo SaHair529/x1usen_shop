@@ -36,12 +36,13 @@ class CartController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+        $cartItemsIds = explode(' ', $req->request->get('cart_items_ids'));
 
         $order = new Order();
         $orderForm = $this->createForm(CreateOrderFormType::class, $order);
         $orderForm->handleRequest($req);
 
-        if ($orderForm->isSubmitted()) {
+        if ($orderForm->isSubmitted() && count($cartItemsIds) > 0) {
             /** @var User $user */
             $user = $this->getUser();
 
@@ -52,7 +53,6 @@ class CartController extends AbstractController
             $order->setCustomer($user);
 
             # Добавление товаров из корзины
-            $cartItemsIds = explode(' ', $req->request->get('cart_items_ids'));
             $cartItems = $cartItemRep->findBy(['id' => $cartItemsIds]);
             for ($i = 0; $i < count($cartItems); $i++) {
 

@@ -184,9 +184,11 @@ header {
   }
   &__action-buttons {
     display: flex;
+    color: #c37b7b;
     align-items: center;
     i {
-      margin-right: 9px;
+      margin-right: 3px;
+      font-size: 15px;
     }
   }
   &__delete-btn {

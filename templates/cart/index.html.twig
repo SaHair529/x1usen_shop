@@ -17,6 +17,19 @@
             {{ form_row(order_form.phone_number) }}
             {{ form_row(order_form.city) }}
             {{ form_row(order_form.address) }}
+
+            {% block choice_widget %}
+                <div style="margin-bottom: 1rem; margin-top: 1rem;">
+                    <strong>Способ оплаты:</strong>
+                    {% for radio_child in order_form.payment_type %}
+                        <div>
+                            {{ form_widget(radio_child, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(radio_child, null, {'label_attr' : {'class': 'text-muted'}}) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endblock %}
+
             <input type="hidden" id="cart_items_ids" name="cart_items_ids" value="">
             <button type="submit" class="btn btn-dark">Оформить заказ</button>
             {{ form_end(order_form) }}
@@ -37,6 +50,7 @@
     <script>
         const cartItemsIdsInput = document.getElementById('cart_items_ids')
 
+        // Добавление значений чекбоксов в форму
         document.getElementById('cart-items').addEventListener('change', function (e) {
             const checkedItemId = e.target.getAttribute('value')
             const cartItemsIds = cartItemsIdsInput.getAttribute('value')
@@ -55,5 +69,8 @@
                 }
             }
         })
+
+        // Стилизация радио инпутов
+
     </script>
 {% endblock %}

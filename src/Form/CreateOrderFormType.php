@@ -3,11 +3,15 @@
 namespace App\Form;
 
 use App\Entity\Order;
+use App\Form\Type\MyChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CreateOrderFormType extends AbstractType
@@ -35,6 +39,14 @@ class CreateOrderFormType extends AbstractType
                     'class' => 'form-control'
                 ],
                 'label' => false
+            ])
+            ->add('payment_type', ChoiceType::class, [
+                'expanded' => true,
+                'multiple' => false,
+                'choices' => [
+                    'Онлайн' => 'online',
+                    'Наличными' => 'offline'
+                ]
             ])
         ;
     }

@@ -72,6 +72,13 @@ header {
     margin-bottom: .3rem;
     max-width: 600px;
   }
+  input[type='radio'] {
+    margin-right: 3px;
+  }
+  .form-check-input-red:checked {
+    background-color: red;
+    border-color: red;
+  }
 }
 
 .product-card {

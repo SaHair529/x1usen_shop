@@ -23,7 +23,7 @@
                     <strong>Способ оплаты:</strong>
                     {% for radio_child in order_form.payment_type %}
                         <div>
-                            {{ form_widget(radio_child, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_widget(radio_child, {'attr': {'class': 'form-check-input form-check-input-red'}}) }}
                             {{ form_label(radio_child, null, {'label_attr' : {'class': 'text-muted'}}) }}
                         </div>
                     {% endfor %}

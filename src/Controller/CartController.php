@@ -15,14 +15,12 @@ use DateTimeImmutable;
 use DateTimeZone;
 use Exception;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 #[Route('/cart')]
 class CartController extends AbstractController
@@ -38,7 +36,7 @@ class CartController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $cartItemsIds = explode(' ', $req->request->get('cart_items_ids'));
+        $cartItemsIds = array_filter(explode(' ', $req->request->get('cart_items_ids')));
 
         $order = new Order();
         $orderForm = $this->createForm(CreateOrderFormType::class, $order);
@@ -109,6 +107,9 @@ class CartController extends AbstractController
     }
 
     /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+    /**
+     * @throws Exception
+     */
     #[Route('/add_item', name: 'cart_add_item', methods: 'GET')]
     public function addItem(Request $req, ProductRepository $productRep, CartItemRepository $cartItemRep): Response
     {
@@ -171,7 +172,7 @@ class CartController extends AbstractController
      * @throws Exception
      */
     #[Route('/get_product_cart_item', name: 'cart_get_product_cart_item')]
-    public function getProductRelatedCartItem(Request $req, ): JsonResponse
+    public function getProductRelatedCartItem(Request $req): JsonResponse
     {
         if (is_null($this->getUser()))
             return ResponseCreator::notAuthorized();

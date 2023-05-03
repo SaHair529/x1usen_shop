@@ -1,8 +1,13 @@
-<div class="card order-card" style="width: 11rem">
+{% set statuses = {
+    'wait_payment': 'Ожидание оплаты'
+} %}
+
+<div class="card order-card">
     <div class="card-body">
-        <h5 class="card-title small"><b>Номер телефона: </b>{{ order.phoneNumber }}</h5>
+        <p class="card-title small"><b>Номер телефона: </b>{{ order.phoneNumber }}</p>
         <p class="card-text small"><b>Город: </b>{{ order.city }}</p>
         <p class="card-text small"><b>Адрес: </b>{{ order.address }}</p>
+        <p class="card-text small"><b>Статус: </b><span class="{{ order.status }}">{{ statuses[order.status] }}</span></p>
         {% for item in order.items %}
             <p><b>Количество: </b>{{ item.quantity }}</p>
         {% endfor %}

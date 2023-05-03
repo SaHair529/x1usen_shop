@@ -25,7 +25,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/cart')]
 class CartController extends AbstractController
 {
-    private const STATUSES = ['wait_payment', 'in_queue', 'submitted', 'success'];
+    private const STATUSES = ['wait_payment', 'in_processing', 'submitted', 'success'];
 
     /**
      * @throws Exception

@@ -261,6 +261,9 @@ header {
   .order-card {
     margin-bottom: 1rem;
     margin-left: 1rem;
+    .wait_payment {
+      color: orange;
+    }
   }
 }
 

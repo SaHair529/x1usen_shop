@@ -65,14 +65,19 @@ class CartController extends AbstractController
             }
 
             $orderRep->save($order, true);
+            $this->addFlash('success', 'Заказ успешно оформлен');
+        }
+        elseif ($orderForm->isSubmitted() && count($cartItemsIds) <= 0) {
+            $this->addFlash('danger', 'Выберите товар в корзине (поставьте галочку слева от товара)');
         }
 
         $cartItems = [];
         $allCartItems = $user->getCart()->getItems()->getIterator();
         foreach ($allCartItems as $item) {
             if (!$item->isInOrder())
-                $cartItems[] = $item;
+            $cartItems[] = $item;
         }
+
 
         return $this->render('cart/index.html.twig', [
             'cart_items' => $cartItems,

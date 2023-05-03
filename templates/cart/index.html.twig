@@ -3,6 +3,7 @@
 {% block title %}Корзина{% endblock %}
 
 {% block body %}
+    {{ include('@EasyAdmin/flash_messages.html.twig') }}
     <div id="cart-items">
         {% for cart_item in cart_items %}
             {% include 'pieces/cart_item_card.html.twig' with { 'cart_item': cart_item } %}

@@ -47,6 +47,16 @@ header {
         align-items: center;
         .btn {
           border-radius: 0;
+          border: none;
+          &.cart-link {
+            border-right: black 1px solid;
+          }
+          &.cart-link, &.order-link {
+            border-top: black solid 1px;
+          }
+          &.exit-link {
+            border-top: red 1px solid;
+          }
         }
       }
     }

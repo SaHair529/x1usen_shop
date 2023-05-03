@@ -27,6 +27,8 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 #[Route('/cart')]
 class CartController extends AbstractController
 {
+    private const STATUSES = ['wait_payment', 'in_queue', 'submitted', 'success'];
+
     /**
      * @throws Exception
      */
@@ -50,6 +52,8 @@ class CartController extends AbstractController
             $order->setPhoneNumber($orderForm->get('phone_number')->getData());
             $order->setCity($orderForm->get('city')->getData());
             $order->setAddress($orderForm->get('address')->getData());
+            $order->setPaymentType($orderForm->get('payment_type')->getData());
+            $order->setStatus(self::STATUSES[0]);
             $order->setCustomer($user);
 
             # Добавление товаров из корзины

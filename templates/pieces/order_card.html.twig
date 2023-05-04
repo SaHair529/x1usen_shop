@@ -16,9 +16,11 @@
             <p class="card-text small">
                 <a href="{{ path('detail_page', { 'id': item.product.id }) }}" class="product-link">{{ item.product.name|slice(0, 30) }}...</a>
             </p>
-            <h5>{{ item.quantity }} шт</h5>
+            <p class="card-text small">
+                <strong>{{ item.quantity }} шт</strong><strong>{{ item.quantity * item.product.price }}₽</strong>
+            </p>
             <hr>
         {% endfor %}
-        <p><b style="color: #c92e2e">Итоговая цена: </b>{{ total_price }}</p>
+        <p class="card-text"><b style="color: #c92e2e">Итоговая цена: </b><strong>{{ total_price }}₽</strong></p>
     </div>
 </div>

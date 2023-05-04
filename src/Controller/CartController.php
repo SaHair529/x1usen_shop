@@ -56,15 +56,16 @@ class CartController extends AbstractController
 
             # Добавление товаров из корзины
             $cartItems = $cartItemRep->findBy(['id' => $cartItemsIds]);
-            for ($i = 0; $i < count($cartItems); $i++) {
+            foreach ($cartItems as $cartItem) {
+                $order->addItem($cartItem);
+            }
+            $orderRep->save($order, true);
 
+            # Отмечаем товар корзины, как уже заказанный (т.е. скрытый из корзины)
+            for ($i = 0; $i < count($cartItems); $i++) {
                 $cartItems[$i]->setInOrder(true);
                 $cartItemRep->save($cartItems[$i], $i+1 === count($cartItems));
-
-                $order->addItem($cartItems[$i]);
             }
-
-            $orderRep->save($order, true);
             $this->addFlash('success', 'Заказ успешно оформлен');
         }
         elseif ($orderForm->isSubmitted() && count($cartItemsIds) <= 0) {

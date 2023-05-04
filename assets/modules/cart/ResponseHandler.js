@@ -128,6 +128,8 @@ export default class ResponseHandler {
             case 422:
                 productInfoModal.querySelector('.price').innerHTML =
                     'Суммарная стоимость: <span class="sum-price">0</span>₽'
+                if (document.querySelector('.'+AttributesNaming.CART_ITEM_COUNTER.CLASS) != null)
+                    Renderer.replaceCounterWithToCartButton()
                 productInfoModal.classList.remove('hidden')
                 break
             case 403:

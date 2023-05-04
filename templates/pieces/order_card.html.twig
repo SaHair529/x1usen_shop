@@ -3,7 +3,7 @@
 } %}
 {% set total_price = 0 %}
 
-<div class="card order-card" style="max-width: 500px">
+<div class="card order-card" style="width: 300px">
     <div class="card-body">
         <p class="card-title small"><b>Номер телефона: </b>{{ order.phoneNumber }}</p>
         <p class="card-text small"><b>Город: </b>{{ order.city }}</p>
@@ -14,11 +14,11 @@
         {% for item in order.items %}
             {% set total_price = total_price + item.quantity * item.product.price %}
             <p class="card-text small">
-                <a href="{{ path('detail_page', { 'id': item.product.id }) }}" class="product-link">{{ item.product.name|replace({"Б/У": "", "б/у": ""}) }}</a>
+                <a href="{{ path('detail_page', { 'id': item.product.id }) }}" class="product-link">{{ item.product.name|slice(0, 30) }}...</a>
             </p>
             <h5>{{ item.quantity }} шт</h5>
             <hr>
         {% endfor %}
-        <p><b>Итоговая цена: </b>{{ total_price }}</p>
+        <p><b style="color: #c92e2e">Итоговая цена: </b>{{ total_price }}</p>
     </div>
 </div>

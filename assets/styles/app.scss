@@ -262,6 +262,10 @@ header {
     margin-bottom: 1rem;
     margin-left: 1rem;
     box-shadow: 0 0 5px #d6d6d6;
+    .card-text, .card-title {
+      display: flex;
+      justify-content: space-between;
+    }
     .wait_payment {
       color: orange;
     }

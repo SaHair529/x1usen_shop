@@ -1,5 +1,12 @@
 @import '~bootstrap/scss/bootstrap';
 
+a {
+  color: grey !important;
+  &:hover {
+    color: red !important;
+  }
+}
+
 .hidden {
   display: none !important;
 }
@@ -378,11 +385,7 @@ header {
     width: 40%;
     a {
       display: block;
-      color: grey;
       padding: 3px 3px;
-      &:hover {
-        color: red;
-      }
     }
     .title {
       margin: 0;

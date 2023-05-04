@@ -11,7 +11,7 @@
         <hr>
         <p><b>Товары:</b></p>
         {% for item in order.items %}
-            {{ item.product.name|replace({"Б/У": "", "б/у": ""}) }}
+            <p class="card-text small"><a href="">{{ item.product.name|replace({"Б/У": "", "б/у": ""}) }}</a></p>
         {% endfor %}
     </div>
 </div>

@@ -1,12 +1,5 @@
 @import '~bootstrap/scss/bootstrap';
 
-a {
-  color: grey !important;
-  &:hover {
-    color: red !important;
-  }
-}
-
 .hidden {
   display: none !important;
 }
@@ -271,6 +264,12 @@ header {
     .wait_payment {
       color: orange;
     }
+    a {
+      color: grey;
+      &:hover {
+        color: red;
+      }
+    }
   }
 }
 
@@ -385,6 +384,10 @@ header {
     width: 40%;
     a {
       display: block;
+      color: grey;
+      &:hover {
+        color: red;
+      }
       padding: 3px 3px;
     }
     .title {

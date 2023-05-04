@@ -1,6 +1,7 @@
 {% set statuses = {
     'wait_payment': 'Ожидание оплаты'
 } %}
+{% set total_price = 0 %}
 
 <div class="card order-card" style="max-width: 500px">
     <div class="card-body">
@@ -11,11 +12,13 @@
         <hr>
         <p><b>Товары:</b></p>
         {% for item in order.items %}
+            {% set total_price = total_price + item.quantity * item.product.price %}
             <p class="card-text small">
                 <a href="{{ path('detail_page', { 'id': item.product.id }) }}" class="product-link">{{ item.product.name|replace({"Б/У": "", "б/у": ""}) }}</a>
             </p>
             <h5>{{ item.quantity }} шт</h5>
             <hr>
         {% endfor %}
+        <p><b>Итоговая цена: </b>{{ total_price }}</p>
     </div>
 </div>

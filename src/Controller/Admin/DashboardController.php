@@ -40,13 +40,13 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('X1usen Shop');
+            ->setTitle('IGG Motors');
     }
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToRoute('Website', 'fas fa-home', 'homepage');
-        yield MenuItem::linkToCrud('Products', 'fas fa-gears', Product::class);
+        yield MenuItem::linkToRoute('Главная страница', 'fas fa-home', 'homepage');
+        yield MenuItem::linkToCrud('Товары', 'fas fa-gears', Product::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }

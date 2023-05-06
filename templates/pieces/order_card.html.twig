@@ -1,0 +1,26 @@
+{% set statuses = {
+    'wait_payment': 'Ожидание оплаты'
+} %}
+{% set total_price = 0 %}
+
+<div class="card order-card" style="width: 300px">
+    <div class="card-body">
+        <p class="card-title small"><b>Номер телефона: </b>{{ order.phoneNumber }}</p>
+        <p class="card-text small"><b>Город: </b>{{ order.city }}</p>
+        <p class="card-text small"><b>Адрес: </b>{{ order.address }}</p>
+        <p class="card-text small"><b>Статус: </b><span class="{{ order.status }}">{{ statuses[order.status] }}</span></p>
+        <hr>
+        <p><b>Товары:</b></p>
+        {% for item in order.items %}
+            {% set total_price = total_price + item.quantity * item.product.price %}
+            <p class="card-text small">
+                <a href="{{ path('detail_page', { 'id': item.product.id }) }}" class="product-link">{{ item.product.name|slice(0, 30) }}...</a>
+            </p>
+            <p class="card-text small">
+                <strong>{{ item.quantity }} шт</strong><strong>{{ item.quantity * item.product.price }}₽</strong>
+            </p>
+            <hr>
+        {% endfor %}
+        <p class="card-text"><b style="color: #c92e2e">Итоговая цена: </b><strong>{{ total_price }}₽</strong></p>
+    </div>
+</div>

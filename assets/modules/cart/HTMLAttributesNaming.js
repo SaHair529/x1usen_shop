@@ -1,13 +1,19 @@
 export default class HTMLAttributesNaming {
     static MODALS = {
         PRODUCT_MODAL: {
-            ID: 'product-info-modal'
+            ID: 'product-info-modal',
+            detailInfoLink: {
+                class: 'detail-link'
+            }
         },
         NOT_AUTHORIZED_MODAL: {
             ID: 'not-authorized-alert-modal'
         },
         imageModal: {
             id: 'detail-image-modal'
+        },
+        customModal: {
+            class: 'custom-modal js-delete-modal'
         }
     }
 
@@ -41,6 +47,20 @@ export default class HTMLAttributesNaming {
             class: 'action-zoom-img'
         }
     }
+
+    static cartItemCard = {
+        class: 'cart-item-card',
+        decreaseBtn: {
+            class: 'js-decrease-cart-item'
+        },
+        increaseBtn: {
+            class: 'js-increase-cart-item'
+        },
+        delButton: {
+            class: 'js-delete-cart-item'
+        }
+    }
+
     static productSumPriceCounter = {
         class: 'sum-price'
     }

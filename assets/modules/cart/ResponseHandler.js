@@ -52,11 +52,61 @@ export default class ResponseHandler {
         }
     }
 
+    static handleCartItemCardRemoveCartItemResponse(responsePromise, cartItemCard) {
+        switch (responsePromise.status) {
+            case 200:
+                responsePromise.json().then(responseData => {
+                    if (responseData['message'] === 'ok') {
+                        cartItemCard.remove()
+                    }
+                })
+                break
+        }
+    }
+
+    static handleCartItemCardDecreaseCartItemQuantityResponse(responsePromise, cartItemCard) {
+        switch (responsePromise.status) {
+            case 200:
+                responsePromise.json().then(responseData => {
+                    if (responseData['message'] === 'ok') {
+                        if (responseData['quantity'] > 0) {
+                            Renderer.updateCartItemCardData(cartItemCard, responseData)
+                            Renderer.enableCartItemCardIncreaseButton(cartItemCard)
+                        }
+                        else {
+                            cartItemCard.remove()
+                        }
+                    }
+                })
+                break
+        }
+    }
+
+    static handleCartItemCardIncreaseCartItemQuantityResponse(responsePromise, cartItemCard) {
+        switch (responsePromise.status) {
+            case 200:
+                responsePromise.json().then(responseData => {
+                    if (responseData['message'] === 'ok') {
+                        Renderer.updateCartItemCardData(cartItemCard, responseData)
+                    }
+                    else if (responseData['message'] === 'out of stock') {
+                        Renderer.shakeElement(cartItemCard.querySelector('.cart-item-card__amount'))
+                        Renderer.disableCartItemCardIncreaseButton(cartItemCard)
+                    }
+                    if (responseData['has_more_product'] === false) {
+                        Renderer.disableCartItemCardIncreaseButton(cartItemCard)
+                    }
+                })
+                break
+        }
+    }
+
     static handleShowProductModalResponse(responsePromise, productInfo) {
         const productInfoModal = document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
         productInfoModal.dataset.productId = productInfo['id']
         productInfoModal.querySelector('.name').textContent = productInfo['name']
         productInfoModal.querySelector('.price').textContent = '0'
+        productInfoModal.querySelector('.detail-link').setAttribute('href', productInfo.route)
 
         switch (responsePromise.status) {
             case 200:
@@ -78,11 +128,19 @@ export default class ResponseHandler {
             case 422:
                 productInfoModal.querySelector('.price').innerHTML =
                     'Суммарная стоимость: <span class="sum-price">0</span>₽'
+                if (document.querySelector('.'+AttributesNaming.CART_ITEM_COUNTER.CLASS) != null)
+                    Renderer.replaceCounterWithToCartButton()
                 productInfoModal.classList.remove('hidden')
                 break
             case 403:
                 const notAuthorizedModal = document.getElementById(AttributesNaming.MODALS.NOT_AUTHORIZED_MODAL.ID)
                 notAuthorizedModal.classList.remove('hidden')
         }
+    }
+
+    static handleShowProductFullInfoModal(responsePromise) {
+        responsePromise.text().then(productInfoTemplate => {
+            Renderer.showProductFullInfoModal(productInfoTemplate)
+        })
     }
 }

@@ -19,6 +19,13 @@ class ResponseCreator
         ]);
     }
 
+    public static function ok(): JsonResponse
+    {
+        return new JsonResponse([
+            'message' => 'ok'
+        ]);
+    }
+
     public static function addItem_productNotFound(): JsonResponse
     {
         return new JsonResponse([
@@ -63,5 +70,12 @@ class ResponseCreator
         return new JsonResponse([
             'message' => 'not authorized'
         ], Response::HTTP_FORBIDDEN);
+    }
+
+    public static function outOfStock(): JsonResponse
+    {
+        return new JsonResponse([
+            'message' => 'out of stock'
+        ]);
     }
 }

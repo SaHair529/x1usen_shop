@@ -7,6 +7,7 @@ export default class MainController {
         this.detailsTreePressHandle()
         this.userMenuHoverHandle()
         this.closeModalButtonPressHandle()
+        this.handleDynamicButtonsClicks()
     }
 
     // button handlers
@@ -32,13 +33,19 @@ export default class MainController {
 
     static closeModalButtonPressHandle() {
         const closeModalButtons = document.getElementsByClassName(HTMLElements.GLOBAL_ACTION_BUTTONS.closeModal.class)
-        console.log(closeModalButtons)
         for (let i = 0; i < closeModalButtons.length; i++) {
             closeModalButtons[i].addEventListener('click', function (e) {
                 if (e.target != null)
                     e.target.classList.add('hidden')
             })
         }
+    }
+
+    static handleDynamicButtonsClicks() {
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains(HTMLElements.GLOBAL_ACTION_BUTTONS.deleteModal.class)) // Удалить модалку
+                e.target.remove()
+        })
     }
     // _________________________
 

@@ -2,6 +2,9 @@ export default class HTMLElements {
     static GLOBAL_ACTION_BUTTONS = {
         closeModal: {
             class: 'action-close-modal'
+        },
+        deleteModal: {
+            class: 'js-delete-modal'
         }
     }
 

@@ -55,4 +55,11 @@ export default class DOMElementsCreator {
 
         return btn
     }
+
+    static createModal() {
+        const modal = document.createElement('div')
+        modal.className = AttributesNaming.MODALS.customModal.class
+
+        return modal
+    }
 }

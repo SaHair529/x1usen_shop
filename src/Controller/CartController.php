@@ -5,36 +5,84 @@ namespace App\Controller;
 use App\ControllerHelper\CartController\ResponseCreator;
 use App\Entity\Cart;
 use App\Entity\CartItem;
+use App\Entity\Order;
 use App\Entity\User;
+use App\Form\CreateOrderFormType;
 use App\Repository\CartItemRepository;
+use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
+use DateTimeImmutable;
+use DateTimeZone;
 use Exception;
 use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 #[Route('/cart')]
 class CartController extends AbstractController
 {
+    private const STATUSES = ['wait_payment', 'in_processing', 'submitted', 'success'];
+
     /**
      * @throws Exception
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep): Response
     {
         /** @var User $user */
         $user = $this->getUser();
-        $cartItems = $user->getCart()->getItems();
+        $cartItemsIds = array_filter(explode(' ', $req->request->get('cart_items_ids')));
+
+        $order = new Order();
+        $orderForm = $this->createForm(CreateOrderFormType::class, $order);
+        $orderForm->handleRequest($req);
+
+        if ($orderForm->isSubmitted() && count($cartItemsIds) > 0) {
+            /** @var User $user */
+            $user = $this->getUser();
+
+            $order->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')));
+            $order->setPhoneNumber($orderForm->get('phone_number')->getData());
+            $order->setCity($orderForm->get('city')->getData());
+            $order->setAddress($orderForm->get('address')->getData());
+            $order->setPaymentType($orderForm->get('payment_type')->getData());
+            $order->setStatus(self::STATUSES[0]);
+            $order->setCustomer($user);
+
+            # Добавление товаров из корзины
+            $cartItems = $cartItemRep->findBy(['id' => $cartItemsIds]);
+            foreach ($cartItems as $cartItem) {
+                $order->addItem($cartItem);
+            }
+            $orderRep->save($order, true);
+
+            # Отмечаем товар корзины, как уже заказанный (т.е. скрытый из корзины)
+            for ($i = 0; $i < count($cartItems); $i++) {
+                $cartItems[$i]->setInOrder(true);
+                $cartItemRep->save($cartItems[$i], $i+1 === count($cartItems));
+            }
+            $this->addFlash('success', 'Заказ успешно оформлен');
+        }
+        elseif ($orderForm->isSubmitted() && count($cartItemsIds) <= 0) {
+            $this->addFlash('danger', 'Выберите товар в корзине (поставьте галочку слева от товара)');
+        }
+
+        $cartItems = [];
+        $allCartItems = $user->getCart()->getItems()->getIterator();
+        foreach ($allCartItems as $item) {
+            if (!$item->isInOrder())
+            $cartItems[] = $item;
+        }
+
 
         return $this->render('cart/index.html.twig', [
-            'cart_items' => $cartItems->getIterator()
+            'cart_items' => $cartItems,
+            'order_form' => $orderForm
         ]);
     }
 
@@ -52,7 +100,7 @@ class CartController extends AbstractController
         $cartItems = $user->getCart()->getItems();
         /** @var CartItem $item */
         foreach ($cartItems->getIterator() as $item) {
-            if($item->getProduct()->getId() === (int) $req->get('product_id')) {
+            if(!$item->isInOrder() && $item->getProduct()->getId() === (int) $req->get('product_id')) {
                 $item->decreaseQuantity();
                 $item->getProduct()->increaseTotalBalance();
                 $item->getQuantity() === 0 ? $cartItemRep->remove($item, true) : $cartItemRep->save($item, true);
@@ -65,6 +113,9 @@ class CartController extends AbstractController
     }
 
     /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+    /**
+     * @throws Exception
+     */
     #[Route('/add_item', name: 'cart_add_item', methods: 'GET')]
     public function addItem(Request $req, ProductRepository $productRep, CartItemRepository $cartItemRep): Response
     {
@@ -77,14 +128,14 @@ class CartController extends AbstractController
             return ResponseCreator::addItem_productNotFound();
 
         if ($product->getTotalBalance() <= 0)
-            return new Response('out of stock');
+            return ResponseCreator::outOfStock();
 
         /** @var Cart $cart */
         $cart = $this->getUser()->getCart();
         $cartItem = null;
         /** @var CartItem $item */
         foreach ($cart->getItems()->getIterator() as $item) {
-            if ($item->getProduct()->getId() === $product->getId()) {
+            if (!$item->isInOrder() && $item->getProduct()->getId() === $product->getId()) {
                 $cartItem = $item;
                 break;
             }
@@ -117,16 +168,17 @@ class CartController extends AbstractController
             $cartItemRep->remove($item, true);
         }
 
-        return $this->redirectToRoute('cart_items');
+        return ResponseCreator::ok();
     }
 
     /**
      * Получение CartItem продукта
      * @param Request $req
      * @return JsonResponse
+     * @throws Exception
      */
     #[Route('/get_product_cart_item', name: 'cart_get_product_cart_item')]
-    public function getProductRelatedCartItem(Request $req, ): JsonResponse
+    public function getProductRelatedCartItem(Request $req): JsonResponse
     {
         if (is_null($this->getUser()))
             return ResponseCreator::notAuthorized();
@@ -137,7 +189,7 @@ class CartController extends AbstractController
         $serializerContext = SerializationContext::create();
         $serializerContext->setSerializeNull(true);
         foreach ($cartItems->getIterator() as $item) {
-            if($item->getProduct()->getId() === (int) $req->get('product_id')) {
+            if(!$item->isInOrder() && $item->getProduct()->getId() === (int) $req->get('product_id')) {
                 return ResponseCreator::getProductRelatedCartItem_ok($item);
             }
         }

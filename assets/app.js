@@ -16,10 +16,12 @@ import './bootstrap';
 bsCustomFileInput.init();
 
 import CartController from './modules/cart/CartController'
-import MainController from "./modules/main/MainController";
+import MainController from './modules/main/MainController'
+import OrderController from './modules/order/OrderController'
 
 document.addEventListener('DOMContentLoaded', function()
 {
     CartController.init()
     MainController.init()
+    OrderController.init()
 })

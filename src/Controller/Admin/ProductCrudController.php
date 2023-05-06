@@ -27,7 +27,7 @@ class ProductCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $importCsvAction = Action::new('importCsv', 'Import', 'fas fa-file-excel')
+        $importCsvAction = Action::new('importCsv', 'Импорт', 'fas fa-file-excel')
             ->displayAsLink()
             ->setCssClass('btn btn-success')
             ->linkToCrudAction('importCsv')
@@ -35,7 +35,22 @@ class ProductCrudController extends AbstractCrudController
 
 
         return $actions
-            ->add(Crud::PAGE_INDEX, $importCsvAction);
+            ->add(Crud::PAGE_INDEX, $importCsvAction)
+            ->update(Crud::PAGE_INDEX, Action::NEW, function ($action) {
+                return $action->setLabel('Добавить');
+            })
+            ->update(Crud::PAGE_INDEX, Action::EDIT, function ($action) {
+                return $action->setLabel('Изменить');
+            })
+            ->update(Crud::PAGE_INDEX, Action::DELETE, function ($action) {
+                return $action->setLabel('Удалить');
+            })
+            ->update(Crud::PAGE_EDIT, Action::SAVE_AND_RETURN, function ($action) {
+                return $action->setLabel('Сохранить');
+            })
+            ->update(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE, function ($action) {
+                return $action->setLabel('Сохранить и продолжить изменения');
+            });
     }
 
     public function importCsv(AdminContext $context, CsvProductImporter $csvImporter)

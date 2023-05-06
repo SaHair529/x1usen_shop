@@ -3,22 +3,75 @@
 {% block title %}Корзина{% endblock %}
 
 {% block body %}
+    {{ include('@EasyAdmin/flash_messages.html.twig') }}
     <div id="cart-items">
         {% for cart_item in cart_items %}
-            <div class="card" style="width: 11rem">
-                <img src="{{ cart_item.product.imageLink }}" alt="" class="card-img-top">
-                <div class="card-body">
-                    <h5 class="card-title small">{{ cart_item.product.brand }}</h5>
-                    <h5 class="card-title small">{{ cart_item.product.price }}р.</h5>
-                    <p class="card-text small">{{ cart_item.product.name }}</p>
-                    <a href="{{ path('cart_remove_item', { item_id: cart_item.id }) }}" class="btn btn-danger">Удалить из корзины</a>
-                </div>
-            </div>
+            {% include 'pieces/cart_item_card.html.twig' with { 'cart_item': cart_item } %}
         {% endfor %}
     </div>
 
-    <div id="cart-action-buttons">
-        <a href="{{ path('order_create') }}" class="btn btn-primary create_order-btn">Оформить заказ</a>
-        <a href="{{ path('order_my_orders') }}" class="btn btn-success create_order-btn">Мои заказы</a>
-    </div>
+    {% if cart_items|length > 0 %}
+        <div class="order-form-container">
+            <h3>Оформление заказа</h3>
+            <p>Выделите товары сверху, заполните форму и нажмите на "Оформить заказ"</p>
+            {{ form_start(order_form) }}
+            {{ form_row(order_form.phone_number) }}
+            {{ form_row(order_form.city) }}
+            {{ form_row(order_form.address) }}
+
+            {% block choice_widget %}
+                <div style="margin-bottom: 1rem; margin-top: 1rem;">
+                    <strong>Способ оплаты:</strong>
+                    {% for radio_child in order_form.payment_type %}
+                        <div>
+                            {{ form_widget(radio_child, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(radio_child, null, {'label_attr' : {'class': 'text-muted'}}) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endblock %}
+
+            <input type="hidden" id="cart_items_ids" name="cart_items_ids" value="">
+            <button type="submit" class="btn btn-dark">Оформить заказ</button>
+            {{ form_end(order_form) }}
+        </div>
+    {% else %}
+        <div class="empty-cart-message-wrapper">
+            <h5>
+                Корзина пуста :(
+            </h5>
+        </div>
+    {% endif %}
+
+{#    <div id="cart-action-buttons">#}
+{#        <a href="{{ path('order_create') }}" class="btn btn-primary create_order-btn">Оформить заказ</a>#}
+{#        <a href="{{ path('order_my_orders') }}" class="btn btn-success create_order-btn">Мои заказы</a>#}
+{#    </div>#}
+
+    <script>
+        const cartItemsIdsInput = document.getElementById('cart_items_ids')
+
+        // Добавление значений чекбоксов в форму
+        document.getElementById('cart-items').addEventListener('change', function (e) {
+            const checkedItemId = e.target.getAttribute('value')
+            const cartItemsIds = cartItemsIdsInput.getAttribute('value')
+
+            if (e.target["checked"]) {
+                if (cartItemsIds.indexOf(checkedItemId) === -1) {
+                    if (cartItemsIds === '')
+                        cartItemsIdsInput.setAttribute('value', checkedItemId)
+                    else
+                        cartItemsIdsInput.setAttribute('value', cartItemsIds+' '+checkedItemId)
+                }
+            }
+            else {
+                if (cartItemsIds.indexOf(checkedItemId) !== -1) {
+                    cartItemsIdsInput.setAttribute('value', cartItemsIds.replace(checkedItemId, ''))
+                }
+            }
+        })
+
+        // Стилизация радио инпутов
+
+    </script>
 {% endblock %}

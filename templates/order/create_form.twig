@@ -20,7 +20,7 @@
     {{ form_row(order_form.city) }}
     {{ form_row(order_form.address) }}
 
-    {% block choice_widget %}
+    {% block choice_payment_type_widget %}
         <div style="margin-bottom: 1rem; margin-top: 1rem;">
             <strong>Способ оплаты:</strong>
             {% for radio_child in order_form.payment_type %}

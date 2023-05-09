@@ -43,6 +43,9 @@ class Order
     #[ORM\Column(length: 255)]
     private ?string $client_fullname = null;
 
+    #[ORM\Column(length: 55)]
+    private ?string $way_to_get = null;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -175,6 +178,18 @@ class Order
     public function setClientFullname(string $client_fullname): self
     {
         $this->client_fullname = $client_fullname;
+
+        return $this;
+    }
+
+    public function getWayToGet(): ?string
+    {
+        return $this->way_to_get;
+    }
+
+    public function setWayToGet(string $way_to_get): self
+    {
+        $this->way_to_get = $way_to_get;
 
         return $this;
     }

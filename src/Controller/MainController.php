@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function PHPUnit\Framework\isNull;
 
 class MainController extends AbstractController
 {
@@ -38,12 +39,12 @@ class MainController extends AbstractController
                 ]);
             }
 
-            $product = $productRep->findBy(['article_number' => $queryStr])[0] ?? [];
-            return $this->render('details/detail_page.html.twig', [
-                'product' => $product
+            return $this->redirectToRoute('detail_page', [
+                'article' => $queryStr
             ]);
+
+            $this->addFlash('danger', 'Ничего не найдено');
         }
-        $this->addFlash('danger', 'Ничего не найдено');
         return $this->render('main/index.html.twig', [
             'search_form' => $searchForm
 //            'products' => $productRepo->getPaginator($page)

@@ -44,7 +44,7 @@ class DetailsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'detail_page')]
+    #[Route('/{id}', name: 'detail_info')]
     public function info($id, ProductRepository $productRep): Response
     {
         if (!is_numeric($id))
@@ -52,6 +52,15 @@ class DetailsController extends AbstractController
 
         $product = $productRep->find($id);
         return $this->render('details/detail_info.html.twig', [
+            'product' => $product
+        ]);
+    }
+
+    #[Route('/item/{article}', name: 'detail_page')]
+    public function show($article, ProductRepository $productRep): Response
+    {
+        $product = $productRep->findOneBy(['article_number' => $article]);
+        return $this->render('details/detail_page.html.twig', [
             'product' => $product
         ]);
     }

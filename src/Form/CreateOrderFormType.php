@@ -21,7 +21,7 @@ class CreateOrderFormType extends AbstractType
                     'Доставка курьером' => 'courier_delivery',
                     'Самовывоз' => 'pickup'
                 ],
-                'data' => 'courier_delivery'
+                'data' => 'courier_delivery',
             ])
             ->add('client_fullname', TextType::class, [
                 'attr' => [

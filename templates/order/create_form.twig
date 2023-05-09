@@ -4,7 +4,7 @@
     {{ form_start(order_form) }}
 
     {% block choice_way_to_get_widget %}
-        <div style="margin-bottom: 1rem;">
+        <div style="margin-bottom: 1rem;" class="way_to_get">
             <strong>Способ получения</strong>
             <div style="margin-top: .5rem">
                 {% for radio_child in order_form.way_to_get %}
@@ -14,14 +14,12 @@
             </div>
         </div>
     {% endblock %}
-
     {{ form_row(order_form.client_fullname) }}
     {{ form_row(order_form.phone_number) }}
     {{ form_row(order_form.city) }}
     {{ form_row(order_form.address) }}
-
     {% block choice_payment_type_widget %}
-        <div style="margin-bottom: 1rem; margin-top: 1rem;">
+        <div style="margin-bottom: 1rem; margin-top: 1rem;" id="create_order_form_payment_type">
             <strong>Способ оплаты:</strong>
             {% for radio_child in order_form.payment_type %}
                 <div>
@@ -36,3 +34,18 @@
     <button type="submit" class="btn btn-dark">Оформить заказ</button>
     {{ form_end(order_form) }}
 </div>
+
+<script>
+    document.querySelector('.way_to_get').addEventListener('change', function (e) {
+        if (e.target.getAttribute('id') === 'create_order_form_way_to_get_0') {
+            document.getElementById('create_order_form_city').classList.remove('hidden')
+            document.getElementById('create_order_form_address').classList.remove('hidden')
+            document.getElementById('create_order_form_payment_type').classList.remove('hidden')
+        }
+        else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_1') {
+            document.getElementById('create_order_form_city').classList.add('hidden')
+            document.getElementById('create_order_form_address').classList.add('hidden')
+            document.getElementById('create_order_form_payment_type').classList.add('hidden')
+        }
+    })
+</script>

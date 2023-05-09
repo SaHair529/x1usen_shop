@@ -34,7 +34,7 @@ class Order
     #[ORM\ManyToOne(inversedBy: 'orders')]
     private ?User $customer = null;
 
-    #[ORM\Column(length: 30)]
+    #[ORM\Column(length: 30, nullable: true)]
     private ?string $payment_type = null;
 
     #[ORM\Column(length: 50)]

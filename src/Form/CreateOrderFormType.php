@@ -14,6 +14,15 @@ class CreateOrderFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('way_to_get', ChoiceType::class, [
+                'expanded' => true,
+                'multiple' => false,
+                'choices' => [
+                    'Доставка курьером' => 'courier_delivery',
+                    'Самовывоз' => 'pickup'
+                ],
+                'data' => 'courier_delivery'
+            ])
             ->add('client_fullname', TextType::class, [
                 'attr' => [
                     'placeholder' => 'ФИО',

@@ -2,6 +2,19 @@
     <h3>Оформление заказа</h3>
     <p>Выделите товары сверху, заполните форму и нажмите на "Оформить заказ"</p>
     {{ form_start(order_form) }}
+
+    {% block choice_way_to_get_widget %}
+        <div style="margin-bottom: 1rem;">
+            <strong>Способ получения</strong>
+            <div style="margin-top: .5rem">
+                {% for radio_child in order_form.way_to_get %}
+                    {{ form_widget(radio_child, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_label(radio_child, null, {'label_attr' : {'class': 'text-muted'}}) }}
+                {% endfor %}
+            </div>
+        </div>
+    {% endblock %}
+
     {{ form_row(order_form.client_fullname) }}
     {{ form_row(order_form.phone_number) }}
     {{ form_row(order_form.city) }}

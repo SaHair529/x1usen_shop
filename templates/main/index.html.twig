@@ -7,7 +7,7 @@
 {% block title %}Главная{% endblock %}
 
 {% block body %}
-
+    {{ include('@EasyAdmin/flash_messages.html.twig') }}
     <div class="search-form-container container">
         <h2>IGG Motors</h2>
         {{ form_start(search_form, { 'attr': {'class': 'search-form', 'id': search_form_id} }) }}

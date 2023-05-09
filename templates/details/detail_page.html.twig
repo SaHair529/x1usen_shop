@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block body %}
+    <div class="detail-full-info" data-detail-id="{{ product.id }}" style="width: 100%;">
+        <h4 class="detail-full-info__name">{{ product.name }}</h4>
+        <div class="detail-full-info__content">
+            <div class="detail-full-info__left">
+                <div class="detail-full-info__img-wrapper">
+                    <img src="{{ product.imageLink }}" alt="{{ product.name }}" class="img-thumbnail detail-full-info__img">
+                </div>
+            </div>
+            <div class="detail-full-info__right">
+                <div class="detail-full-info__info">
+                    <p class="info-row">
+                        <span>Производитель</span>
+                        <span>{{ product.brand }}</span>
+                    </p>
+                    <p class="info-row">
+                        <span>Артикул</span>
+                        <span>{{ product.articleNumber }}</span>
+                    </p>
+                    <p class="detail-full-info__total-balance info-row">
+                        <span>В наличии</span>
+                        <span>{{ product.totalBalance }}{{ product.measurementUnit }}</span>
+                    </p>
+                    <p class="detail-full-info__price info-row">
+                        <span style="color: red !important;">Цена</span>
+                        <span>{{ product.price }} ₽</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

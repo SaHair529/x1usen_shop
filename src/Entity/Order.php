@@ -40,6 +40,9 @@ class Order
     #[ORM\Column(length: 50)]
     private ?string $status = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $client_fullname = null;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -160,6 +163,18 @@ class Order
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getClientFullname(): ?string
+    {
+        return $this->client_fullname;
+    }
+
+    public function setClientFullname(string $client_fullname): self
+    {
+        $this->client_fullname = $client_fullname;
 
         return $this;
     }

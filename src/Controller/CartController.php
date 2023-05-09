@@ -47,6 +47,7 @@ class CartController extends AbstractController
             $user = $this->getUser();
 
             $order->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')));
+            $order->setClientFullname($orderForm->get('client_fullname')->getData());
             $order->setPhoneNumber($orderForm->get('phone_number')->getData());
             $order->setCity($orderForm->get('city')->getData());
             $order->setAddress($orderForm->get('address')->getData());

@@ -1,13 +1,25 @@
-{% extends 'base.html.twig' %}
+<div class="order-form-container">
+    <h3>Оформление заказа</h3>
+    <p>Выделите товары сверху, заполните форму и нажмите на "Оформить заказ"</p>
+    {{ form_start(order_form) }}
+    {{ form_row(order_form.client_fullname) }}
+    {{ form_row(order_form.phone_number) }}
+    {{ form_row(order_form.city) }}
+    {{ form_row(order_form.address) }}
 
-{% block title %}Оформление заказа{% endblock %}
+    {% block choice_widget %}
+        <div style="margin-bottom: 1rem; margin-top: 1rem;">
+            <strong>Способ оплаты:</strong>
+            {% for radio_child in order_form.payment_type %}
+                <div>
+                    {{ form_widget(radio_child, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_label(radio_child, null, {'label_attr' : {'class': 'text-muted'}}) }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
 
-{% block body %}
-    <h1>Оформление заказа</h1>
-    {{ form_start(form) }}
-    {{ form_row(form.phone_number) }}
-    {{ form_row(form.city) }}
-    {{ form_row(form.address) }}
-    <button type="submit" class="btn btn-primary">Оформить заказ</button>
-    {{ form_end(form) }}
-{% endblock %}
+    <input type="hidden" id="cart_items_ids" name="cart_items_ids" value="">
+    <button type="submit" class="btn btn-dark">Оформить заказ</button>
+    {{ form_end(order_form) }}
+</div>

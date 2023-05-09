@@ -25,10 +25,10 @@ class Order
     #[ORM\Column(length: 20)]
     private ?string $phone_number = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $city = null;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]

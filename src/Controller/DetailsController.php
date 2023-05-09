@@ -51,7 +51,7 @@ class DetailsController extends AbstractController
             return $this->redirectToRoute('homepage');
 
         $product = $productRep->find($id);
-        return $this->render('details/detail_page.html.twig', [
+        return $this->render('details/detail_info.html.twig', [
             'product' => $product
         ]);
     }

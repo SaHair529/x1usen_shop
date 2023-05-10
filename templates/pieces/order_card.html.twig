@@ -1,13 +1,23 @@
 {% set statuses = {
-    'wait_payment': 'Ожидание оплаты'
+    'wait_payment': 'Ожидание оплаты',
+    'new': 'Новый'
+} %}
+{% set ways_to_get = {
+    'courier_delivery': 'Доставка курьером',
+    'pickup': 'Самовывоз'
 } %}
 {% set total_price = 0 %}
 
 <div class="card order-card" style="width: 300px">
     <div class="card-body">
         <p class="card-title small"><b>Номер телефона: </b>{{ order.phoneNumber }}</p>
-        <p class="card-text small"><b>Город: </b>{{ order.city }}</p>
-        <p class="card-text small"><b>Адрес: </b>{{ order.address }}</p>
+        {% if order.city is not null %}
+            <p class="card-text small"><b>Город: </b>{{ order.city }}</p>
+        {% endif %}
+        {% if order.address is not null %}
+            <p class="card-text small"><b>Адрес: </b>{{ order.address }}</p>
+        {% endif %}
+        <p class="card-text small"><b>Способ получения</b>{{ ways_to_get[order.wayToGet] }}</p>
         <p class="card-text small"><b>Статус: </b><span class="{{ order.status }}">{{ statuses[order.status] }}</span></p>
         <hr>
         <p><b>Товары:</b></p>

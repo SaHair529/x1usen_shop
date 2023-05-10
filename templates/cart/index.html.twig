@@ -11,30 +11,7 @@
     </div>
 
     {% if cart_items|length > 0 %}
-        <div class="order-form-container">
-            <h3>Оформление заказа</h3>
-            <p>Выделите товары сверху, заполните форму и нажмите на "Оформить заказ"</p>
-            {{ form_start(order_form) }}
-            {{ form_row(order_form.phone_number) }}
-            {{ form_row(order_form.city) }}
-            {{ form_row(order_form.address) }}
-
-            {% block choice_widget %}
-                <div style="margin-bottom: 1rem; margin-top: 1rem;">
-                    <strong>Способ оплаты:</strong>
-                    {% for radio_child in order_form.payment_type %}
-                        <div>
-                            {{ form_widget(radio_child, {'attr': {'class': 'form-check-input'}}) }}
-                            {{ form_label(radio_child, null, {'label_attr' : {'class': 'text-muted'}}) }}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endblock %}
-
-            <input type="hidden" id="cart_items_ids" name="cart_items_ids" value="">
-            <button type="submit" class="btn btn-dark">Оформить заказ</button>
-            {{ form_end(order_form) }}
-        </div>
+        {% include 'order/create_form.twig' with { 'order_form': order_form } %}
     {% else %}
         <div class="empty-cart-message-wrapper">
             <h5>

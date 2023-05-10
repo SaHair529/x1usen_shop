@@ -12,11 +12,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function PHPUnit\Framework\isNull;
 
 class MainController extends AbstractController
 {
     #[Route('/', name: 'homepage')]
-    public function index(Request $req, ProductRepository $productRepo): Response
+    public function index(Request $req, ProductRepository $productRep): Response
     {
         $searchForm = $this->createForm(SearchFormType::class);
         $searchForm->handleRequest($req);
@@ -29,11 +30,20 @@ class MainController extends AbstractController
 //            $vehicle = $oem->findVehicle($queryStr)->getVehicles()[0] ?? []; # todo uncomment
 //            file_put_contents(__DIR__.'/serialized_vehicle.txt', serialize($vehicle)); # todo remove
             $vehicle = unserialize(file_get_contents(__DIR__.'/serialized_vehicle.txt')); # todo remove
-            $detailGroups = $oem->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
-            return $this->render('main/search_response.html.twig', [
-                'vehicle' => $vehicle,
-                'detail_groups' => $detailGroups,
+            $vehicle = []; // todo remove
+            if (!empty($vehicle)) {
+                $detailGroups = $oem->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
+                return $this->render('main/search_response.html.twig', [
+                    'vehicle' => $vehicle,
+                    'detail_groups' => $detailGroups,
+                ]);
+            }
+
+            return $this->redirectToRoute('detail_page', [
+                'article' => $queryStr
             ]);
+
+            $this->addFlash('danger', 'Ничего не найдено');
         }
         return $this->render('main/index.html.twig', [
             'search_form' => $searchForm

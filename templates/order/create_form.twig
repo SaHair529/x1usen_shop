@@ -1,0 +1,65 @@
+<div class="order-form-container">
+    <h3>Оформление заказа</h3>
+    <p>Выделите товары сверху, заполните форму и нажмите на "Оформить заказ"</p>
+    {{ form_start(order_form) }}
+
+    {% block choice_way_to_get_widget %}
+        <div style="margin-bottom: 1rem;" class="way_to_get">
+            <strong>Способ получения</strong>
+            <div style="margin-top: .5rem">
+                {% for radio_child in order_form.way_to_get %}
+                    {{ form_widget(radio_child, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_label(radio_child, null, {'label_attr' : {'class': 'text-muted'}}) }}
+                {% endfor %}
+            </div>
+        </div>
+    {% endblock %}
+    {{ form_row(order_form.client_fullname) }}
+    {{ form_row(order_form.phone_number) }}
+    {{ form_row(order_form.city) }}
+    {{ form_row(order_form.address) }}
+    {% block choice_payment_type_widget %}
+        <div style="margin-bottom: 1rem; margin-top: 1rem;" id="create_order_form_payment_type">
+            <strong>Способ оплаты:</strong>
+            {% for radio_child in order_form.payment_type %}
+                <div>
+                    {{ form_widget(radio_child, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_label(radio_child, null, {'label_attr' : {'class': 'text-muted'}}) }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
+
+    <input type="hidden" id="cart_items_ids" name="cart_items_ids" value="">
+    <button type="submit" class="btn btn-dark">Оформить заказ</button>
+    {{ form_end(order_form) }}
+</div>
+
+<script>
+    document.querySelector('.way_to_get').addEventListener('change', function (e) {
+        const cityInput = document.getElementById('create_order_form_city')
+        const addressInput = document.getElementById('create_order_form_address')
+        const paymentTypeInput = document.getElementById('create_order_form_payment_type')
+
+        if (e.target.getAttribute('id') === 'create_order_form_way_to_get_0') {
+            cityInput.classList.remove('hidden')
+            addressInput.classList.remove('hidden')
+            paymentTypeInput.classList.remove('hidden')
+
+            cityInput.addAttribute('required', 'required')
+            addressInput.addAttribute('required', 'required')
+            document.getElementById('create_order_form_payment_type_0').addAttribute('required', 'required')
+            document.getElementById('create_order_form_payment_type_1').removeAttribute('required', 'required')
+        }
+        else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_1') {
+            cityInput.classList.add('hidden')
+            addressInput.classList.add('hidden')
+            paymentTypeInput.classList.add('hidden')
+
+            cityInput.removeAttribute('required')
+            addressInput.removeAttribute('required')
+            document.getElementById('create_order_form_payment_type_0').removeAttribute('required')
+            document.getElementById('create_order_form_payment_type_1').removeAttribute('required')
+        }
+    })
+</script>

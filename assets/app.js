@@ -18,10 +18,12 @@ bsCustomFileInput.init();
 import CartController from './modules/cart/CartController'
 import MainController from './modules/main/MainController'
 import OrderController from './modules/order/OrderController'
+import ProductController from "./modules/product/ProductController";
 
 document.addEventListener('DOMContentLoaded', function()
 {
     CartController.init()
     MainController.init()
     OrderController.init()
+    ProductController.init()
 })

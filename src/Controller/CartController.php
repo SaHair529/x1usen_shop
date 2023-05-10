@@ -45,12 +45,15 @@ class CartController extends AbstractController
         if ($orderForm->isSubmitted() && count($cartItemsIds) > 0) {
             /** @var User $user */
             $user = $this->getUser();
-
             $order->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')));
+            $order->setClientFullname($orderForm->get('client_fullname')->getData());
             $order->setPhoneNumber($orderForm->get('phone_number')->getData());
-            $order->setCity($orderForm->get('city')->getData());
-            $order->setAddress($orderForm->get('address')->getData());
-            $order->setPaymentType($orderForm->get('payment_type')->getData());
+            if (($city = $orderForm->get('city')->getData()) !== null)
+                $order->setCity($city);
+            if (($address = $orderForm->get('address')->getData()) !== null)
+                $order->setAddress($address);
+            if (($paymentType = $orderForm->get('payment_type')->getData()) !== null)
+                $order->setPaymentType($paymentType);
             $order->setStatus(self::STATUSES[0]);
             $order->setCustomer($user);
 

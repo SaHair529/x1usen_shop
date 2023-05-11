@@ -3,7 +3,7 @@
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block body %}
-    <div class="detail-full-info" data-detail-id="{{ product.id }}" style="width: 100%;">
+    <div class="detail-full-info" data-detail-id="{{ product.id }}" style="width: 100%;padding: 0;">
         <h4 class="detail-full-info__name">{{ product.name }}</h4>
         <div class="detail-full-info__content">
             <div class="detail-full-info__left">
@@ -32,6 +32,11 @@
                 </div>
                 <div class="detail-full-info__cart-buttons">
                     <button type="button" class="btn btn-dark js-add-to-cart">В корзину</button>
+{#                    <div class="detail-full-info__quantity-counter">#}
+{#                        <span class="detail-full-info__minus-btn js-decrease-cart-item">-</span>#}
+{#                        <span class="detail-full-info__amount">1</span>#}
+{#                        <span class="detail-full-info__plus-btn js-increase-cart-item">+</span>#}
+{#                    </div>#}
                 </div>
             </div>
         </div>

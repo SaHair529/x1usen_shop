@@ -6,7 +6,10 @@ export default class ResponseHandler {
             case 200:
                 responsePromise.json().then(responseData => {
                     if (responseData['message'] === 'ok') {
-                        Renderer.updatePageAfterAddProductToCart(responseData)
+                        Renderer.updatePageAfterSuccessAddProductToCart(responseData)
+                    }
+                    else if (responseData['message'] === 'out of stock') {
+                        Renderer.updatePageAfterOutOfStock()
                     }
                 })
         }

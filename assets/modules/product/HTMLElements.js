@@ -38,7 +38,7 @@ export default class HTMLElements {
             },
             {
                 tagName: 'span',
-                class: 'detail-full-info__plus-btn js-increase-cart-item',
+                class: 'detail-full-info__plus-btn js-add-to-cart',
                 text: '+'
             }
         ]

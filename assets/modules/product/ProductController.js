@@ -2,7 +2,6 @@
 
 import HTMLElements from "./HTMLElements";
 import ResponseHandler from "./ResponseHandler";
-import ElementsCreator from "./ElementsCreator";
 
 export default class ProductController {
     static init() {
@@ -14,7 +13,7 @@ export default class ProductController {
         const productInfo = document.querySelector('.detail-full-info')
         if (productInfo != null) {
             productInfo.addEventListener('click', function (e) {
-                if (e.target.classList.contains(HTMLElements.addToCartButton.class)) {
+                if (e.target.classList.contains(HTMLElements.addToCartButton.class) && !e.target.classList.contains('disabled')) {
                     const productId = productInfo.dataset.detailId
                     ProductController.addToCart(productId).then(response => {
                         ResponseHandler.handleAddToCartResponse(response)

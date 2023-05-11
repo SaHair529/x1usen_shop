@@ -12,6 +12,17 @@ export default class ResponseHandler {
                         Renderer.updatePageAfterOutOfStock()
                     }
                 })
+                break
+        }
+    }
+
+    static handleDecreaseCartItemQuantityResponse(responsePromise) {
+        switch (responsePromise.status) {
+            case 200:
+                responsePromise.json().then(responseData => {
+                    Renderer.updatePageAfterSuccessDecreaseItem(responseData)
+                })
+                break
         }
     }
 }

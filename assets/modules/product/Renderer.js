@@ -13,6 +13,16 @@ export default class Renderer {
         }
     }
 
+    static updatePageAfterSuccessDecreaseItem(responseData) {
+        this.updateProductTotalBalance(responseData['product_total_balance'])
+        this.updateCounterValue(responseData['quantity'])
+        this.enablePlusButton()
+        if (responseData['quantity'] === 0) {
+            this.swapCounterWithToCartButton()
+        }
+    }
+
+
     static updatePageAfterOutOfStock() {
         const inCartAmountWrapper = document.querySelector('span.'+HTMLElements.quantityCounter.amountWrapper.class)
         if (inCartAmountWrapper != null) {
@@ -29,6 +39,10 @@ export default class Renderer {
 
     static disablePlusButton() {
         document.querySelector('span.'+HTMLElements.addToCartButton.class).classList.add('disabled')
+    }
+
+    static enablePlusButton() {
+        document.querySelector('span.'+HTMLElements.addToCartButton.class).classList.remove('disabled')
     }
 
     static shakeElement(element) {
@@ -50,5 +64,10 @@ export default class Renderer {
     static swapToCartButtonWithProductCounter(productQuantity) {
         const counter = ElementsCreator.createProductCounter(productQuantity)
         document.querySelector('.'+HTMLElements.toCartButton.class).replaceWith(counter)
+    }
+
+    static swapCounterWithToCartButton() {
+        const toCartBtn = ElementsCreator.createElement(HTMLElements.toCartButton_forCreator)
+        document.querySelector('.'+HTMLElements.quantityCounter.class).replaceWith(toCartBtn)
     }
 }

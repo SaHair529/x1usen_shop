@@ -3,6 +3,10 @@ export default class HTMLElements {
         class: 'js-add-to-cart'
     }
 
+    static decreaseCartItemButton = {
+        class: 'js-decrease-cart-item'
+    }
+
     static totalBalanceHTag = {
         class: 'detail-full-info__total-balance'
     }
@@ -20,6 +24,12 @@ export default class HTMLElements {
         amountWrapper: {
             class: 'detail-full-info__amount'
         }
+    }
+
+    static toCartButton_forCreator = {
+        tagName: 'button',
+        class: 'btn btn-dark js-add-to-cart',
+        text: 'В корзину'
     }
 
     static quantityCounter_forCreator = {

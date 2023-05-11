@@ -34,12 +34,13 @@ class ResponseCreator
         ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public static function decreaseQuantity_ok($currentQuantity, $productPrice): Response
+    public static function decreaseQuantity_ok($currentQuantity, $productPrice, $productTotalBalance): Response
     {
         return new JsonResponse([
             'message' => 'ok',
             'quantity' => $currentQuantity,
-            'product_price' => $productPrice
+            'product_price' => $productPrice,
+            'product_total_balance' => $productTotalBalance
         ]);
     }
 

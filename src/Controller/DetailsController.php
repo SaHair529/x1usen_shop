@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\CartItem;
+use App\Entity\User;
 use App\Repository\ProductRepository;
 use GuayaquilLib\ServiceOem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/details')]
 class DetailsController extends AbstractController
@@ -57,11 +60,25 @@ class DetailsController extends AbstractController
     }
 
     #[Route('/item/{article}', name: 'detail_page')]
+    #[IsGranted('ROLE_USER')]
     public function show($article, ProductRepository $productRep): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        $cartItems = $user->getCart()->getItems();
+        $inCartQuantity = 0;
+        foreach ($cartItems as $cartItem) {
+            $product = $cartItem->getProduct();
+            $productArticle = $product->getArticleNumber();
+            if ($productArticle === $article) {
+                $inCartQuantity = $cartItem->getQuantity();
+            }
+        }
+
         $product = $productRep->findOneBy(['article_number' => $article]);
         return $this->render('details/detail_page.html.twig', [
-            'product' => $product
+            'product' => $product,
+            'in_cart_quantity' => $inCartQuantity
         ]);
     }
 }

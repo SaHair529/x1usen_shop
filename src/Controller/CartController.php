@@ -108,7 +108,7 @@ class CartController extends AbstractController
                 $item->getProduct()->increaseTotalBalance();
                 $item->getQuantity() === 0 ? $cartItemRep->remove($item, true) : $cartItemRep->save($item, true);
                 $productRep->save($item->getProduct(), true);
-                return ResponseCreator::decreaseQuantity_ok($item->getQuantity(), $item->getProduct()->getPrice());
+                return ResponseCreator::decreaseQuantity_ok($item->getQuantity(), $item->getProduct()->getPrice(), $item->getProduct()->getTotalBalance());
             }
         }
 

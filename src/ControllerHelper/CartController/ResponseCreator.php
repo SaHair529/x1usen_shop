@@ -14,8 +14,9 @@ class ResponseCreator
         return new JsonResponse([
             'message' => 'ok',
             'quantity' => $cartItem->getQuantity(),
+            'product_price' => $product->getPrice(),
+            'product_total_balance' => $product->getTotalBalance(),
             'has_more_product' => $product->getTotalBalance() > 0,
-            'product_price' => $product->getPrice()
         ]);
     }
 
@@ -33,12 +34,13 @@ class ResponseCreator
         ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public static function decreaseQuantity_ok($currentQuantity, $productPrice): Response
+    public static function decreaseQuantity_ok($currentQuantity, $productPrice, $productTotalBalance): Response
     {
         return new JsonResponse([
             'message' => 'ok',
             'quantity' => $currentQuantity,
-            'product_price' => $productPrice
+            'product_price' => $productPrice,
+            'product_total_balance' => $productTotalBalance
         ]);
     }
 

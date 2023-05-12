@@ -40,6 +40,15 @@ export default class ResponseHandler {
                         if (!responseData['has_more_product'])
                             Renderer.disableIncreaseButton()
                     }
+                    else if (responseData['message'] === 'out of stock') {
+                        if (!document.querySelector('.out-of-stock-alert'))
+                            Renderer.renderOutOfStockAlertOnProductModal()
+                        const toCartBtn = document.querySelector('.'+AttributesNaming.BUTTONS.ADD_TO_CART.CLASS)
+                        if (toCartBtn != null) {
+                            Renderer.shakeElement(toCartBtn)
+                            toCartBtn.setAttribute('disabled', '')
+                        }
+                    }
                 })
                 break
             case 403:

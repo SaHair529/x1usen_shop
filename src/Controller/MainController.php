@@ -29,8 +29,8 @@ class MainController extends AbstractController
             // vin Z94K241CBMR252528
 //            $vehicle = $oem->findVehicle($queryStr)->getVehicles()[0] ?? []; # todo uncomment
 //            file_put_contents(__DIR__.'/serialized_vehicle.txt', serialize($vehicle)); # todo remove
-//            $vehicle = unserialize(file_get_contents(__DIR__.'/serialized_vehicle.txt')); # todo remove
-            $vehicle = []; // todo remove
+            $vehicle = unserialize(file_get_contents(__DIR__.'/serialized_vehicle.txt')); # todo remove
+//            $vehicle = []; // todo remove
             if (!empty($vehicle)) {
                 $detailGroups = $oem->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
                 return $this->render('main/search_response.html.twig', [

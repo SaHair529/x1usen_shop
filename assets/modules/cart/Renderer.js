@@ -9,9 +9,15 @@ export default class Renderer {
         }, 1000)
     }
 
-    static disableDecreaseButton() {
-        const decreaseBtn = document.querySelector('.'+AttributesNaming.BUTTONS.REMOVE_FROM_CART.CLASS)
-        decreaseBtn.setAttribute('disabled', '')
+    static renderOutOfStockAlertOnProductModal() {
+        const alert = document.createElement('div')
+            alert.className = 'text-danger out-of-stock-alert'
+            alert.textContent = 'Нет в наличии'
+
+        document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
+            .querySelector('.detail-link')
+            .after(alert)
+
     }
 
     static disableIncreaseButton() {

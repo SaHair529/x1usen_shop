@@ -88,6 +88,9 @@ export default class ResponseHandler {
                         }
                         else {
                             cartItemCard.remove()
+                            const cardItemCards = document.getElementsByClassName(AttributesNaming.cartItemCard.class)
+                            if (cardItemCards.length === 0)
+                                Renderer.addEmptyCardMessage()
                         }
                     }
                 })

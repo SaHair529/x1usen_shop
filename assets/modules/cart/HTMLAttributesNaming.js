@@ -123,4 +123,15 @@ export default class HTMLAttributesNaming {
             }
         ]
     }
+
+    static emptyCartMessage_forCreator = {
+        tagName: 'div',
+        class: 'empty-cart-message-wrapper',
+        children: [
+            {
+                tagName: 'h5',
+                text: 'Корзина пуста :('
+            }
+        ]
+    }
 }

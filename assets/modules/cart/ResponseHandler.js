@@ -69,6 +69,9 @@ export default class ResponseHandler {
                     if (responseData['message'] === 'ok') {
                         cartItemCard.remove()
                     }
+                    const cardItemCards = document.getElementsByClassName(AttributesNaming.cartItemCard.class)
+                    if (cardItemCards.length === 0)
+                        Renderer.addEmptyCardMessage()
                 })
                 break
         }

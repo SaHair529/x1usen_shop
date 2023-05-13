@@ -1,5 +1,6 @@
 import AttributesNaming from "./HTMLAttributesNaming"
 import ElementsCreator from "./DOMElementsCreator";
+import DOMElementsCreator from "./DOMElementsCreator";
 
 export default class Renderer {
     static shakeElement(element) {
@@ -7,6 +8,13 @@ export default class Renderer {
         setTimeout(() => {
             element.classList.remove('shake')
         }, 1000)
+    }
+
+    static addEmptyCardMessage() {
+        const container = document.querySelector('.container:nth-child(2)')
+        container.innerHTML = ''
+        const emptyCartMessage = DOMElementsCreator.createDOMElementByObject(AttributesNaming.emptyCartMessage_forCreator)
+        container.appendChild(emptyCartMessage)
     }
 
     static renderOutOfStockAlertOnProductModal() {

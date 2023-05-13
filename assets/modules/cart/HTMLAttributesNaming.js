@@ -64,4 +64,45 @@ export default class HTMLAttributesNaming {
     static productSumPriceCounter = {
         class: 'sum-price'
     }
+
+    static productModal_forCreator = {
+        tagName: 'div',
+        class: 'hidden remove-product-modal',
+        attributes: [
+            { id: 'product-info-modal' }
+        ],
+        children: [
+            {
+                tagName: 'div',
+                class: 'inner',
+                children: [
+                    { tagName: 'h5', class: 'price' },
+                    { tagName: 'p', class: 'name' },
+                    {
+                        tagName: 'a',
+                        class: 'detail-link',
+                        text: 'Подробнее о товаре',
+                        attributes: [
+                            { href: '#' },
+                            { target: '_blank' }
+                        ]
+                    },
+                    {
+                        tagName: 'div',
+                        class: 'product-info-modal-buttons',
+                        children: [
+                            {
+                                tagName: 'button',
+                                class: 'btn btn-primary add-to-cart',
+                                text: 'В корзину',
+                                attributes: [
+                                    { type: 'button' }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
 }

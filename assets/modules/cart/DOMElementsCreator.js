@@ -62,4 +62,26 @@ export default class DOMElementsCreator {
 
         return modal
     }
+
+    static createDOMElementByObject(elementObject) {
+        const HElement = document.createElement(elementObject['tagName'])
+        HElement.className = elementObject['class']
+        if ('text' in elementObject)
+            HElement.textContent = elementObject['text']
+        if ('attributes' in elementObject)
+            for (let i in elementObject['attributes'])  {
+                const attrObj = elementObject['attributes'][i]
+                for (let attrKey in attrObj) {
+                    const attrValue = attrObj[attrKey]
+                    HElement.setAttribute(attrKey, attrValue)
+                }
+            }
+        if ('children' in elementObject) {
+            for (let i = 0; i < elementObject['children'].length; i++) {
+                HElement.appendChild(this.createDOMElementByObject(elementObject['children'][i]))
+            }
+        }
+
+        return HElement
+    }
 }

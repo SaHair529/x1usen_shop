@@ -1,5 +1,6 @@
 import Renderer from "./Renderer"
-import AttributesNaming from "./HTMLAttributesNaming";
+import AttributesNaming from "./HTMLAttributesNaming"
+import DOMElementsCreator from "./DOMElementsCreator";
 
 export default class ResponseHandler {
     static handleDecreaseCartItemQuantityResponse(responsePromise) {
@@ -111,7 +112,8 @@ export default class ResponseHandler {
     }
 
     static handleShowProductModalResponse(responsePromise, productInfo) {
-        const productInfoModal = document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
+        const productInfoModal = DOMElementsCreator.createDOMElementByObject(AttributesNaming.productModal_forCreator)
+        document.querySelector('#search-response').appendChild(productInfoModal)
         productInfoModal.dataset.productId = productInfo['id']
         productInfoModal.querySelector('.name').textContent = productInfo['name']
         productInfoModal.querySelector('.price').textContent = '0'
@@ -142,6 +144,7 @@ export default class ResponseHandler {
                 productInfoModal.classList.remove('hidden')
                 break
             case 403:
+                productInfoModal.remove()
                 const notAuthorizedModal = document.getElementById(AttributesNaming.MODALS.NOT_AUTHORIZED_MODAL.ID)
                 notAuthorizedModal.classList.remove('hidden')
         }

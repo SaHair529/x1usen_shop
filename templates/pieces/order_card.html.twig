@@ -24,7 +24,7 @@
         {% for item in order.items %}
             {% set total_price = total_price + item.quantity * item.product.price %}
             <p class="card-text small">
-                <a href="{{ path('detail_page', { 'id': item.product.id }) }}" class="product-link">{{ item.product.name|slice(0, 30) }}...</a>
+                <a href="{{ path('detail_info', { 'id': item.product.id }) }}" class="product-link">{{ item.product.name|slice(0, 30) }}...</a>
             </p>
             <p class="card-text small">
                 <strong>{{ item.quantity }} шт</strong><strong>{{ item.quantity * item.product.price }}₽</strong>

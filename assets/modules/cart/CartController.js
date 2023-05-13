@@ -38,9 +38,10 @@ export default class CartController {
     }
 
     static productInfoModalPressHandle() {
-        const productInfoModal = document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
-        if (productInfoModal != null) {
-            productInfoModal.addEventListener('click', function (e) {
+        document.querySelector('body').addEventListener('click', function (e) {
+            const productInfoModal = document.querySelector('#product-info-modal')
+
+            if (productInfoModal != null) {
                 if (e.target.classList.contains(AttributesNaming.BUTTONS.INCREASE_CART_ITEM.CLASS)) {
                     CartController.addToCart(productInfoModal.dataset.productId).then(resp => {
                         ResponseHandler.handleAddToCartResponse(resp)
@@ -51,11 +52,11 @@ export default class CartController {
                         ResponseHandler.handleDecreaseCartItemQuantityResponse(resp)
                     })
                 }
-                else if (e.target.classList.contains('close-product-modal')) {
-                    productInfoModal.classList.add('hidden')
+                else if (e.target.classList.contains('remove-product-modal')) {
+                    e.target.remove()
                 }
-            })
-        }
+            }
+        })
     }
 
     static notAuthorizedModalPressHandle() {
@@ -117,12 +118,6 @@ export default class CartController {
     static showProductModal(productInfo) {
         fetch(`/cart/get_product_cart_item?product_id=${productInfo['id']}`).then(resp => {
             ResponseHandler.handleShowProductModalResponse(resp, productInfo)
-        })
-    }
-
-    static showProductFullInfoModal(productLink) {
-        fetch(productLink).then(resp => {
-            ResponseHandler.handleShowProductFullInfoModal(resp)
         })
     }
 

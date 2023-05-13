@@ -1,5 +1,6 @@
 import AttributesNaming from './HTMLAttributesNaming'
 import ResponseHandler from "./ResponseHandler";
+import DOMElementsCreator from "./DOMElementsCreator";
 
 export default class CartController {
     static init() {
@@ -122,10 +123,10 @@ export default class CartController {
     }
 
     static showProductImageModal(imgUrl) {
-        const modal = document.getElementById(AttributesNaming.MODALS.imageModal.id)
+        const modal = DOMElementsCreator.createDOMElementByObject(AttributesNaming.imageModal_forCreator)
         const modalImage = modal.querySelector('img')
         modalImage.setAttribute('src', imgUrl)
-        modal.classList.remove('hidden')
+        document.querySelector('body').appendChild(modal)
     }
 
     // ______________________________

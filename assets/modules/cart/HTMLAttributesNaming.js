@@ -65,6 +65,24 @@ export default class HTMLAttributesNaming {
         class: 'sum-price'
     }
 
+
+    static imageModal_forCreator = {
+        tagName: 'div',
+        class: 'custom-modal detail-image-modal js-delete-modal',
+        attributes: [
+            { id: 'detail-image-modal' }
+        ],
+        children: [
+            {
+                tagName: 'img',
+                attributes: [
+                    { src: '' },
+                    { alt: 'Деталь' }
+                ]
+            }
+        ]
+    }
+
     static productModal_forCreator = {
         tagName: 'div',
         class: 'hidden remove-product-modal',

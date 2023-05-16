@@ -3,19 +3,19 @@
 namespace App\Controller;
 
 use App\Form\SearchFormType;
-use App\Repository\ProductRepository;
-use GuayaquilLib\Am;
-use GuayaquilLib\objects\oem\VehicleListObject;
-use GuayaquilLib\ServiceAm;
 use GuayaquilLib\ServiceOem;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use function PHPUnit\Framework\isNull;
 
 class MainController extends AbstractController
 {
+    public function __construct(private LoggerInterface $logger)
+    {
+    }
+
     #[Route('/', name: 'homepage')]
     public function index(Request $req): Response
     {

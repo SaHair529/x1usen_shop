@@ -19,7 +19,7 @@
             <nav class="navbar navbar-light">
                 <div class="brand-form">
                     <a class="navbar-brand" href="{{ path('homepage') }}">IGG</a>
-                    <form id="search-form-mini" class="nav-item d-flex search-form search-form--mini" method="get" action="{{ path('search') }}">
+                    <form id="search-form-mini" class="nav-item d-flex search-form search-form--mini" method="get" action="{{ path('homepage') }}">
                         <input name="query_string" id="search_form_query_string_mini" class="form-control me-2 search-form__query" type="search" placeholder="VIN | Номер кузова | Номер з/ч" aria-label="Search"
                         {% if query_str|default(null) is not null %}
                             value="{{ query_str }}"

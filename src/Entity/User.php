@@ -42,6 +42,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'customer', targetEntity: Order::class)]
     private Collection $orders;
 
+    #[ORM\Column]
+    private ?int $client_type = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $organization_name = null;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
@@ -167,6 +173,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $order->setCustomer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getClientType(): ?int
+    {
+        return $this->client_type;
+    }
+
+    public function setClientType(int $client_type): self
+    {
+        $this->client_type = $client_type;
+
+        return $this;
+    }
+
+    public function getOrganizationName(): ?string
+    {
+        return $this->organization_name;
+    }
+
+    public function setOrganizationName(?string $organization_name): self
+    {
+        $this->organization_name = $organization_name;
 
         return $this;
     }

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Cart;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Form\RegistrationLegalEntityFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,26 +24,45 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
-
-            $cart = new Cart();
-            $user->setCart($cart);
-
-            $entityManager->persist($user);
-            $entityManager->flush();
-            // do anything else you need here, like send an email
-
+            $this->registerUser($user, $userPasswordHasher, $form, $entityManager);
             return $this->redirectToRoute('app_login');
         }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
+    }
+
+    #[Route('/register_legal', name: 'app_register_legal_entity')]
+    public function registerLegalEntity(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    {
+        $user = new User();
+        $form = $this->createForm(RegistrationLegalEntityFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->registerUser($user, $userPasswordHasher, $form, $entityManager);
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('registration/register_legal_entity.html.twig', [
+            'registrationForm' => $form->createView(),
+        ]);
+    }
+
+    private function registerUser($user, $userPasswordHasher, $form, $entityManager)
+    {
+        $user->setPassword(
+            $userPasswordHasher->hashPassword(
+                $user,
+                $form->get('plainPassword')->getData()
+            )
+        );
+
+        $cart = new Cart();
+        $user->setCart($cart);
+
+        $entityManager->persist($user);
+        $entityManager->flush();
     }
 }

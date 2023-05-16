@@ -68,6 +68,9 @@ header {
   align-items: center;
   justify-content: center;
   height: 70vh;
+  .client-type-links {
+    display: flex;
+  }
   input {
     border-radius: 0;
   }

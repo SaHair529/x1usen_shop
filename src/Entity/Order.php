@@ -44,7 +44,7 @@ class Order
     private ?string $client_fullname = null;
 
     #[ORM\Column(length: 55)]
-    private ?string $way_to_get = null;
+    private ?int $way_to_get = null;
 
     public function __construct()
     {
@@ -182,12 +182,12 @@ class Order
         return $this;
     }
 
-    public function getWayToGet(): ?string
+    public function getWayToGet(): ?int
     {
         return $this->way_to_get;
     }
 
-    public function setWayToGet(string $way_to_get): self
+    public function setWayToGet(int $way_to_get): self
     {
         $this->way_to_get = $way_to_get;
 

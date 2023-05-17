@@ -39,27 +39,26 @@
     document.querySelector('.way_to_get').addEventListener('change', function (e) {
         const cityInput = document.getElementById('create_order_form_city')
         const addressInput = document.getElementById('create_order_form_address')
-        const paymentTypeInput = document.getElementById('create_order_form_payment_type')
 
         if (e.target.getAttribute('id') === 'create_order_form_way_to_get_0') {
+            if (!cityInput.classList.contains('hidden'))
+                cityInput.classList.add('hidden')
+            if (!addressInput.classList.contains('hidden'))
+                addressInput.classList.add('hidden')
+
+            if (cityInput.hasAttribute('required'))
+                cityInput.removeAttribute('required')
+            if (addressInput.hasAttribute('required'))
+                addressInput.removeAttribute('required')
+        }
+        else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_1' || e.target.getAttribute('id') === 'create_order_form_way_to_get_2') {
             cityInput.classList.remove('hidden')
             addressInput.classList.remove('hidden')
-            paymentTypeInput.classList.remove('hidden')
 
-            cityInput.addAttribute('required', 'required')
-            addressInput.addAttribute('required', 'required')
-            document.getElementById('create_order_form_payment_type_0').addAttribute('required', 'required')
-            document.getElementById('create_order_form_payment_type_1').removeAttribute('required', 'required')
-        }
-        else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_1') {
-            cityInput.classList.add('hidden')
-            addressInput.classList.add('hidden')
-            paymentTypeInput.classList.add('hidden')
-
-            cityInput.removeAttribute('required')
-            addressInput.removeAttribute('required')
-            document.getElementById('create_order_form_payment_type_0').removeAttribute('required')
-            document.getElementById('create_order_form_payment_type_1').removeAttribute('required')
+            if (!cityInput.hasAttribute('required'))
+                cityInput.addAttribute('required', 'required')
+            if (!addressInput.hasAttribute('required'))
+                addressInput.addAttribute('required', 'required')
         }
     })
 </script>

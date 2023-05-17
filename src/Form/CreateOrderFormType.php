@@ -18,10 +18,11 @@ class CreateOrderFormType extends AbstractType
                 'expanded' => true,
                 'multiple' => false,
                 'choices' => [
-                    'Доставка курьером' => 'courier_delivery',
-                    'Самовывоз' => 'pickup'
+                    'Самовывоз' => 'pickup',
+                    'Доставка по СПБ' => 'spb_delivery',
+                    'Доставка по РФ' => 'rf_delivery'
                 ],
-                'data' => 'courier_delivery',
+                'data' => 'spb_delivery',
             ])
             ->add('client_fullname', TextType::class, [
                 'attr' => [
@@ -55,7 +56,7 @@ class CreateOrderFormType extends AbstractType
                 'expanded' => true,
                 'multiple' => false,
                 'choices' => [
-                    'Онлайн' => 'online',
+                    'Картой через сайт' => 'online',
                     'Наличными' => 'offline'
                 ]
             ])

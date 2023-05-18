@@ -20,7 +20,7 @@ class OrderController extends AbstractController
     public function __construct(DataMapping $dataMapping)
     {
         $this->statuses = $dataMapping->getData('order_statuses');
-        $this->waysToGet = $dataMapping->getData('ways_to_get');
+        $this->waysToGet = $dataMapping->getData('order_ways_to_get');
     }
 
     #[Route('/my_orders', name: 'order_my_orders')]

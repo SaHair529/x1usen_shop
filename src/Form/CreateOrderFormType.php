@@ -15,14 +15,15 @@ class CreateOrderFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $dataMapping = new DataMapping();
-        $waysToGet = array_flip($dataMapping->getData('ways_to_get'));
+        $waysToGet = array_flip($dataMapping->getData('order_ways_to_get'));
+        $paymentTypes = array_flip($dataMapping->getData('order_payment_types'));
 
         $builder
             ->add('way_to_get', ChoiceType::class, [
                 'expanded' => true,
                 'multiple' => false,
                 'choices' => $waysToGet,
-                'data' => 2,
+                'data' => array_keys(array_flip($waysToGet))[1],
             ])
             ->add('client_fullname', TextType::class, [
                 'attr' => [
@@ -55,10 +56,8 @@ class CreateOrderFormType extends AbstractType
             ->add('payment_type', ChoiceType::class, [
                 'expanded' => true,
                 'multiple' => false,
-                'choices' => [
-                    'Картой через сайт' => 'online',
-                    'Наличными' => 'offline'
-                ]
+                'choices' => $paymentTypes,
+                'data' => array_keys(array_flip($paymentTypes))[0]
             ])
         ;
     }

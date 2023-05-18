@@ -35,7 +35,7 @@ class Order
     private ?User $customer = null;
 
     #[ORM\Column(length: 30, nullable: true)]
-    private ?string $payment_type = null;
+    private ?int $payment_type = null;
 
     #[ORM\Column(length: 50)]
     private ?int $status = null;
@@ -146,12 +146,12 @@ class Order
         return $this;
     }
 
-    public function getPaymentType(): ?string
+    public function getPaymentType(): ?int
     {
         return $this->payment_type;
     }
 
-    public function setPaymentType(string $payment_type): self
+    public function setPaymentType(int $payment_type): self
     {
         $this->payment_type = $payment_type;
 

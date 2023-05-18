@@ -38,7 +38,7 @@ class Order
     private ?string $payment_type = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $status = null;
+    private ?int $status = null;
 
     #[ORM\Column(length: 255)]
     private ?string $client_fullname = null;
@@ -158,12 +158,12 @@ class Order
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?int
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(int $status): self
     {
         $this->status = $status;
 

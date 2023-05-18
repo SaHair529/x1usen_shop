@@ -6,7 +6,7 @@
     {% if orders|length > 0 %}
         <div id="orders">
             {% for order in orders %}
-                {% include 'pieces/order_card.html.twig' with { 'order': order } %}
+                {% include 'pieces/order_card.html.twig' with { 'order': order, 'statuses': statuses } %}
             {% endfor %}
         </div>
     {% else %}

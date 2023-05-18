@@ -13,8 +13,13 @@ class DataMapping
         return $this->$dataContainer;
     }
 
-    public function getDataValue($dataContainer, $dataKey)
+    public function getValueByKey($dataContainer, $dataKey)
     {
         return $this->$dataContainer[$dataKey];
+    }
+
+    public function getKeyByValue($dataContainer, $value): bool|int|string
+    {
+        return array_search($value, $this->$dataContainer);
     }
 }

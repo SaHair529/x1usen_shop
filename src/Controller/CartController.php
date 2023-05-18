@@ -11,6 +11,7 @@ use App\Form\CreateOrderFormType;
 use App\Repository\CartItemRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
+use App\Service\DataMapping;
 use DateTimeImmutable;
 use DateTimeZone;
 use Exception;
@@ -25,14 +26,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/cart')]
 class CartController extends AbstractController
 {
-    private const STATUSES = ['wait_payment', 'in_processing', 'submitted', 'success'];
-
     /**
      * @throws Exception
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep): Response
+    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -55,7 +54,8 @@ class CartController extends AbstractController
             if (($address = $orderForm->get('address')->getData()) !== null)
                 $order->setAddress($address);
 
-            $order->setStatus(self::STATUSES[0]);
+            $orderStatuses = $dataMapping->getData('order_statuses');
+            $order->setStatus(array_key_first($orderStatuses));
             $order->setCustomer($user);
             # Добавление товаров из корзины
             $cartItems = $cartItemRep->findBy(['id' => $cartItemsIds]);

@@ -2,21 +2,22 @@
 
 namespace App\Controller;
 
-use App\Entity\Order;
 use App\Entity\User;
-use App\Form\CreateOrderFormType;
-use App\Repository\OrderRepository;
-use DateTimeImmutable;
-use DateTimeZone;
+use App\Service\DataMapping;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/order')]
 class OrderController extends AbstractController
 {
+    private $statuses;
+
+    public function __construct(DataMapping $dataMapping)
+    {
+        $this->statuses = $dataMapping->getData('order_statuses');
+    }
+
     #[Route('/my_orders', name: 'order_my_orders')]
     #[IsGranted('ROLE_USER')]
     public function index()
@@ -25,7 +26,8 @@ class OrderController extends AbstractController
         $user = $this->getUser();
 
         return $this->render('order/index.html.twig', [
-            'orders' => $user->getOrders()->getIterator()
+            'orders' => $user->getOrders()->getIterator(),
+            'statuses' => $this->statuses
         ]);
     }
 }

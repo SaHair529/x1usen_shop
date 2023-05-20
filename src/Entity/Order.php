@@ -5,10 +5,13 @@ namespace App\Entity;
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
+#[ORM\HasLifecycleCallbacks]
 class Order
 {
     #[ORM\Id]
@@ -46,10 +49,21 @@ class Order
     #[ORM\Column(length: 55)]
     private ?int $way_to_get = null;
 
+    #[Pure]
     public function __construct()
     {
         $this->items = new ArrayCollection();
     }
+
+    #[ORM\PreUpdate]
+    public function onStatusChange(PreUpdateEventArgs $args)
+    {
+        $onlyStatusChanged = count($args->getEntityChangeSet()) === 1 && $args->hasChangedField('status');
+        if ($onlyStatusChanged) {
+
+        }
+    }
+
 
     public function getId(): ?int
     {

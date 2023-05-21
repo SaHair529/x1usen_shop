@@ -29,10 +29,10 @@ class OrderEventSubscriber implements EventSubscriberInterface
     {
         $entity = $args->getObject();
 
-        $this->logger->info('статусуки');
-        $this->logger->info($args->getOldValue('status'));
-        $this->logger->info($args->getNewValue('status'));
         if ($entity instanceof Order) {
+            $this->logger->info('статусуки');
+            $this->logger->info($args->getOldValue('status'));
+            $this->logger->info($args->getNewValue('status'));
             $onlyStatusChanged = count($args->getEntityChangeSet()) === 1 && $args->hasChangedField('status');
             if ($onlyStatusChanged) {
 //                $this->notificationsCreator->createChangeStatusNotification($entity->getCustomer()); # todo Разобраться почему бесконечно отрабатывает

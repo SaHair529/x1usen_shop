@@ -9,7 +9,8 @@ namespace App\Service;
 class DataMapping
 {
     private array $order_statuses = [
-        '1' => 'Ожидание оплаты'
+        '1' => 'Ожидание оплаты',
+        '2' => 'В обработке'
     ];
 
     private array $order_ways_to_get = [
@@ -21,6 +22,10 @@ class DataMapping
     private array $order_payment_types = [
         '1' => 'Картой через сайт',
         '2' => 'Наличными'
+    ];
+
+    private array $notification_actions = [
+        '1' => 'order_status_changed'
     ];
 
     public function getData($dataContainer): array

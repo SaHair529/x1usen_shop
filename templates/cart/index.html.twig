@@ -20,35 +20,19 @@
         </div>
     {% endif %}
 
-{#    <div id="cart-action-buttons">#}
-{#        <a href="{{ path('order_create') }}" class="btn btn-primary create_order-btn">Оформить заказ</a>#}
-{#        <a href="{{ path('order_my_orders') }}" class="btn btn-success create_order-btn">Мои заказы</a>#}
-{#    </div>#}
-
     <script>
-        const cartItemsIdsInput = document.getElementById('cart_items_ids')
-
-        // Добавление значений чекбоксов в форму
-        document.getElementById('cart-items').addEventListener('change', function (e) {
-            const checkedItemId = e.target.getAttribute('value')
-            const cartItemsIds = cartItemsIdsInput.getAttribute('value')
-
-            if (e.target["checked"]) {
-                if (cartItemsIds.indexOf(checkedItemId) === -1) {
-                    if (cartItemsIds === '')
-                        cartItemsIdsInput.setAttribute('value', checkedItemId)
-                    else
-                        cartItemsIdsInput.setAttribute('value', cartItemsIds+' '+checkedItemId)
+        document.addEventListener('DOMContentLoaded', function () {
+            const createOrderForm = document.querySelector('form[name="create_order_form"]')
+            createOrderForm.addEventListener('submit', function (e) {
+                const cartItemsCheckboxes = document.getElementById('cart-items').querySelectorAll('input[type="checkbox"]')
+                let checkedCartItemsIds = ''
+                for (let i = 0; i < cartItemsCheckboxes.length; i++) {
+                    if(cartItemsCheckboxes[i].checked) {
+                        checkedCartItemsIds += ' '+cartItemsCheckboxes[i].getAttribute('value')
+                    }
                 }
-            }
-            else {
-                if (cartItemsIds.indexOf(checkedItemId) !== -1) {
-                    cartItemsIdsInput.setAttribute('value', cartItemsIds.replace(checkedItemId, ''))
-                }
-            }
+                document.getElementById('cart_items_ids').setAttribute('value', checkedCartItemsIds)
+            })
         })
-
-        // Стилизация радио инпутов
-
     </script>
 {% endblock %}

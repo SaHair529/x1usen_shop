@@ -11,6 +11,7 @@ use App\Form\CreateOrderFormType;
 use App\Repository\CartItemRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
+use App\Service\DataMapping;
 use DateTimeImmutable;
 use DateTimeZone;
 use Exception;
@@ -25,14 +26,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/cart')]
 class CartController extends AbstractController
 {
-    private const STATUSES = ['wait_payment', 'in_processing', 'submitted', 'success'];
-
     /**
      * @throws Exception
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep): Response
+    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -48,15 +47,16 @@ class CartController extends AbstractController
             $order->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')));
             $order->setClientFullname($orderForm->get('client_fullname')->getData());
             $order->setPhoneNumber($orderForm->get('phone_number')->getData());
+            $order->setPaymentType($orderForm->get('payment_type')->getData());
+
             if (($city = $orderForm->get('city')->getData()) !== null)
                 $order->setCity($city);
             if (($address = $orderForm->get('address')->getData()) !== null)
                 $order->setAddress($address);
-            if (($paymentType = $orderForm->get('payment_type')->getData()) !== null)
-                $order->setPaymentType($paymentType);
-            $order->setStatus(self::STATUSES[0]);
-            $order->setCustomer($user);
 
+            $orderStatuses = $dataMapping->getData('order_statuses');
+            $order->setStatus(array_key_first($orderStatuses));
+            $order->setCustomer($user);
             # Добавление товаров из корзины
             $cartItems = $cartItemRep->findBy(['id' => $cartItemsIds]);
             foreach ($cartItems as $cartItem) {

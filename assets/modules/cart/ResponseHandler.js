@@ -1,5 +1,6 @@
 import Renderer from "./Renderer"
-import AttributesNaming from "./HTMLAttributesNaming";
+import AttributesNaming from "./HTMLAttributesNaming"
+import DOMElementsCreator from "./DOMElementsCreator";
 
 export default class ResponseHandler {
     static handleDecreaseCartItemQuantityResponse(responsePromise) {
@@ -40,6 +41,15 @@ export default class ResponseHandler {
                         if (!responseData['has_more_product'])
                             Renderer.disableIncreaseButton()
                     }
+                    else if (responseData['message'] === 'out of stock') {
+                        if (!document.querySelector('.out-of-stock-alert'))
+                            Renderer.renderOutOfStockAlertOnProductModal()
+                        const toCartBtn = document.querySelector('.'+AttributesNaming.BUTTONS.ADD_TO_CART.CLASS)
+                        if (toCartBtn != null) {
+                            Renderer.shakeElement(toCartBtn)
+                            toCartBtn.setAttribute('disabled', '')
+                        }
+                    }
                 })
                 break
             case 403:
@@ -59,6 +69,9 @@ export default class ResponseHandler {
                     if (responseData['message'] === 'ok') {
                         cartItemCard.remove()
                     }
+                    const cardItemCards = document.getElementsByClassName(AttributesNaming.cartItemCard.class)
+                    if (cardItemCards.length === 0)
+                        Renderer.addEmptyCardMessage()
                 })
                 break
         }
@@ -75,6 +88,9 @@ export default class ResponseHandler {
                         }
                         else {
                             cartItemCard.remove()
+                            const cardItemCards = document.getElementsByClassName(AttributesNaming.cartItemCard.class)
+                            if (cardItemCards.length === 0)
+                                Renderer.addEmptyCardMessage()
                         }
                     }
                 })
@@ -102,7 +118,8 @@ export default class ResponseHandler {
     }
 
     static handleShowProductModalResponse(responsePromise, productInfo) {
-        const productInfoModal = document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
+        const productInfoModal = DOMElementsCreator.createDOMElementByObject(AttributesNaming.productModal_forCreator)
+        document.querySelector('#search-response').appendChild(productInfoModal)
         productInfoModal.dataset.productId = productInfo['id']
         productInfoModal.querySelector('.name').textContent = productInfo['name']
         productInfoModal.querySelector('.price').textContent = '0'
@@ -133,6 +150,7 @@ export default class ResponseHandler {
                 productInfoModal.classList.remove('hidden')
                 break
             case 403:
+                productInfoModal.remove()
                 const notAuthorizedModal = document.getElementById(AttributesNaming.MODALS.NOT_AUTHORIZED_MODAL.ID)
                 notAuthorizedModal.classList.remove('hidden')
         }

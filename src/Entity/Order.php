@@ -6,6 +6,7 @@ use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -35,17 +36,18 @@ class Order
     private ?User $customer = null;
 
     #[ORM\Column(length: 30, nullable: true)]
-    private ?string $payment_type = null;
+    private ?int $payment_type = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $status = null;
+    private ?int $status = null;
 
     #[ORM\Column(length: 255)]
     private ?string $client_fullname = null;
 
     #[ORM\Column(length: 55)]
-    private ?string $way_to_get = null;
+    private ?int $way_to_get = null;
 
+    #[Pure]
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -146,24 +148,24 @@ class Order
         return $this;
     }
 
-    public function getPaymentType(): ?string
+    public function getPaymentType(): ?int
     {
         return $this->payment_type;
     }
 
-    public function setPaymentType(string $payment_type): self
+    public function setPaymentType(int $payment_type): self
     {
         $this->payment_type = $payment_type;
 
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?int
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(int $status): self
     {
         $this->status = $status;
 
@@ -182,12 +184,12 @@ class Order
         return $this;
     }
 
-    public function getWayToGet(): ?string
+    public function getWayToGet(): ?int
     {
         return $this->way_to_get;
     }
 
-    public function setWayToGet(string $way_to_get): self
+    public function setWayToGet(int $way_to_get): self
     {
         $this->way_to_get = $way_to_get;
 

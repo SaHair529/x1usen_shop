@@ -33,7 +33,7 @@ header {
       right: 0;
       top: 0;
       background: #fff;
-      box-shadow: 0 0 5px #d6d6d6;
+      box-shadow: 0 0 5px #666;
       z-index: 10;
       .user-info {
         padding: 10px;
@@ -68,6 +68,9 @@ header {
   align-items: center;
   justify-content: center;
   height: 70vh;
+  .client-type-links {
+    display: flex;
+  }
   input {
     border-radius: 0;
   }
@@ -84,6 +87,11 @@ header {
   }
   input[type='radio'] {
     margin-right: 3px;
+  }
+  .way_to_get {
+    label {
+      margin-right: 1rem;
+    }
   }
 }
 
@@ -267,7 +275,7 @@ header {
       display: flex;
       justify-content: space-between;
     }
-    .wait_payment {
+    .order_status_1 { // Ожидание оплаты
       color: orange;
     }
     a {

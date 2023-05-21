@@ -64,4 +64,74 @@ export default class HTMLAttributesNaming {
     static productSumPriceCounter = {
         class: 'sum-price'
     }
+
+
+    static imageModal_forCreator = {
+        tagName: 'div',
+        class: 'custom-modal detail-image-modal js-delete-modal',
+        attributes: [
+            { id: 'detail-image-modal' }
+        ],
+        children: [
+            {
+                tagName: 'img',
+                attributes: [
+                    { src: '' },
+                    { alt: 'Деталь' }
+                ]
+            }
+        ]
+    }
+
+    static productModal_forCreator = {
+        tagName: 'div',
+        class: 'hidden remove-product-modal',
+        attributes: [
+            { id: 'product-info-modal' }
+        ],
+        children: [
+            {
+                tagName: 'div',
+                class: 'inner',
+                children: [
+                    { tagName: 'h5', class: 'price' },
+                    { tagName: 'p', class: 'name' },
+                    {
+                        tagName: 'a',
+                        class: 'detail-link',
+                        text: 'Подробнее о товаре',
+                        attributes: [
+                            { href: '#' },
+                            { target: '_blank' }
+                        ]
+                    },
+                    {
+                        tagName: 'div',
+                        class: 'product-info-modal-buttons',
+                        children: [
+                            {
+                                tagName: 'button',
+                                class: 'btn btn-primary add-to-cart',
+                                text: 'В корзину',
+                                attributes: [
+                                    { type: 'button' }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+
+    static emptyCartMessage_forCreator = {
+        tagName: 'div',
+        class: 'empty-cart-message-wrapper',
+        children: [
+            {
+                tagName: 'h5',
+                text: 'Корзина пуста :('
+            }
+        ]
+    }
 }

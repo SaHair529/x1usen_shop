@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Order;
+use App\Service\DataMapping;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -13,15 +14,16 @@ class CreateOrderFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $dataMapping = new DataMapping();
+        $waysToGet = array_flip($dataMapping->getData('order_ways_to_get'));
+        $paymentTypes = array_flip($dataMapping->getData('order_payment_types'));
+
         $builder
             ->add('way_to_get', ChoiceType::class, [
                 'expanded' => true,
                 'multiple' => false,
-                'choices' => [
-                    'Доставка курьером' => 'courier_delivery',
-                    'Самовывоз' => 'pickup'
-                ],
-                'data' => 'courier_delivery',
+                'choices' => $waysToGet,
+                'data' => array_keys(array_flip($waysToGet))[1],
             ])
             ->add('client_fullname', TextType::class, [
                 'attr' => [
@@ -54,10 +56,8 @@ class CreateOrderFormType extends AbstractType
             ->add('payment_type', ChoiceType::class, [
                 'expanded' => true,
                 'multiple' => false,
-                'choices' => [
-                    'Онлайн' => 'online',
-                    'Наличными' => 'offline'
-                ]
+                'choices' => $paymentTypes,
+                'data' => array_keys(array_flip($paymentTypes))[0]
             ])
         ;
     }

@@ -1,5 +1,6 @@
 import AttributesNaming from "./HTMLAttributesNaming"
 import ElementsCreator from "./DOMElementsCreator";
+import DOMElementsCreator from "./DOMElementsCreator";
 
 export default class Renderer {
     static shakeElement(element) {
@@ -9,9 +10,22 @@ export default class Renderer {
         }, 1000)
     }
 
-    static disableDecreaseButton() {
-        const decreaseBtn = document.querySelector('.'+AttributesNaming.BUTTONS.REMOVE_FROM_CART.CLASS)
-        decreaseBtn.setAttribute('disabled', '')
+    static addEmptyCardMessage() {
+        const container = document.querySelector('.container:nth-child(2)')
+        container.innerHTML = ''
+        const emptyCartMessage = DOMElementsCreator.createDOMElementByObject(AttributesNaming.emptyCartMessage_forCreator)
+        container.appendChild(emptyCartMessage)
+    }
+
+    static renderOutOfStockAlertOnProductModal() {
+        const alert = document.createElement('div')
+            alert.className = 'text-danger out-of-stock-alert'
+            alert.textContent = 'Нет в наличии'
+
+        document.getElementById(AttributesNaming.MODALS.PRODUCT_MODAL.ID)
+            .querySelector('.detail-link')
+            .after(alert)
+
     }
 
     static disableIncreaseButton() {

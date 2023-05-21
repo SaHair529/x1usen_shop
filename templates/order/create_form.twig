@@ -6,7 +6,7 @@
     {% block choice_way_to_get_widget %}
         <div style="margin-bottom: 1rem;" class="way_to_get">
             <strong>Способ получения</strong>
-            <div style="margin-top: .5rem">
+            <div id="way_to_get_inputs" style="margin-top: .5rem">
                 {% for radio_child in order_form.way_to_get %}
                     {{ form_widget(radio_child, {'attr': {'class': 'form-check-input'}}) }}
                     {{ form_label(radio_child, null, {'label_attr' : {'class': 'text-muted'}}) }}
@@ -37,29 +37,51 @@
 
 <script>
     document.querySelector('.way_to_get').addEventListener('change', function (e) {
-        const cityInput = document.getElementById('create_order_form_city')
-        const addressInput = document.getElementById('create_order_form_address')
-        const paymentTypeInput = document.getElementById('create_order_form_payment_type')
-
         if (e.target.getAttribute('id') === 'create_order_form_way_to_get_0') {
-            cityInput.classList.remove('hidden')
-            addressInput.classList.remove('hidden')
-            paymentTypeInput.classList.remove('hidden')
-
-            cityInput.addAttribute('required', 'required')
-            addressInput.addAttribute('required', 'required')
-            document.getElementById('create_order_form_payment_type_0').addAttribute('required', 'required')
-            document.getElementById('create_order_form_payment_type_1').removeAttribute('required', 'required')
+            hideCityAndAddressInputs()
         }
-        else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_1') {
-            cityInput.classList.add('hidden')
-            addressInput.classList.add('hidden')
-            paymentTypeInput.classList.add('hidden')
-
-            cityInput.removeAttribute('required')
-            addressInput.removeAttribute('required')
-            document.getElementById('create_order_form_payment_type_0').removeAttribute('required')
-            document.getElementById('create_order_form_payment_type_1').removeAttribute('required')
+        else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_1' ||
+            e.target.getAttribute('id') === 'create_order_form_way_to_get_2') {
+            showCityAndAddressInputs()
         }
     })
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkedWayToGetInput = document.querySelector('#way_to_get_inputs > [checked="checked"]')
+        if (checkedWayToGetInput.getAttribute('id') === 'create_order_form_way_to_get_0') {
+            hideCityAndAddressInputs()
+        }
+        else if (checkedWayToGetInput.getAttribute('id') === 'create_order_form_way_to_get_1' ||
+            checkedWayToGetInput.getAttribute('id') === 'create_order_form_way_to_get_2') {
+            showCityAndAddressInputs()
+        }
+    })
+
+    function hideCityAndAddressInputs() {
+        const cityInput = document.getElementById('create_order_form_city')
+        const addressInput = document.getElementById('create_order_form_address')
+
+        if (!cityInput.classList.contains('hidden'))
+            cityInput.classList.add('hidden')
+        if (!addressInput.classList.contains('hidden'))
+            addressInput.classList.add('hidden')
+
+        if (cityInput.hasAttribute('required'))
+            cityInput.removeAttribute('required')
+        if (addressInput.hasAttribute('required'))
+            addressInput.removeAttribute('required')
+    }
+
+    function showCityAndAddressInputs() {
+        const cityInput = document.getElementById('create_order_form_city')
+        const addressInput = document.getElementById('create_order_form_address')
+
+        cityInput.classList.remove('hidden')
+        addressInput.classList.remove('hidden')
+
+        if (!cityInput.hasAttribute('required'))
+            cityInput.setAttribute('required', 'required')
+        if (!addressInput.hasAttribute('required'))
+            addressInput.setAttribute('required', 'required')
+    }
 </script>

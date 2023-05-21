@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 
@@ -54,16 +53,6 @@ class Order
     {
         $this->items = new ArrayCollection();
     }
-
-    #[ORM\PreUpdate]
-    public function onStatusChange(PreUpdateEventArgs $args)
-    {
-        $onlyStatusChanged = count($args->getEntityChangeSet()) === 1 && $args->hasChangedField('status');
-        if ($onlyStatusChanged) {
-
-        }
-    }
-
 
     public function getId(): ?int
     {

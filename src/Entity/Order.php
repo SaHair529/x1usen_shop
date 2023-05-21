@@ -10,7 +10,6 @@ use JetBrains\PhpStorm\Pure;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
-#[ORM\HasLifecycleCallbacks]
 class Order
 {
     #[ORM\Id]

@@ -18,7 +18,7 @@ class Notification
     private ?User $recipient = null;
 
     #[ORM\Column]
-    private ?int $фaction = null;
+    private ?int $action = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
@@ -40,14 +40,14 @@ class Notification
         return $this;
     }
 
-    public function getфaction(): ?int
+    public function getAction(): ?int
     {
-        return $this->фaction;
+        return $this->action;
     }
 
-    public function setфaction(int $фaction): self
+    public function setAction(int $action): self
     {
-        $this->фaction = $фaction;
+        $this->action = $action;
 
         return $this;
     }

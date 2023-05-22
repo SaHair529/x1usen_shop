@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Form\SearchFormType;
+use App\Repository\ProductRepository;
+use App\Service\LaximoAPIWrapper;
 use GuayaquilLib\ServiceOem;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +14,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
 {
-    public function __construct(private LoggerInterface $logger)
+    public function __construct(
+        private LoggerInterface $logger,
+        private LaximoAPIWrapper $laximoAPIWrapper,
+        private ProductRepository $productRep
+    )
     {
     }
 
@@ -61,8 +67,8 @@ class MainController extends AbstractController
             // vin Z94K241CBMR252528
 //            $vehicle = $oem->findVehicle($queryStr)->getVehicles()[0] ?? []; # todo uncomment
 //            file_put_contents(__DIR__.'/serialized_vehicle.txt', serialize($vehicle)); # todo remove
-            $vehicle = unserialize(file_get_contents(__DIR__.'/serialized_vehicle.txt')); # todo remove
-//            $vehicle = []; // todo remove
+            $vehicle = unserialize(file_get_contents(__DIR__.'/../../serialized_data/serialized_vehicle.txt')); # todo remove
+            $vehicle = []; // todo remove
             if (!empty($vehicle)) {
                 $detailGroups = $oemService->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
                 return $this->render('main/search_response.html.twig', [
@@ -72,6 +78,15 @@ class MainController extends AbstractController
                 ]);
             }
 
+            $replacementsOems = $this->laximoAPIWrapper->getReplacements($queryStr);
+            $mainDetails = $this->productRep->findBy(['article_number' => $queryStr]);
+            $replacementDetails = $this->productRep->findBy(['article_number' => $replacementsOems]);
+
+            return $this->render('main/oem_search_response.html.twig', [
+                'main_details' => $mainDetails,
+                'replacements' => $replacementDetails,
+                'query_str' => $queryStr
+            ]);
             return $this->redirectToRoute('detail_page', [
                 'article' => $queryStr
             ]);

@@ -21,6 +21,7 @@
 
 ### shamil ###
 /.idea/
+/serialized_data/
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/

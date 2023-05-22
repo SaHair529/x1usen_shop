@@ -512,6 +512,36 @@ header {
     }
   }
 }
+#oem-search-response {
+  .oem-table {
+    &__header {
+      display: flex;
+      &-cell {
+        width: 10%;
+        &.name {
+          width: 25%;
+        }
+      }
+    }
+  }
+  .table-product-card {
+    padding: 5px;
+    align-items: normal;
+    box-shadow: none;
+    //border-top: 1px solid grey;
+    border-radius: 0;
+    &:hover {
+      box-shadow: none;
+      background-color: #fff4c7;
+    }
+    &__field {
+      width: 10%;
+      &.name {
+        width: 25%;
+      }
+    }
+  }
+}
 
 #cart-items {
   display: flex;

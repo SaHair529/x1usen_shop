@@ -119,7 +119,7 @@ export default class ResponseHandler {
 
     static handleShowProductModalResponse(responsePromise, productInfo) {
         const productInfoModal = DOMElementsCreator.createDOMElementByObject(AttributesNaming.productModal_forCreator)
-        document.querySelector('#search-response').appendChild(productInfoModal)
+        document.querySelector('body').appendChild(productInfoModal)
         productInfoModal.dataset.productId = productInfo['id']
         productInfoModal.querySelector('.name').textContent = productInfo['name']
         productInfoModal.querySelector('.price').textContent = '0'

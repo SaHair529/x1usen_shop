@@ -151,8 +151,8 @@ export default class ResponseHandler {
                 break
             case 403:
                 productInfoModal.remove()
-                const notAuthorizedModal = document.getElementById(AttributesNaming.MODALS.NOT_AUTHORIZED_MODAL.ID)
-                notAuthorizedModal.classList.remove('hidden')
+                const notAuthorizedModal = DOMElementsCreator.createDOMElementByObject(AttributesNaming.notAuthorizedModal_forCreator)
+                document.querySelector('body').appendChild(notAuthorizedModal)
         }
     }
 

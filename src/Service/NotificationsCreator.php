@@ -4,13 +4,11 @@ namespace App\Service;
 
 
 use App\Entity\Notification;
-use App\Entity\User;
+use App\Entity\Order;
 use App\Repository\NotificationRepository;
 use DateTimeImmutable;
 use DateTimeZone;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Psr\Log\LoggerInterface;
 
 class NotificationsCreator
 {
@@ -21,11 +19,12 @@ class NotificationsCreator
     /**
      * @throws Exception
      */
-    public function createChangeStatusNotification(User $recipient)
+    public function createChangeStatusNotification(Order $order)
     {
         $notification = new Notification();
         $notification->setAction((new DataMapping())->getKeyByValue('notification_actions', 'order_status_changed'));
-        $notification->setRecipient($recipient);
+        $notification->setUpdatedOrder($order);
+        $notification->setRecipient($order->getCustomer());
         $notification->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')));
 
         $this->notificationRep->save($notification, true);

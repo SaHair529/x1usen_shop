@@ -10,7 +10,14 @@
             <p class="card-text small"><b>Адрес: </b>{{ order.address }}</p>
         {% endif %}
         <p class="card-text small"><b>Способ получения</b>{{ ways_to_get[order.wayToGet] }}</p>
-        <p class="card-text small"><b>Статус: </b><span class="order_status_{{ order.status }}">{{ statuses[order.status] }}</span></p>
+        <p class="card-text small"><b>Статус: </b><span class="order_status_{{ order.status }}">
+                {{ statuses[order.status] }}
+                {% for notification in notifications.order_status_changed %}
+                    {% if notification.updatedOrder is not null and notification.updatedOrder.id == order.id %}
+                        <span class="notifications-indicator" title="Статус заказа изменился"></span>
+                    {% endif %}
+                {% endfor %}
+            </span></p>
         <hr>
         <p><b>Товары:</b></p>
         {% for item in order.items %}

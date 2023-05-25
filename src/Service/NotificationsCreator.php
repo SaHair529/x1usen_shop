@@ -5,6 +5,7 @@ namespace App\Service;
 
 use App\Entity\Notification;
 use App\Entity\User;
+use App\Repository\NotificationRepository;
 use DateTimeImmutable;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,7 +14,7 @@ use Psr\Log\LoggerInterface;
 
 class NotificationsCreator
 {
-    public function __construct(private EntityManagerInterface $em, private LoggerInterface $logger)
+    public function __construct(private NotificationRepository $notificationRep)
     {
     }
 
@@ -27,7 +28,6 @@ class NotificationsCreator
         $notification->setRecipient($recipient);
         $notification->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')));
 
-        $this->em->persist($notification);
-        $this->em->flush();
+        $this->notificationRep->save($notification, true);
     }
 }

@@ -1,0 +1,10 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{% block content_title 'Смена статуса' %}
+{% block main %}
+    {{ form_start(form) }}
+    {{ form_widget(form.order_status, { 'attr': { 'class': 'form-control', 'style': 'max-width: 30%;' } }) }}
+    <br>
+    <button type="submit" class="btn btn-success">Сохранить</button>
+    {{ form_end(form) }}
+{% endblock %}

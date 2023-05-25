@@ -52,7 +52,7 @@ class OrderCrudController extends AbstractCrudController
                 $order->setStatus($updateOrderStatusForm->getData()['order_status']);
                 $this->orderRep->save($order, true);
             }
-            $this->notificationsCreator->createChangeStatusNotification($order->getCustomer());
+            $this->notificationsCreator->createChangeStatusNotification($order);
         }
 
         return $this->render('admin/order/update_status.html.twig', [

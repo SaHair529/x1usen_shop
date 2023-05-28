@@ -62,6 +62,7 @@ class MainController extends AbstractController
 
     private function handleSearchRequest($queryStr): Response
     {
+        $nothingFound = false;
         if ($queryStr !== null) {
             $oemService = new ServiceOem('ru926364', 'IoOrIIU5_f_HJqT');
             // vin Z94K241CBMR252528
@@ -82,14 +83,12 @@ class MainController extends AbstractController
             $mainDetails = $this->productRep->findBy(['article_number' => $queryStr]);
             $replacementDetails = $this->productRep->findBy(['article_number' => $replacementsOems]);
 
-            return $this->render('main/oem_search_response.html.twig', [
-                'main_details' => $mainDetails,
-                'replacements' => $replacementDetails,
-                'query_str' => $queryStr
-            ]);
-            return $this->redirectToRoute('detail_page', [
-                'article' => $queryStr
-            ]);
+            if ($mainDetails || $replacementDetails)
+                return $this->render('main/oem_search_response.html.twig', [
+                    'main_details' => $mainDetails,
+                    'replacements' => $replacementDetails,
+                    'query_str' => $queryStr
+                ]);
 
             $this->addFlash('danger', 'Ничего не найдено');
         }
@@ -97,7 +96,6 @@ class MainController extends AbstractController
         $searchForm = $this->createForm(SearchFormType::class);
         return $this->render('main/index.html.twig', [
             'search_form' => $searchForm
-//            'products' => $productRepo->getPaginator($page)
         ]);
     }
 }

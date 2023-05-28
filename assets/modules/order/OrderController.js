@@ -48,6 +48,8 @@ export default class OrderController {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({order_ids_with_notifications: orderIdsWithNotifications})
+            }).then(resp => {
+                ResponseHandler.handleClearOrderNotificationsResponse(resp)
             })
         }
     }

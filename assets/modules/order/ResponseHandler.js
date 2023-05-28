@@ -9,4 +9,16 @@ export default class ResponseHandler {
                 })
         }
     }
+
+    static handleClearOrderNotificationsResponse(responsePromise) {
+        switch (responsePromise.status) {
+            case 200:
+                responsePromise.json().then(responseData => {
+                    if (responseData['message'] === 'ok') {
+                        Renderer.removeNotificationIndicatorFromHeader()
+                    }
+                })
+                break
+        }
+    }
 }

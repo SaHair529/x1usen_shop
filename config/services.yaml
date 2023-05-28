@@ -19,8 +19,3 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-    App\EventSubscriber\OrderEventSubscriber:
-        tags:
-            - { name: doctrine.event_subscriber }
-    app.laximo_apiwrapper:
-        class: App\Service\LaximoAPIWrapper

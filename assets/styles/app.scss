@@ -30,7 +30,7 @@ header {
     position: relative;
     .user-menu {
       position: absolute;
-      right: 0;
+      right: -5px;
       top: 0;
       background: #fff;
       box-shadow: 0 0 5px #666;
@@ -52,13 +52,32 @@ header {
             border-right: black 1px solid;
           }
           &.cart-link, &.order-link {
+            position: relative;
             border-top: black solid 1px;
+            .notifications-indicator {
+              width: 10px;
+              height: 10px;
+              border-radius: 50%;
+              background: red;
+              position: absolute;
+              right: 1px;
+              bottom: 25px;
+            }
           }
           &.exit-link {
             border-top: red 1px solid;
           }
         }
       }
+    }
+    &__notifications-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: red;
+      position: absolute;
+      right: -5px;
+      bottom: 0;
     }
   }
 }
@@ -271,9 +290,27 @@ header {
     margin-bottom: 1rem;
     margin-left: 1rem;
     box-shadow: 0 0 5px #d6d6d6;
+    position: relative;
+    .notifications-head-indicator {
+      background: lightslategrey;
+      width: 8px;
+      height: 8px;
+      display: inline-block;
+      border-radius: 50%;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+    }
     .card-text, .card-title {
       display: flex;
       justify-content: space-between;
+      .notifications-indicator {
+        background: red;
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        border-radius: 50%;
+      }
     }
     .order_status_1 { // Ожидание оплаты
       color: orange;

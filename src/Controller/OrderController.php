@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\OrderRepository;
 use App\Service\DataMapping;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,13 +26,24 @@ class OrderController extends AbstractController
 
     #[Route('/my_orders', name: 'order_my_orders')]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(OrderRepository $orderRep): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
+        $orders = iterator_to_array($user->getOrders()->getIterator());
+        usort($orders, function ($o1, $o2) {
+            $hasNotifications1 = count($o1->getNotifications()) > 0;
+            $hasNotifications2 = count($o2->getNotifications()) > 0;
+            if ($hasNotifications1 && !$hasNotifications2)
+                return -1;
+            elseif (!$hasNotifications1 && $hasNotifications2)
+                return 1;
+            return 0;
+        });
+
         return $this->render('order/index.html.twig', [
-            'orders' => $user->getOrders()->getIterator(),
+            'orders' => $orders,
             'statuses' => $this->statuses,
             'ways_to_get' => $this->waysToGet
         ]);

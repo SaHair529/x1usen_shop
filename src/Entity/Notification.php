@@ -23,6 +23,9 @@ class Notification
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\ManyToOne(inversedBy: 'notifications')]
+    private ?Order $updated_order = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,18 @@ class Notification
     public function setCreatedAt(\DateTimeImmutable $created_at): self
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getUpdatedOrder(): ?Order
+    {
+        return $this->updated_order;
+    }
+
+    public function setUpdatedOrder(?Order $updated_order): self
+    {
+        $this->updated_order = $updated_order;
 
         return $this;
     }

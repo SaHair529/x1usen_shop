@@ -47,10 +47,14 @@ class Order
     #[ORM\Column(length: 55)]
     private ?int $way_to_get = null;
 
+    #[ORM\OneToMany(mappedBy: 'updated_order', targetEntity: Notification::class)]
+    private Collection $notifications;
+
     #[Pure]
     public function __construct()
     {
         $this->items = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -192,6 +196,36 @@ class Order
     public function setWayToGet(int $way_to_get): self
     {
         $this->way_to_get = $way_to_get;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications->add($notification);
+            $notification->setUpdatedOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getUpdatedOrder() === $this) {
+                $notification->setUpdatedOrder(null);
+            }
+        }
 
         return $this;
     }

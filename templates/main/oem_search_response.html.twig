@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="oem-search-response" class="pt-3">
+        <div class="oem-table">
+            <div class="oem-table__header">
+                <div class="oem-table__header-cell brand"><strong>Бренд</strong></div>
+                <div class="oem-table__header-cell article"><strong>Артикул</strong></div>
+                <div class="oem-table__header-cell name"><strong>Наименование</strong></div>
+                <div class="oem-table__header-cell total_balance"><strong>Остаток</strong></div>
+                <div class="oem-table__header-cell price"><strong>Цена (₽)</strong></div>
+            </div>
+        </div>
+        <div id="details-window">
+            {% for main_detail in main_details %}
+                <hr>
+                {% include 'pieces/table_product_card.html.twig' with { 'product': main_detail } %}
+            {% endfor %}
+
+            {% if replacements|length > 0 %}
+                <h4 class="mt-5">Аналоги</h4>
+                {% for replacement in replacements %}
+                        <hr>
+                        {% include 'pieces/table_product_card.html.twig' with { 'product': replacement } %}
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mt-5">Аналогов нет в наличии</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

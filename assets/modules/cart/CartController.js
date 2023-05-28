@@ -6,7 +6,6 @@ export default class CartController {
     static init() {
         this.productCardPressHandle()
         this.productInfoModalPressHandle()
-        this.notAuthorizedModalPressHandle()
         this.cartItemCardPressHandle()
     }
 
@@ -58,17 +57,6 @@ export default class CartController {
                 }
             }
         })
-    }
-
-    static notAuthorizedModalPressHandle() {
-        const notAuthorizedModal = document.getElementById(AttributesNaming.MODALS.NOT_AUTHORIZED_MODAL.ID)
-        if (notAuthorizedModal != null) {
-            notAuthorizedModal.addEventListener('click', function (e) {
-                if (e.target.classList.contains('close-not-authorized-modal')) {
-                    notAuthorizedModal.classList.add('hidden')
-                }
-            })
-        }
     }
 
     static cartItemCardPressHandle() {

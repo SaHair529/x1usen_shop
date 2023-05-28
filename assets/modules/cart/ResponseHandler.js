@@ -119,7 +119,7 @@ export default class ResponseHandler {
 
     static handleShowProductModalResponse(responsePromise, productInfo) {
         const productInfoModal = DOMElementsCreator.createDOMElementByObject(AttributesNaming.productModal_forCreator)
-        document.querySelector('#search-response').appendChild(productInfoModal)
+        document.querySelector('body').appendChild(productInfoModal)
         productInfoModal.dataset.productId = productInfo['id']
         productInfoModal.querySelector('.name').textContent = productInfo['name']
         productInfoModal.querySelector('.price').textContent = '0'
@@ -151,8 +151,8 @@ export default class ResponseHandler {
                 break
             case 403:
                 productInfoModal.remove()
-                const notAuthorizedModal = document.getElementById(AttributesNaming.MODALS.NOT_AUTHORIZED_MODAL.ID)
-                notAuthorizedModal.classList.remove('hidden')
+                const notAuthorizedModal = DOMElementsCreator.createDOMElementByObject(AttributesNaming.notAuthorizedModal_forCreator)
+                document.querySelector('body').appendChild(notAuthorizedModal)
         }
     }
 

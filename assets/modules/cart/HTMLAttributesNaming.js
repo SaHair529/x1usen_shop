@@ -124,6 +124,44 @@ export default class HTMLAttributesNaming {
         ]
     }
 
+    static notAuthorizedModal_forCreator = {
+        tagName: 'div',
+        class: 'js-delete-modal',
+        attributes: [
+            { id: 'not-authorized-alert-modal' }
+        ],
+        children: [
+            {
+                tagName: 'div',
+                class: 'inner',
+                children: [
+                    { tagName: 'h5', text: 'Требуется авторизация' },
+                    { tagName: 'p', text: 'Для добавления товара в корзину требуется авторизация' },
+                    {
+                        tagName: 'a',
+                        class: 'btn btn-outline-dark',
+                        text: 'Регистрация',
+                        attributes: [
+                            { href: '/register', role: 'button' }
+                        ]
+                    },
+                    {
+                        tagName: 'span',
+                        text: ' '
+                    },
+                    {
+                        tagName: 'a',
+                        class: 'btn btn-dark',
+                        text: 'Вход',
+                        attributes: [
+                            { href: '/login', role: 'button' }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+
     static emptyCartMessage_forCreator = {
         tagName: 'div',
         class: 'empty-cart-message-wrapper',

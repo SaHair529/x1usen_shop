@@ -1,16 +1,17 @@
 {% set total_price = 0 %}
 
-{# Поиск оповещений текущего заказа среди всех оповещений #}
+{% set hasStatusChangedNotification = false %}
 {% set hasNotifications = false %}
-{% for notification in notifications.order_status_changed %}
-    {% if notification.updatedOrder is not null and notification.updatedOrder.id == order.id %}
+
+{% for notification in order.notifications %}
+    {% if notification.action == 1 %}
+        {% set hasStatusChangedNotification = true %}
         {% set hasNotifications = true %}
     {% endif %}
 {% endfor %}
-{# ----------------------------------------------------- #}
 
-<div class="card order-card" style="width: 300px">
-    {% if hasNotifications %}
+<div class="card order-card {% if hasNotifications %}order-with-notifications{% endif %}" data-order-id="{{ order.id }}" style="width: 300px">
+    {% if order.notifications.iterator|length > 0 %}
         <span class="notifications-head-indicator"></span>
     {% endif %}
     <div class="card-body">
@@ -24,7 +25,7 @@
         <p class="card-text small"><b>Способ получения</b>{{ ways_to_get[order.wayToGet] }}</p>
         <p class="card-text small"><b>Статус: </b><span class="order_status_{{ order.status }}">
                 {{ statuses[order.status] }}
-                {% if hasNotifications %}
+                {% if hasStatusChangedNotification %}
                     <span class="notifications-indicator" title="Статус заказа изменился"></span>
                 {% endif %}
             </span></p>

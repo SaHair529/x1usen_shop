@@ -290,6 +290,17 @@ header {
     margin-bottom: 1rem;
     margin-left: 1rem;
     box-shadow: 0 0 5px #d6d6d6;
+    position: relative;
+    .notifications-head-indicator {
+      background: lightslategrey;
+      width: 8px;
+      height: 8px;
+      display: inline-block;
+      border-radius: 50%;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+    }
     .card-text, .card-title {
       display: flex;
       justify-content: space-between;

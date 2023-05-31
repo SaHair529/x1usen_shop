@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Order;
-use App\Form\UpdateOrderStatusFormType;
+use App\Form\UpdateOrderFormType;
 use App\Repository\OrderRepository;
 use App\Service\DataMapping;
 use App\Service\NotificationsCreator;
@@ -31,15 +31,16 @@ class OrderCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $changeStatusAction = Action::new('changeStatus', 'Сменить статус')
-            ->linkToCrudAction('changeStatus');
+        $updateOrderAction = Action::new('updateOrder', 'Обновить')
+            ->linkToCrudAction('updateOrder');
 
-        return $actions->add(Crud::PAGE_EDIT, $changeStatusAction);
+        return $actions->add(Crud::PAGE_INDEX, $updateOrderAction)
+            ->remove(Crud::PAGE_INDEX, Action::EDIT);
     }
 
-    public function changeStatus(AdminContext $context)
+    public function updateOrder(AdminContext $context)
     {
-        $updateOrderStatusForm = $this->createForm(UpdateOrderStatusFormType::class, null, [
+        $updateOrderStatusForm = $this->createForm(UpdateOrderFormType::class, null, [
             'attr' => [
                 'placeholder' => $context->getEntity()->getInstance()->getStatus()
             ]
@@ -51,8 +52,9 @@ class OrderCrudController extends AbstractCrudController
             if ($order->getStatus() !== $updateOrderStatusForm->getData()['order_status']) {
                 $order->setStatus($updateOrderStatusForm->getData()['order_status']);
                 $this->orderRep->save($order, true);
+
+                $this->notificationsCreator->createChangeStatusNotification($order);
             }
-            $this->notificationsCreator->createChangeStatusNotification($order);
         }
 
         return $this->render('admin/order/update_status.html.twig', [

@@ -323,6 +323,30 @@ header {
     }
   }
 }
+.order-table {
+  border-radius: 3px;
+  border: .5px #ddd solid;
+  margin-bottom: 3rem;
+  .order-row {
+    display: flex;
+    border-bottom: .5px #ddd solid;
+
+    .order-label, .order-value {
+      padding: 1rem;
+    }
+
+    .order-label {
+      width: 30%;
+      background-color: #f8f8f8;
+    }
+  }
+  a {
+    color: grey;
+    &:hover {
+      color: red;
+    }
+  }
+}
 
 #product-info-modal, #not-authorized-alert-modal, .custom-modal {
   position: fixed;

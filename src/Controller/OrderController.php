@@ -24,6 +24,21 @@ class OrderController extends AbstractController
         $this->waysToGet = $dataMapping->getData('order_ways_to_get');
     }
 
+    #[Route('/item/{id}', name: 'order_page')]
+    public function show($id, OrderRepository $orderRep): Response
+    {
+        if (!is_numeric($id))
+            return $this->redirectToRoute('homepage');
+
+        $order = $orderRep->find($id);
+        if (is_null($order))
+            return $this->redirectToRoute('homepage');
+
+        return $this->render('order/show.html.twig', [
+            'order' => $order
+        ]);
+    }
+
     #[Route('/my_orders', name: 'order_my_orders')]
     #[IsGranted('ROLE_USER')]
     public function index(OrderRepository $orderRep): Response

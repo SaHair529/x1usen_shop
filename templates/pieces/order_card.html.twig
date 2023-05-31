@@ -29,6 +29,8 @@
                     <span class="notifications-indicator" title="Статус заказа изменился"></span>
                 {% endif %}
             </span></p>
+        <p class="card-text"><a href="{{ path('order_page', { 'id': order.id }) }}">Перейти на страницу заказа</a></p>
+
         <hr>
         <p><b>Товары:</b></p>
         {% for item in order.items %}

@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Заказ № {{ order.id }}{% endblock %}
+
+{% set total_price = 0 %}
+{% for item in order.items %}
+    {% set total_price = total_price + item.quantity * item.product.price %}
+{% endfor %}
+
+{% block body %}
+
+    <h5>Итоговая сумма: {{ total_price }}<span class="small">₽</span></h5>
+    <br>
+
+    <div class="order-table">
+        <div class="order-row">
+            <div class="order-label text-muted">
+                Номер заказа
+            </div>
+            <div class="order-value">
+                {{ order.id }}
+            </div>
+        </div>
+        <div class="order-row">
+            <div class="order-label text-muted">
+                Дата заказа
+            </div>
+            <div class="order-value">
+                {{ order.createdAt|date('d.m.Y') }}
+            </div>
+        </div>
+        {% if order.city is not null %}
+            <div class="order-row">
+                <div class="order-label text-muted">
+                    Город
+                </div>
+                <div class="order-value">
+                    {{ order.city }}
+                </div>
+            </div>
+        {% endif %}
+        {% if order.city is not null %}
+            <div class="order-row">
+                <div class="order-label text-muted">
+                    Адрес
+                </div>
+                <div class="order-value">
+                    {{ order.address }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="order-row">
+            <div class="order-label text-muted">
+                Статус заказа
+            </div>
+            <div class="order-value">
+                {{ order.status }}
+            </div>
+        </div>
+        <div class="order-row">
+            <div class="order-label text-muted">
+                ФИО заказчика
+            </div>
+            <div class="order-value">
+                {{ order.clientFullname }}
+            </div>
+        </div>
+        <div class="order-row">
+            <div class="order-label text-muted">
+                Способ получения
+            </div>
+            <div class="order-value">
+                {{ order.wayToGet }}
+            </div>
+        </div>
+        <div class="order-row">
+            <div class="order-label text-muted">
+                Способ оплаты
+            </div>
+            <div class="order-value">
+                {{ order.paymentType }}
+            </div>
+        </div>
+        <div class="order-row">
+            <div class="order-label text-muted">
+                Товары
+            </div>
+            <div class="order-value">
+                {% for item in order.items %}
+                    <p><a href="{{ path('detail_info', { 'id': item.product.id }) }}" class="product-link">{{ item.product.name|slice(0, 100) }}</a></p>
+                    <p>{{ item.quantity }}<span class="small">шт</span> - {{ item.product.price }}<span class="small">₽</span></p>
+                    {% if not loop.last %}
+                        <hr>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="order-comments">
+        <h6>Комментарии</h6>
+        <p class="small text-muted">
+            Комментариев нет. Можете оставить свой вопрос по поводу заказа здесь
+        </p>
+    </div>
+{% endblock %}

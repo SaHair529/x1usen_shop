@@ -37,7 +37,8 @@ class LaximoAPIWrapper
                     $result[] = $replacementOem;
             }
         }
-        unset($result[array_search($oem, $result)]);
+        if (array_search($oem, $result))
+            unset($result[array_search($oem, $result)]);
 
         return array_values($result);
     }

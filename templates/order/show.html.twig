@@ -7,17 +7,24 @@
     {% set total_price = total_price + item.quantity * item.product.price %}
 {% endfor %}
 
+{% set hasNewCommentsNewNotifications = false %}
+{% for notification in order.notifications %}
+    {% if notification.action == 2 %}
+        {% set hasNewCommentsNewNotifications = true %}
+    {% endif %}
+{% endfor %}
+
 {% block body %}
 
     <h5>Итоговая сумма: {{ total_price }}<span class="small">₽</span></h5>
     <br>
 
-    <div class="order-table">
+    <div class="order-table {% if hasNewCommentsNewNotifications %}has-new-comment{% endif %}">
         <div class="order-row">
             <div class="order-label text-muted">
                 Номер заказа
             </div>
-            <div class="order-value">
+            <div class="order-value order-id">
                 {{ order.id }}
             </div>
         </div>

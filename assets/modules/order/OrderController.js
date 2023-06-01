@@ -5,7 +5,8 @@ import Routes from "../Routes";
 export default class OrderController {
     static init() {
         this.orderTablePressHandle()
-        this.clearOrderNotifications()
+        this.clearOrderStatusChangedNotifications()
+        this.clearOrderNewCommentNotifications()
     }
 
     // event handles -----------------------
@@ -30,7 +31,7 @@ export default class OrderController {
         })
     }
 
-    static clearOrderNotifications() {
+    static clearOrderStatusChangedNotifications() {
         if (!window.location.href.includes('/order/my_orders')) {
             return
         }
@@ -42,7 +43,7 @@ export default class OrderController {
         }
 
         if (orderIdsWithNotifications.length > 0) {
-            fetch(Routes.NotificationsController.clear_order_notifications, {
+            fetch(Routes.NotificationsController.clear_status_changed_notifications, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -51,6 +52,25 @@ export default class OrderController {
             }).then(resp => {
                 ResponseHandler.handleClearOrderNotificationsResponse(resp)
             })
+        }
+    }
+
+    static clearOrderNewCommentNotifications() {
+        if (!window.location.href.includes('/order/item')) {
+            return
+        }
+
+        const hasNewCommentNotification = document.querySelector('.has-new-comment')
+        if (hasNewCommentNotification) {
+            const orderId = document.querySelector('.order-id').textContent.trim()
+            fetch(Routes.NotificationsController.clear_order_new_comments_notifications, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ order_id: orderId })
+            })
+
         }
     }
 

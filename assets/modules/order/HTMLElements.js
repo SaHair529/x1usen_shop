@@ -6,6 +6,12 @@ export default class HTMLElements {
         }
     }
 
+    static orderTable = {
+        productLink: {
+            class: 'product-link'
+        }
+    }
+
     static customModal = {
         class: 'custom-modal js-delete-modal'
     }

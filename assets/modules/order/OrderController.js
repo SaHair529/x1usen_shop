@@ -4,16 +4,16 @@ import Routes from "../Routes";
 
 export default class OrderController {
     static init() {
-        this.orderCardPressHandle()
+        this.orderTablePressHandle()
         this.clearOrderNotifications()
     }
 
     // event handles -----------------------
-    static orderCardPressHandle() {
-        const ordersWrapper = document.getElementById('orders')
-        if (ordersWrapper != null) {
-            ordersWrapper.addEventListener('click', function (e) {
-                if (e.target.classList.contains(HTMLElements.orderCard.productLink.class)) {
+    static orderTablePressHandle() {
+        const orderTable = document.querySelector('.order-table')
+        if (orderTable != null) {
+            orderTable.addEventListener('click', function (e) {
+                if (e.target.classList.contains(HTMLElements.orderTable.productLink.class)) {
                     e.preventDefault()
                     const productHref = e.target.getAttribute('href')
                     OrderController.showProductInfoModal(productHref)

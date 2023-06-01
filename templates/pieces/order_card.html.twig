@@ -15,13 +15,8 @@
         <span class="notifications-head-indicator"></span>
     {% endif %}
     <div class="card-body">
-        <p class="card-title small"><b>Номер телефона: </b>{{ order.phoneNumber }}</p>
-        {% if order.city is not null %}
-            <p class="card-text small"><b>Город: </b>{{ order.city }}</p>
-        {% endif %}
-        {% if order.address is not null %}
-            <p class="card-text small"><b>Адрес: </b>{{ order.address }}</p>
-        {% endif %}
+        <p class="card-title small"><b>Номер заказа: </b>{{ order.id }}</p>
+        <p class="card-title small"><b>Дата оформления: </b>{{ order.createdAt|date('d.m.Y') }}</p>
         <p class="card-text small"><b>Способ получения</b>{{ ways_to_get[order.wayToGet] }}</p>
         <p class="card-text small"><b>Статус: </b><span class="order_status_{{ order.status }}">
                 {{ statuses[order.status] }}
@@ -31,17 +26,8 @@
             </span></p>
         <p class="card-text"><a href="{{ path('order_page', { 'id': order.id }) }}">Перейти на страницу заказа</a></p>
 
-        <hr>
-        <p><b>Товары:</b></p>
         {% for item in order.items %}
             {% set total_price = total_price + item.quantity * item.product.price %}
-            <p class="card-text small">
-                <a href="{{ path('detail_info', { 'id': item.product.id }) }}" class="product-link">{{ item.product.name|slice(0, 30) }}...</a>
-            </p>
-            <p class="card-text small">
-                <strong>{{ item.quantity }} шт</strong><strong>{{ item.quantity * item.product.price }}₽</strong>
-            </p>
-            <hr>
         {% endfor %}
         <p class="card-text"><b style="color: #c92e2e">Итоговая цена: </b><strong>{{ total_price }}₽</strong></p>
     </div>

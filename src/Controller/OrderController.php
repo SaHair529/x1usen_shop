@@ -2,11 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\OrderComment;
 use App\Entity\User;
+use App\Form\WriteOrderCommentFormType;
+use App\Repository\OrderCommentRepository;
 use App\Repository\OrderRepository;
 use App\Service\DataMapping;
+use ContainerKKxXyfh\getWriteOrderCommentFormTypeService;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -22,6 +27,37 @@ class OrderController extends AbstractController
     {
         $this->statuses = $dataMapping->getData('order_statuses');
         $this->waysToGet = $dataMapping->getData('order_ways_to_get');
+    }
+
+    #[Route('/item/{id}', name: 'order_page')]
+    #[IsGranted('ROLE_USER')]
+    public function show($id, OrderRepository $orderRep, Request $req, OrderCommentRepository $commentRep): Response
+    {
+        # todo добавить проверку доступа запрашиваемого заказа текущему пользователю
+        if (!is_numeric($id))
+            return $this->redirectToRoute('homepage');
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $order = $orderRep->findOneBy(['id' => $id, 'customer' => $user->getId()]);
+
+        if (is_null($order))
+            return $this->redirectToRoute('homepage');
+
+        $comment = new OrderComment();
+        $commentForm = $this->createForm(WriteOrderCommentFormType::class, $comment);
+        $commentForm->handleRequest($req);
+        if ($commentForm->isSubmitted()) {
+            $comment->setParentOrder($order)
+                ->setSender($user);
+
+            $commentRep->save($comment, true);
+        }
+
+        return $this->render('order/show.html.twig', [
+            'order' => $order,
+            'comment_form' => $commentForm
+        ]);
     }
 
     #[Route('/my_orders', name: 'order_my_orders')]

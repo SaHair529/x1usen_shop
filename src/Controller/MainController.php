@@ -25,9 +25,8 @@ class MainController extends AbstractController
     #[Route('/', name: 'homepage')]
     public function index(Request $req): Response
     {
-        $queryStr = $req->query->get('query_string');
-
-        if ($queryStr !== null) {
+        $queryStr = trim($req->query->get('query_string'));
+        if ($queryStr) {
             return $this->handleSearchRequest($queryStr);
         }
 

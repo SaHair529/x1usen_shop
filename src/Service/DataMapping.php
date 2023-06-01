@@ -9,8 +9,11 @@ namespace App\Service;
 class DataMapping
 {
     private array $order_statuses = [
-        '1' => 'Ожидание оплаты',
-        '2' => 'В обработке'
+        '1' => 'В обработке',
+        '2' => 'Ожидание оплаты',
+        '3' => 'Готово к отгрузке',
+        '4' => 'Ожидание поступления',
+        '5' => 'Доставлено'
     ];
 
     private array $order_ways_to_get = [

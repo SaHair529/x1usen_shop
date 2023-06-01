@@ -51,10 +51,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'recipient', targetEntity: Notification::class, orphanRemoval: true)]
     private Collection $notifications;
 
+    #[ORM\OneToMany(mappedBy: 'sender', targetEntity: OrderComment::class, orphanRemoval: true)]
+    private Collection $orderComments;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->orderComments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -229,6 +233,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($notification->getRecipient() === $this) {
                 $notification->setRecipient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OrderComment>
+     */
+    public function getOrderComments(): Collection
+    {
+        return $this->orderComments;
+    }
+
+    public function addOrderComment(OrderComment $orderComment): self
+    {
+        if (!$this->orderComments->contains($orderComment)) {
+            $this->orderComments->add($orderComment);
+            $orderComment->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderComment(OrderComment $orderComment): self
+    {
+        if ($this->orderComments->removeElement($orderComment)) {
+            // set the owning side to null (unless already changed)
+            if ($orderComment->getSender() === $this) {
+                $orderComment->setSender(null);
             }
         }
 

@@ -1,8 +1,12 @@
 {% if app.user %}
-    {% set notifications = {'order_status_changed': []} %}
+    {% set hasNotifications = app.user.notifications.iterator.count > 0 %}
+
+    {% set notifications = {'order_status_changed': [], 'new_comment': []} %}
     {% for notification in app.user.notifications.iterator %}
         {% if notification.action == 1 %}
             {% set notifications = notifications|merge({'order_status_changed': notifications.order_status_changed|merge([notification])}) %}
+        {% elseif notification.action == 2 %}
+            {% set notifications = notifications|merge({'new_comment': notifications.new_comment|merge([notification])}) %}
         {% endif %}
     {% endfor %}
 {% endif %}
@@ -48,7 +52,7 @@
                             <div class="user-menu-item">
                                 <a class="btn btn-outline-dark cart-link" href="{{ path('cart_items') }}">Корзина</a>
                                 <a class="btn btn-outline-dark order-link" href="{{ path('order_my_orders') }}">Заказы
-                                    {% if notifications.order_status_changed|length > 0 %}
+                                    {% if notifications.order_status_changed|length > 0 or notifications.new_comment|length > 0 %}
                                         <span class="notifications-indicator"></span>
                                     {% endif %}
                                 </a>
@@ -57,7 +61,7 @@
                                 <a class="btn btn-outline-danger w-100 exit-link" href="{{ path('app_logout') }}">Выход</a>
                             </div>
                         </div>
-                        {% if notifications.order_status_changed|length > 0 %}
+                        {% if hasNotifications %}
                             <div class="user-button__notifications-indicator"></div>
                         {% endif %}
                     </div>

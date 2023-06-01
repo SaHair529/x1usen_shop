@@ -29,4 +29,15 @@ class NotificationsCreator
 
         $this->notificationRep->save($notification, true);
     }
+
+    public function createNewCommentNotification(Order $order)
+    {
+        $notification = new Notification();
+        $notification->setAction((new DataMapping())->getKeyByValue('notification_actions', 'new_comment'));
+        $notification->setUpdatedOrder($order);
+        $notification->setRecipient($order->getCustomer());
+        $notification->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')));
+
+        $this->notificationRep->save($notification, true);
+    }
 }

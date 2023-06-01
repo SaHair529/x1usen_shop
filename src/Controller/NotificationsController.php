@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Notification;
 use App\Repository\NotificationRepository;
 use App\Repository\OrderRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +17,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class NotificationsController extends AbstractController
 {
     #[Route('/ajax/clear_notifications', name: 'clear_order_notifications')]
-    public function clearOrderNotifications(Request $req, OrderRepository $orderRep, NotificationRepository $notificationRep): JsonResponse
+    public function clearOrderStatusChangedNotifications(Request $req, OrderRepository $orderRep, NotificationRepository $notificationRep): JsonResponse
     {
         $requestData = json_decode($req->getContent(), true);
         if (!$requestData ||
@@ -31,7 +32,11 @@ class NotificationsController extends AbstractController
         $orders = $orderRep->findBy(['id' => $requestData['order_ids_with_notifications']]);
         $notificationsToDelete = [];
         foreach ($orders as $order) {
-            $notificationsToDelete = array_merge($notificationsToDelete, iterator_to_array($order->getNotifications()->getIterator()));
+            foreach ($order->getNotifications()->getIterator() as $orderNotification) {
+                if ($orderNotification->getAction() === 1) {
+                    $notificationsToDelete[] = $orderNotification;
+                }
+            }
         }
         foreach ($notificationsToDelete as $key => $notification) {
             $notificationRep->remove($notification, $key+1 === count($notificationsToDelete));

@@ -1,16 +1,20 @@
 {% set total_price = 0 %}
 
 {% set hasStatusChangedNotification = false %}
+{% set hasNewCommentStatus = false %}
 {% set hasNotifications = false %}
 
 {% for notification in order.notifications %}
     {% if notification.action == 1 %}
         {% set hasStatusChangedNotification = true %}
         {% set hasNotifications = true %}
+    {% elseif notification.action == 2 %}
+        {% set hasNewCommentStatus = true %}
+        {% set hasNotifications = true %}
     {% endif %}
 {% endfor %}
 
-<div class="card order-card {% if hasNotifications %}order-with-notifications{% endif %}" data-order-id="{{ order.id }}" style="width: 300px">
+<div class="card order-card {% if hasNotifications %}order-with-notifications{% endif %} {% if hasStatusChangedNotification %}order-with-status-changed-notifications{% endif %}" data-order-id="{{ order.id }}" style="width: 300px">
     {% if order.notifications.iterator|length > 0 %}
         <span class="notifications-head-indicator"></span>
     {% endif %}
@@ -25,6 +29,9 @@
                 {% endif %}
             </span></p>
         <p class="card-text"><a href="{{ path('order_page', { 'id': order.id }) }}">Перейти на страницу заказа</a></p>
+        {% if hasNewCommentStatus %}
+            <p class="card-text text-danger small">Есть непрочитанные комментарии</p>
+        {% endif %}
 
         {% for item in order.items %}
             {% set total_price = total_price + item.quantity * item.product.price %}

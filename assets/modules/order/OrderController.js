@@ -36,7 +36,7 @@ export default class OrderController {
         }
 
         const orderIdsWithNotifications = []
-        const ordersWithNotifications = document.querySelectorAll('.order-with-notifications')
+        const ordersWithNotifications = document.querySelectorAll('.order-with-status-changed-notifications')
         for (let i = 0; i < ordersWithNotifications.length; i++) {
             orderIdsWithNotifications.push(ordersWithNotifications[i].dataset.orderId)
         }

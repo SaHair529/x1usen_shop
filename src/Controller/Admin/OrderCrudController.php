@@ -68,10 +68,12 @@ class OrderCrudController extends AbstractCrudController
         $commentForm = $this->createForm(WriteOrderCommentFormType::class, $comment);
         $commentForm->handleRequest($context->getRequest());
         if ($commentForm->isSubmitted()) {
-            $comment->setParentOrder($this->getContext()->getEntity()->getInstance())
+            $order = $this->getContext()->getEntity()->getInstance();
+            $comment->setParentOrder($order)
                 ->setSender($user);
-
             $commentRep->save($comment, true);
+
+            $this->notificationsCreator->createNewCommentNotification($order);
         }
 
         return $this->render('admin/order/update_status.html.twig', [

@@ -48,7 +48,7 @@ class CsvProductImporter
         $product->setBrand(trim($line[$columnNums['brand']]));
         $product->setName(trim($line[$columnNums['name']]));
         $product->setArticleNumber(trim($line[$columnNums['article_number']]));
-        $product->setPrice((float) trim($line[$columnNums['price']]));
+        $product->setPrice(str_replace(',', '', $line[$columnNums['price']]));
         $product->setTotalBalance((float) trim($line[$columnNums['total_balance']]));
         if (isset($columnNums['measurement_unit']))
             $product->setMeasurementUnit(trim($line[$columnNums['measurement_unit']]));

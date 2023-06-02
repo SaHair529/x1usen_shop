@@ -45,19 +45,19 @@ class CsvProductImporter
     private function prepareProductEntityByCsvRow($line, $columnNums): Product
     {
         $product = new Product();
-        $product->setBrand($line[$columnNums['brand']]);
-        $product->setName($line[$columnNums['name']]);
-        $product->setArticleNumber($line[$columnNums['article_number']]);
-        $product->setPrice((float) $line[$columnNums['price']]);
-        $product->setTotalBalance((float) $line[$columnNums['total_balance']]);
+        $product->setBrand(trim($line[$columnNums['brand']]));
+        $product->setName(trim($line[$columnNums['name']]));
+        $product->setArticleNumber(trim($line[$columnNums['article_number']]));
+        $product->setPrice((float) trim($line[$columnNums['price']]));
+        $product->setTotalBalance((float) trim($line[$columnNums['total_balance']]));
         if (isset($columnNums['measurement_unit']))
-            $product->setMeasurementUnit($line[$columnNums['measurement_unit']]);
-        $product->setAdditionalPrice((float) $line[$columnNums['additional_price']]);
-        $product->setImageLink($line[$columnNums['image_link']]);
+            $product->setMeasurementUnit(trim($line[$columnNums['measurement_unit']]));
+        $product->setAdditionalPrice((float) trim($line[$columnNums['additional_price']]));
+        $product->setImageLink(trim($line[$columnNums['image_link']]));
         if (isset($columnNums['technical_description']))
-            $product->setTechnicalDescription($line[$columnNums['technical_description']]);
+            $product->setTechnicalDescription(trim($line[$columnNums['technical_description']]));
         if (isset($columnNums['used']))
-            $product->setUsed($line[$columnNums['used']] === 'новая' ? 0 : 1);
+            $product->setUsed(trim($line[$columnNums['used']]) === 'новая' ? 0 : 1);
 
         return $product;
     }

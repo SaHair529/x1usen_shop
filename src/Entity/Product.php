@@ -44,7 +44,7 @@ class Product
     #[ORM\Column(nullable: true)]
     private ?int $used = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 1000, nullable: true)]
     private ?string $additional_images_links = null;
 
     public function getId(): ?int

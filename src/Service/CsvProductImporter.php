@@ -14,23 +14,6 @@ class CsvProductImporter
 {
     private ProductRepository $productRepo;
 
-    /**
-     * Словарь, с помощью которого можно определять
-     * к какому полю сущности Product относится та или иная колонка таблицы по заголовку колонки (первой строчке)
-     */
-    private const TABLE_TITLE_TO_PRODUCT_FIELD = [
-        'производитель' => 'brand',
-        'наименование' => 'name',
-        'артикул/oem' => 'article_number',
-        'цена' => 'price',
-        'общий остаток' => 'total_balance',
-        'ед измерения' => 'measurement_unit',
-        'цена по доп.прайс-листу' => 'additional_price',
-        'ссылка на изображение' => 'image_link',
-        'тех.описание' => 'technical_description',
-        'бу или новые' => 'used'
-    ];
-
     public function __construct(ProductRepository $productRepo)
     {
         $this->productRepo = $productRepo;
@@ -62,16 +45,19 @@ class CsvProductImporter
     private function prepareProductEntityByCsvRow($line, $columnNums): Product
     {
         $product = new Product();
-        $product->setBrand($line[$columnNums['brand']]);
-        $product->setName($line[$columnNums['name']]);
-        $product->setArticleNumber($line[$columnNums['article_number']]);
-        $product->setPrice((float) $line[$columnNums['price']]);
-        $product->setTotalBalance((float) $line[$columnNums['total_balance']]);
-        $product->setMeasurementUnit($line[$columnNums['measurement_unit']]);
-        $product->setAdditionalPrice((float) $line[$columnNums['additional_price']]);
-        $product->setImageLink($line[$columnNums['image_link']]);
-        $product->setTechnicalDescription($line[$columnNums['technical_description']]);
-        $product->setUsed($line[$columnNums['used']] === 'новая' ? 0 : 1);
+        $product->setBrand(trim($line[$columnNums['brand']]));
+        $product->setName(trim($line[$columnNums['name']]));
+        $product->setArticleNumber(trim($line[$columnNums['article_number']]));
+        $product->setPrice((float) trim($line[$columnNums['price']]));
+        $product->setTotalBalance((float) trim($line[$columnNums['total_balance']]));
+        if (isset($columnNums['measurement_unit']))
+            $product->setMeasurementUnit(trim($line[$columnNums['measurement_unit']]));
+        $product->setAdditionalPrice((float) trim($line[$columnNums['additional_price']]));
+        $product->setImageLink(trim($line[$columnNums['image_link']]));
+        if (isset($columnNums['technical_description']))
+            $product->setTechnicalDescription(trim($line[$columnNums['technical_description']]));
+        if (isset($columnNums['used']))
+            $product->setUsed(trim($line[$columnNums['used']]) === 'новая' ? 0 : 1);
 
         return $product;
     }
@@ -83,7 +69,7 @@ class CsvProductImporter
     {
         $columnNums = [];
         foreach ($titleCsvRow as $num => $title) {
-            $columnNums[self::TABLE_TITLE_TO_PRODUCT_FIELD[mb_strtolower($title)]] = $num;
+            $columnNums[mb_strtolower($title)] = $num;
         }
 
         return $columnNums;

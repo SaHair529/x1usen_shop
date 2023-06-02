@@ -3,7 +3,11 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Order;
+use App\Entity\OrderComment;
+use App\Entity\User;
 use App\Form\UpdateOrderFormType;
+use App\Form\WriteOrderCommentFormType;
+use App\Repository\OrderCommentRepository;
 use App\Repository\OrderRepository;
 use App\Service\DataMapping;
 use App\Service\NotificationsCreator;
@@ -38,8 +42,11 @@ class OrderCrudController extends AbstractCrudController
             ->remove(Crud::PAGE_INDEX, Action::EDIT);
     }
 
-    public function updateOrder(AdminContext $context)
+    public function updateOrder(AdminContext $context, OrderCommentRepository $commentRep)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $updateOrderStatusForm = $this->createForm(UpdateOrderFormType::class, null, [
             'attr' => [
                 'placeholder' => $context->getEntity()->getInstance()->getStatus()
@@ -57,8 +64,22 @@ class OrderCrudController extends AbstractCrudController
             }
         }
 
+        $comment = new OrderComment();
+        $commentForm = $this->createForm(WriteOrderCommentFormType::class, $comment);
+        $commentForm->handleRequest($context->getRequest());
+        if ($commentForm->isSubmitted()) {
+            $order = $this->getContext()->getEntity()->getInstance();
+            $comment->setParentOrder($order)
+                ->setSender($user);
+            $commentRep->save($comment, true);
+
+            $this->notificationsCreator->createNewCommentNotification($order);
+        }
+
         return $this->render('admin/order/update_status.html.twig', [
-            'form' => $updateOrderStatusForm
+            'form' => $updateOrderStatusForm,
+            'comment_form' => $commentForm,
+            'order' => $this->getContext()->getEntity()->getInstance()
         ]);
     }
 

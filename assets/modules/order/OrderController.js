@@ -4,16 +4,17 @@ import Routes from "../Routes";
 
 export default class OrderController {
     static init() {
-        this.orderCardPressHandle()
-        this.clearOrderNotifications()
+        this.orderTablePressHandle()
+        this.clearOrderStatusChangedNotifications()
+        this.clearOrderNewCommentNotifications()
     }
 
     // event handles -----------------------
-    static orderCardPressHandle() {
-        const ordersWrapper = document.getElementById('orders')
-        if (ordersWrapper != null) {
-            ordersWrapper.addEventListener('click', function (e) {
-                if (e.target.classList.contains(HTMLElements.orderCard.productLink.class)) {
+    static orderTablePressHandle() {
+        const orderTable = document.querySelector('.order-table')
+        if (orderTable != null) {
+            orderTable.addEventListener('click', function (e) {
+                if (e.target.classList.contains(HTMLElements.orderTable.productLink.class)) {
                     e.preventDefault()
                     const productHref = e.target.getAttribute('href')
                     OrderController.showProductInfoModal(productHref)
@@ -30,19 +31,19 @@ export default class OrderController {
         })
     }
 
-    static clearOrderNotifications() {
+    static clearOrderStatusChangedNotifications() {
         if (!window.location.href.includes('/order/my_orders')) {
             return
         }
 
         const orderIdsWithNotifications = []
-        const ordersWithNotifications = document.querySelectorAll('.order-with-notifications')
+        const ordersWithNotifications = document.querySelectorAll('.order-with-status-changed-notifications')
         for (let i = 0; i < ordersWithNotifications.length; i++) {
             orderIdsWithNotifications.push(ordersWithNotifications[i].dataset.orderId)
         }
 
         if (orderIdsWithNotifications.length > 0) {
-            fetch(Routes.NotificationsController.clear_order_notifications, {
+            fetch(Routes.NotificationsController.clear_status_changed_notifications, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -51,6 +52,25 @@ export default class OrderController {
             }).then(resp => {
                 ResponseHandler.handleClearOrderNotificationsResponse(resp)
             })
+        }
+    }
+
+    static clearOrderNewCommentNotifications() {
+        if (!window.location.href.includes('/order/item')) {
+            return
+        }
+
+        const hasNewCommentNotification = document.querySelector('.has-new-comment')
+        if (hasNewCommentNotification) {
+            const orderId = document.querySelector('.order-id').textContent.trim()
+            fetch(Routes.NotificationsController.clear_order_new_comments_notifications, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ order_id: orderId })
+            })
+
         }
     }
 

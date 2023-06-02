@@ -33,7 +33,6 @@ class OrderController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show($id, OrderRepository $orderRep, Request $req, OrderCommentRepository $commentRep): Response
     {
-        # todo добавить проверку доступа запрашиваемого заказа текущему пользователю
         if (!is_numeric($id))
             return $this->redirectToRoute('homepage');
 

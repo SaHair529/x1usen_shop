@@ -28,7 +28,8 @@ class DataMapping
     ];
 
     private array $notification_actions = [
-        '1' => 'order_status_changed'
+        '1' => 'order_status_changed',
+        '2' => 'new_comment'
     ];
 
     public function getData($dataContainer): array

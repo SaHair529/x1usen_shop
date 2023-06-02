@@ -44,6 +44,9 @@ class Product
     #[ORM\Column(nullable: true)]
     private ?int $used = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $additional_images_links = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -178,5 +181,17 @@ class Product
     {
         if ($this->total_balance >= $quantity)
             $this->total_balance -= $quantity;
+    }
+
+    public function getAdditionalImagesLinks(): ?string
+    {
+        return $this->additional_images_links;
+    }
+
+    public function setAdditionalImagesLinks(?string $additional_images_links): self
+    {
+        $this->additional_images_links = $additional_images_links;
+
+        return $this;
     }
 }

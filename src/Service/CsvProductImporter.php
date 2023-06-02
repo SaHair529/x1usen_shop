@@ -58,6 +58,8 @@ class CsvProductImporter
             $product->setTechnicalDescription(trim($line[$columnNums['technical_description']]));
         if (isset($columnNums['used']))
             $product->setUsed(trim($line[$columnNums['used']]) === 'новая' ? 0 : 1);
+        if (isset($columnNums['additional_images_links']))
+            $product->setAdditionalImagesLinks(trim($line[$columnNums['additional_images_links']]));
 
         return $product;
     }

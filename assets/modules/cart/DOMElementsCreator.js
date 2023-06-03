@@ -27,6 +27,19 @@ export default class DOMElementsCreator {
         return buttonsContainer
     }
 
+    static createArrows() {
+        const leftArrow = document.createElement('div')
+        const rightArrow = document.createElement('div')
+
+        rightArrow.className = 'right_arrow'
+        leftArrow.className = 'left_arrow'
+
+        return {
+            leftArrow: leftArrow,
+            rightArrow: rightArrow
+        }
+    }
+
     /**
      * Создание непосредственно элемента, в котором будет вестись счёт
      * @param itemQuantity

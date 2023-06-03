@@ -48,7 +48,7 @@ class CsvProductImporter
         $product->setBrand(trim($line[$columnNums['brand']]));
         $product->setName(trim($line[$columnNums['name']]));
         $product->setArticleNumber(trim($line[$columnNums['article_number']]));
-        $product->setPrice((float) trim($line[$columnNums['price']]));
+        $product->setPrice((float) str_replace(',', '', $line[$columnNums['price']]));
         $product->setTotalBalance((float) trim($line[$columnNums['total_balance']]));
         if (isset($columnNums['measurement_unit']))
             $product->setMeasurementUnit(trim($line[$columnNums['measurement_unit']]));
@@ -58,6 +58,8 @@ class CsvProductImporter
             $product->setTechnicalDescription(trim($line[$columnNums['technical_description']]));
         if (isset($columnNums['used']))
             $product->setUsed(trim($line[$columnNums['used']]) === 'новая' ? 0 : 1);
+        if (isset($columnNums['additional_images_links']))
+            $product->setAdditionalImagesLinks(trim($line[$columnNums['additional_images_links']]));
 
         return $product;
     }

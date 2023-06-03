@@ -82,6 +82,24 @@ header {
   }
 }
 
+.left_arrow, .right_arrow {
+  width: 20px;
+  height: 20px;
+  border-left: 3px #fff solid;
+  border-top: 3px #fff solid;
+  position: absolute;
+}
+
+.left_arrow {
+  transform: rotate(-45deg);
+  left: 150px;
+}
+
+.right_arrow {
+  transform: rotate(135deg);
+  right: 150px;
+}
+
 .login-form-container {
   display: flex;
   align-items: center;

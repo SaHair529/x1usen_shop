@@ -68,7 +68,7 @@ class MainController extends AbstractController
 //            $vehicle = $oemService->findVehicle($queryStr)->getVehicles()[0] ?? []; # todo uncomment
 //            file_put_contents(__DIR__.'/../../serialized_data/serialized_vehicle.txt', serialize($vehicle)); # todo remove
             $vehicle = unserialize(file_get_contents(__DIR__.'/../../serialized_data/serialized_vehicle.txt')); # todo remove
-            $vehicle = []; // todo remove
+//            $vehicle = []; // todo remove
             if (!empty($vehicle)) {
                 $detailGroups = $oemService->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
                 return $this->render('main/search_response.html.twig', [

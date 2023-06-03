@@ -71,15 +71,6 @@ export default class HTMLAttributesNaming {
         class: 'custom-modal detail-image-modal js-delete-modal',
         attributes: [
             { id: 'detail-image-modal' }
-        ],
-        children: [
-            {
-                tagName: 'img',
-                attributes: [
-                    { src: '' },
-                    { alt: 'Деталь' }
-                ]
-            }
         ]
     }
 

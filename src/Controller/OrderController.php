@@ -27,6 +27,7 @@ class OrderController extends AbstractController
     {
         $this->statuses = $dataMapping->getData('order_statuses');
         $this->waysToGet = $dataMapping->getData('order_ways_to_get');
+        $this->paymentTypes = $dataMapping->getData('order_payment_types');
     }
 
     #[Route('/item/{id}', name: 'order_page')]
@@ -55,6 +56,9 @@ class OrderController extends AbstractController
 
         return $this->render('order/show.html.twig', [
             'order' => $order,
+            'statuses' => $this->statuses,
+            'ways_to_get' => $this->waysToGet,
+            'payment_types' => $this->paymentTypes,
             'comment_form' => $commentForm
         ]);
     }

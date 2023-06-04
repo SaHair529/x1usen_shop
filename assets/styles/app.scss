@@ -88,6 +88,10 @@ header {
   border-left: 3px #fff solid;
   border-top: 3px #fff solid;
   position: absolute;
+  cursor: pointer;
+  &:hover {
+    border-color: red;
+  }
 }
 
 .left_arrow {

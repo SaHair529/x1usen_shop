@@ -101,6 +101,18 @@ header {
   color: red;
 }
 
+.details404 {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-height: 83vh;
+  &icon {
+    width: 100px;
+    color: gray;
+  }
+}
+
 .left_arrow, .right_arrow {
   width: 20px;
   height: 20px;
@@ -157,6 +169,7 @@ header {
 
 .unit-card {
   display: flex;
+  margin-bottom: 1rem;
   &__img-wrapper {
     width: 200px;
     height: 240px;
@@ -172,6 +185,7 @@ header {
     }
   }
   &__info {
+    padding-top: 5px;
     a {
       color: grey;
       &:hover {
@@ -634,17 +648,6 @@ header {
       justify-content: center;
       align-items: center;
       max-height: 83vh;
-    }
-    .details404 {
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      max-height: 83vh;
-      &icon {
-        width: 100px;
-        color: gray;
-      }
     }
   }
 }

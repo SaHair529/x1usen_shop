@@ -5,13 +5,7 @@ export default class Renderer {
 
     static renderUnitCards(unitCards) {
         const detailsWindow = document.getElementById(HTMLElements.detailsWindow.id)
-        if (unitCards) {
-            detailsWindow.innerHTML = unitCards
-        }
-        else {
-            detailsWindow.innerHTML = ''
-            detailsWindow.appendChild(DOMElementsCreator.createDetails404())
-        }
+        detailsWindow.innerHTML = unitCards
     }
 
     static renderLoaderInDetailsWindow() {

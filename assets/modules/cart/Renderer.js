@@ -36,9 +36,12 @@ export default class Renderer {
         detailCardsModal.classList.add('js-delete-modal')
         detailCardsWrapper.className = 'detail-cards-wrapper'
 
-        detailCardsWrapper.innerHTML = productCardsTemplate
-        detailCardsModal.appendChild(detailCardsWrapper)
+        if (productCardsTemplate)
+            detailCardsWrapper.innerHTML = productCardsTemplate
+        else
+            detailCardsWrapper.appendChild(DOMElementsCreator.createDetails404())
 
+        detailCardsModal.appendChild(detailCardsWrapper)
         document.querySelector('body').appendChild(detailCardsModal)
     }
 

@@ -10,7 +10,7 @@ class LaximoAPIWrapper
 
     public function __construct()
     {
-        $this->am = new ServiceAm(getenv('AM_LOGIN'), getenv('AM_PASSWORD'));
+        $this->am = new ServiceAm($_ENV['AM_LOGIN'], $_ENV['AM_PASSWORD']);
     }
 
     /**

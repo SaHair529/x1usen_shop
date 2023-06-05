@@ -27,6 +27,20 @@ export default class DOMElementsCreator {
         return buttonsContainer
     }
 
+    static createDetails404() {
+        const details404 = document.createElement('div')
+        const details404icon = document.createElement('p')
+
+        details404.classList.add('details404')
+        details404icon.className = 'details404icon'
+
+        details404icon.innerText = 'Ничего не найдено :('
+
+        details404.appendChild(details404icon)
+
+        return details404
+    }
+
     static createArrows() {
         const leftArrow = document.createElement('div')
         const rightArrow = document.createElement('div')

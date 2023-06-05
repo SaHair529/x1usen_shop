@@ -3,15 +3,9 @@ import DOMElementsCreator from "./DOMElementsCreator";
 
 export default class Renderer {
 
-    static renderDetailCards(detailCards) {
+    static renderUnitCards(unitCards) {
         const detailsWindow = document.getElementById(HTMLElements.detailsWindow.id)
-        if (detailCards) {
-            detailsWindow.innerHTML = detailCards
-        }
-        else {
-            detailsWindow.innerHTML = ''
-            detailsWindow.appendChild(DOMElementsCreator.createDetails404())
-        }
+        detailsWindow.innerHTML = unitCards
     }
 
     static renderLoaderInDetailsWindow() {

@@ -1,0 +1,5 @@
+{% for category in categories %}
+    {% for unit in category.units %}
+        {% include 'pieces/unit_card.html.twig' with { 'unit': unit } %}
+    {% endfor %}
+{% endfor %}

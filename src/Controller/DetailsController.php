@@ -38,36 +38,25 @@ class DetailsController extends AbstractController
         $categories = $this->serviceOem->listQuickDetail($req->query->get('catalog'),
             $req->query->get('vehicle_id'),
             $req->query->get('vehicle_ssd'),
-            $req->query->get('group_id'));
-        dd($categories);
+            $req->query->get('group_id'))->getCategories();
+
+        return $this->render('details/categories-list.html.twig', [
+            'categories' => $categories
+        ]);
     }
 
-    #[Route('/list', name: 'list_details')]
-    public function listDetails(Request $req, ProductRepository $productRepo): Response
+    #[Route('/ajax/details', name: 'details_list_details')]
+    public function listDetails(Request $req, ProductRepository $productRep): Response
     {
-        if (!$req->query->has('catalog') ||
-            !$req->query->has('vehicle_id') ||
-            !$req->query->has('vehicle_ssd') ||
-            !$req->query->has('group_id'))
-        {
-            return $this->redirectToRoute('homepage');
+        $oems = explode(',', json_decode($req->getContent(), true)['oems'] ?? '');
+        if (empty($oems)) {
+            return new JsonResponse([
+                'message' => 'Invalid request data',
+                'valid data example' => '{"oems":"1125406206B,1420608250B,1471175006B"}'
+            ]);
         }
 
-        $categories = $this->serviceOem->listQuickDetail($req->query->get('catalog'),
-            $req->query->get('vehicle_id'),
-            $req->query->get('vehicle_ssd'),
-            $req->query->get('group_id'));
-
-        $products = [];
-        foreach ($categories->getCategories() as $detailCategory) {
-            foreach ($detailCategory->getUnits() as $detailUnit) {
-                foreach ($detailUnit->getParts() as $detailPart) {
-                    $product = $productRepo->findOneBy(['article_number' => $detailPart->getOem()]);
-                    if ($product !== null && !isset($products[$product->getArticleNumber()]))
-                        $products[$product->getArticleNumber()] = $product;
-                }
-            }
-        }
+        $products = $productRep->findBy(['article_number' => $oems]);
         return $this->render('details/details-list.html.twig', [
             'products' => $products
         ]);

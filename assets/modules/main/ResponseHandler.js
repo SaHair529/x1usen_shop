@@ -1,7 +1,7 @@
 import Renderer from './Renderer'
 
 export default class ResponseHandler {
-    static handleGetDetailItemsResponse(resp) {
-        resp.text().then(detailCards => Renderer.renderDetailCards(detailCards))
+    static handleGetUnits(resp) {
+        resp.text().then(detailCards => Renderer.renderUnitCards(detailCards))
     }
 }

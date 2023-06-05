@@ -1,6 +1,7 @@
 import AttributesNaming from "./HTMLAttributesNaming"
 import ElementsCreator from "./DOMElementsCreator";
 import DOMElementsCreator from "./DOMElementsCreator";
+import BaseElementsCreator from "../BaseElementsCreator";
 
 export default class Renderer {
     static shakeElement(element) {
@@ -26,6 +27,22 @@ export default class Renderer {
             .querySelector('.detail-link')
             .after(alert)
 
+    }
+
+    static renderDetailCardsModal(productCardsTemplate) {
+        const detailCardsModal = BaseElementsCreator.createModal()
+        const detailCardsWrapper = document.createElement('div')
+
+        detailCardsModal.classList.add('js-delete-modal')
+        detailCardsWrapper.className = 'detail-cards-wrapper'
+
+        if (productCardsTemplate)
+            detailCardsWrapper.innerHTML = productCardsTemplate
+        else
+            detailCardsWrapper.appendChild(DOMElementsCreator.createDetails404())
+
+        detailCardsModal.appendChild(detailCardsWrapper)
+        document.querySelector('body').appendChild(detailCardsModal)
     }
 
     static disableIncreaseButton() {

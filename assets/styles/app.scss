@@ -101,6 +101,18 @@ header {
   color: red;
 }
 
+.details404 {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-height: 83vh;
+  &icon {
+    width: 100px;
+    color: gray;
+  }
+}
+
 .left_arrow, .right_arrow {
   width: 20px;
   height: 20px;
@@ -152,6 +164,37 @@ header {
     label {
       margin-right: 1rem;
     }
+  }
+}
+
+.unit-card {
+  display: flex;
+  margin-bottom: 1rem;
+  &__img-wrapper {
+    width: 200px;
+    height: 240px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f2f2f2;
+    margin-right: 1rem;
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      mix-blend-mode: multiply;
+    }
+  }
+  &__info {
+    padding-top: 5px;
+    a {
+      color: grey;
+      &:hover {
+        color: red;
+      }
+    }
+  }
+  &__unit-code {
+    color: cornflowerblue;
   }
 }
 
@@ -214,7 +257,7 @@ header {
     }
   }
   &__img {
-    max-width: 100%;
+    max-width: 100% !important;
     max-height: 100%;
   }
   &__info {
@@ -384,6 +427,15 @@ header {
       color: red;
     }
   }
+}
+
+.detail-cards-wrapper {
+  background-color: #fff;
+  width: 40%;
+  height: 70vh;
+  padding: 1rem;
+  border-radius: 5px;
+  overflow-x: auto;
 }
 
 #product-info-modal, #not-authorized-alert-modal, .custom-modal {
@@ -597,17 +649,6 @@ header {
       justify-content: center;
       align-items: center;
       max-height: 83vh;
-    }
-    .details404 {
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      max-height: 83vh;
-      &icon {
-        width: 100px;
-        color: gray;
-      }
     }
   }
 }

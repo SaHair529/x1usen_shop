@@ -19,7 +19,7 @@ export default class MainController {
                     MainController.toggleTreeItem(e.target)
                 else if (e.target['classList'].contains(HTMLElements.detailsTree.parentItem.detailLink.class)) {
                     e.preventDefault()
-                    MainController.renderDetailItems(e.target)
+                    MainController.renderUnits(e.target)
                 }
             })
         }
@@ -68,10 +68,10 @@ export default class MainController {
                 parentItem.classList.add('opened')
         }
     }
-    static renderDetailItems(detailLinkTag) {
+    static renderUnits(detailLinkTag) {
         Renderer.renderLoaderInDetailsWindow()
         fetch(detailLinkTag.getAttribute('href')).then(resp => {
-            ResponseHandler.handleGetDetailItemsResponse(resp)
+            ResponseHandler.handleGetUnits(resp)
         })
     }
 

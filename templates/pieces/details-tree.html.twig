@@ -27,7 +27,7 @@
             {% for childGroup in groupObjects.childGroups %}
                 {% if childGroup.childGroups is empty %}
                     <div class="child">
-                        <a href="{{ path('list_details', {
+                        <a href="{{ path('details_list_categories', {
                             'catalog': catalog,
                             'vehicle_id': vehicle_id,
                             'vehicle_ssd': ssd,

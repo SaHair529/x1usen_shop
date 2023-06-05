@@ -16,34 +16,31 @@ export default class CartController {
     // button handles------------------------
     // обработка всех нажатий в карточке продукта
     static productCardPressHandle() {
-        const productsWindow = document.getElementById('details-window')
-        if (productsWindow != null) {
-            productsWindow.addEventListener('click', function (e) {
-                const productCard = CartController.findParentElementByClass(e.target, 'product-card')
-                if (e.target.classList.contains('product-card__actions-add_to_cart')) {
-                    CartController.addToCart(e.target.dataset.productId).then(resp => {
-                        ResponseHandler.handleAddToCartResponse(resp)
-                    })
-                }
-                else if (e.target.classList.contains(AttributesNaming.productCard.imageZoomBtn.class)) {
-                    let imageTag = e.target.nextElementSibling || e.target.parentElement.nextElementSibling
-                    let imagesUrls = JSON.parse(productCard.dataset.product)['additionalImagesLinks'].split(',')
-                    if (!Array.isArray(imagesUrls))
-                        imagesUrls = []
-                    imagesUrls.unshift(imageTag.getAttribute('src'))
+        document.querySelector('body').addEventListener('click', function (e) {
+            const productCard = CartController.findParentElementByClass(e.target, 'product-card')
+            if (e.target.classList.contains('product-card__actions-add_to_cart')) {
+                CartController.addToCart(e.target.dataset.productId).then(resp => {
+                    ResponseHandler.handleAddToCartResponse(resp)
+                })
+            }
+            else if (e.target.classList.contains(AttributesNaming.productCard.imageZoomBtn.class)) {
+                let imageTag = e.target.nextElementSibling || e.target.parentElement.nextElementSibling
+                let imagesUrls = JSON.parse(productCard.dataset.product)['additionalImagesLinks'].split(',')
+                if (!Array.isArray(imagesUrls))
+                    imagesUrls = []
+                imagesUrls.unshift(imageTag.getAttribute('src'))
 
-                    CartController.showProductImageModal(imagesUrls)
+                CartController.showProductImageModal(imagesUrls)
+            }
+            else {
+                const productCard = e.target.classList.contains('product-card') ? e.target : e.target.closest('.product-card')
+                if (productCard !== null) {
+                    let productInfo = JSON.parse(productCard.dataset.product)
+                    productInfo.route = productCard.dataset.productRoute
+                    CartController.showProductModal(productInfo)
                 }
-                else {
-                    const productCard = e.target.classList.contains('product-card') ? e.target : e.target.closest('.product-card')
-                    if (productCard !== null) {
-                        let productInfo = JSON.parse(productCard.dataset.product)
-                        productInfo.route = productCard.dataset.productRoute
-                        CartController.showProductModal(productInfo)
-                    }
-                }
-            })
-        }
+            }
+        })
     }
 
     static unitCardPressHandle() {

@@ -435,6 +435,7 @@ header {
   height: 70vh;
   padding: 1rem;
   border-radius: 5px;
+  overflow-x: auto;
 }
 
 #product-info-modal, #not-authorized-alert-modal, .custom-modal {

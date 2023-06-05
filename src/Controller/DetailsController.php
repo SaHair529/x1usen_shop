@@ -19,7 +19,7 @@ class DetailsController extends AbstractController
 
     public function __construct()
     {
-        $this->serviceOem = new ServiceOem(getenv('OEM_LOGIN'), getenv('OEM_PASSWORD'));
+        $this->serviceOem = new ServiceOem($_ENV['OEM_LOGIN'], $_ENV['OEM_PASSWORD']);
     }
 
     #[Route('/ajax/categories', name: 'details_list_categories')]

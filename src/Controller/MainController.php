@@ -17,10 +17,10 @@ class MainController extends AbstractController
 
     public function __construct(
         private LaximoAPIWrapper $laximoAPIWrapper,
-        private ProductRepository $productRep
+        private ProductRepository $productRep,
     )
     {
-        $this->serviceOem = new ServiceOem(getenv('OEM_LOGIN'), getenv('OEM_PASSWORD'));
+        $this->serviceOem = new ServiceOem($_ENV['OEM_LOGIN'], $_ENV['OEM_PASSWORD']);
     }
 
     #[Route('/', name: 'homepage')]

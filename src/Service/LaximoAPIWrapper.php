@@ -6,14 +6,11 @@ use GuayaquilLib\ServiceAm;
 
 class LaximoAPIWrapper
 {
-    private const AM_LOGIN = 'ru911476';
-    private const AM_PASS = 'slPGX9ttgilgQyc';
-
     private ServiceAm $am;
 
     public function __construct()
     {
-        $this->am = new ServiceAm(self::AM_LOGIN, self::AM_PASS);
+        $this->am = new ServiceAm(getenv('AM_LOGIN'), getenv('AM_PASSWORD'));
     }
 
     /**

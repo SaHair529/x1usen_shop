@@ -6,7 +6,6 @@ use App\Form\SearchFormType;
 use App\Repository\ProductRepository;
 use App\Service\LaximoAPIWrapper;
 use GuayaquilLib\ServiceOem;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,12 +13,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
 {
+    private ServiceOem $serviceOem;
+
     public function __construct(
-        private LoggerInterface $logger,
         private LaximoAPIWrapper $laximoAPIWrapper,
         private ProductRepository $productRep
     )
     {
+        $this->serviceOem = new ServiceOem(getenv('OEM_LOGIN'), getenv('OEM_PASSWORD'));
     }
 
     #[Route('/', name: 'homepage')]
@@ -63,14 +64,13 @@ class MainController extends AbstractController
     {
         $nothingFound = false;
         if ($queryStr !== null) {
-            $oemService = new ServiceOem('ru926364', 'IoOrIIU5_f_HJqT');
             // vin Z94K241CBMR252528
 //            $vehicle = $oemService->findVehicle($queryStr)->getVehicles()[0] ?? []; # todo uncomment
 //            file_put_contents(__DIR__.'/../../serialized_data/serialized_vehicle.txt', serialize($vehicle)); # todo remove
             $vehicle = unserialize(file_get_contents(__DIR__.'/../../serialized_data/serialized_vehicle.txt')); # todo remove
 //            $vehicle = []; // todo remove
             if (!empty($vehicle)) {
-                $detailGroups = $oemService->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
+                $detailGroups = $this->serviceOem->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
                 return $this->render('main/search_response.html.twig', [
                     'vehicle' => $vehicle,
                     'query_str' => $queryStr,

@@ -60,8 +60,8 @@
             <div class="order-label text-muted">
                 Статус заказа
             </div>
-            <div class="order-value">
-                {{ order.status }}
+            <div class="order-value order_status_{{ order.status }}">
+                {{ statuses[order.status] }}
             </div>
         </div>
         <div class="order-row">
@@ -77,7 +77,7 @@
                 Способ получения
             </div>
             <div class="order-value">
-                {{ order.wayToGet }}
+                {{ ways_to_get[order.wayToGet] }}
             </div>
         </div>
         <div class="order-row">
@@ -85,7 +85,7 @@
                 Способ оплаты
             </div>
             <div class="order-value">
-                {{ order.paymentType }}
+                {{ payment_types[order.paymentType] }}
             </div>
         </div>
         <div class="order-row">

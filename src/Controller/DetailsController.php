@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\CartItem;
 use App\Entity\User;
 use App\Repository\ProductRepository;
 use GuayaquilLib\ServiceOem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,6 +15,33 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/details')]
 class DetailsController extends AbstractController
 {
+    private ServiceOem $serviceOem;
+
+    public function __construct()
+    {
+        $this->serviceOem = new ServiceOem(getenv('OEM_LOGIN'), getenv('OEM_PASSWORD'));
+    }
+
+    #[Route('/ajax/categories', name: 'details_list_categories')]
+    public function listCategories(Request $req): Response
+    {
+        if (!$req->query->has('catalog') ||
+            !$req->query->has('vehicle_id') ||
+            !$req->query->has('vehicle_ssd') ||
+            !$req->query->has('group_id'))
+        {
+            return new JsonResponse([
+                'message' => 'invalid request'
+            ]);
+        }
+
+        $categories = $this->serviceOem->listQuickDetail($req->query->get('catalog'),
+            $req->query->get('vehicle_id'),
+            $req->query->get('vehicle_ssd'),
+            $req->query->get('group_id'));
+        dd($categories);
+    }
+
     #[Route('/list', name: 'list_details')]
     public function listDetails(Request $req, ProductRepository $productRepo): Response
     {
@@ -26,8 +53,7 @@ class DetailsController extends AbstractController
             return $this->redirectToRoute('homepage');
         }
 
-        $oem = new ServiceOem('ru926364', 'IoOrIIU5_f_HJqT');
-        $categories = $oem->listQuickDetail($req->query->get('catalog'),
+        $categories = $this->serviceOem->listQuickDetail($req->query->get('catalog'),
             $req->query->get('vehicle_id'),
             $req->query->get('vehicle_ssd'),
             $req->query->get('group_id'));

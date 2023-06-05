@@ -1,0 +1,15 @@
+{% set unitPartsOems = '' %}
+{% for part in unit.parts %}
+    {% set unitPartsOems = unitPartsOems~part.oem~',' %}
+{% endfor %}
+
+<div class="unit-card small" data-unit-parts-oems="{{ unitPartsOems|trim(',') }}">
+    <div class="unit-card__img-wrapper">
+        <img src="{{ unit.imageUrl }}" alt="">
+    </div>
+    <div class="unit-card__info">
+        <h5>{{ unit.name|capitalize }}</h5>
+        <p class="unit-card__unit-code">Узел {{ unit.code }}</p>
+        <a class="unit-card__items-link" href="{{ path('details_list_details') }}">Показать товары по узлу</a>
+    </div>
+</div>

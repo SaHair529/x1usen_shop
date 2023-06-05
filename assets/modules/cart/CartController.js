@@ -1,6 +1,8 @@
 import AttributesNaming from './HTMLAttributesNaming'
 import ResponseHandler from "./ResponseHandler";
 import DOMElementsCreator from "./DOMElementsCreator";
+import Routes from "../Routes";
+import BaseRenderer from "../BaseRenderer";
 
 export default class CartController {
     static init() {
@@ -8,6 +10,7 @@ export default class CartController {
         this.productInfoModalPressHandle()
         this.cartItemCardPressHandle()
         this.imagesModalPressHandle()
+        this.unitCardPressHandle()
     }
 
     // button handles------------------------
@@ -38,6 +41,20 @@ export default class CartController {
                         productInfo.route = productCard.dataset.productRoute
                         CartController.showProductModal(productInfo)
                     }
+                }
+            })
+        }
+    }
+
+    static unitCardPressHandle() {
+        const detailsWindow = document.getElementById('details-window')
+        if (detailsWindow != null) {
+            detailsWindow.addEventListener('click', function (e) {
+                if (e.target.classList.contains(AttributesNaming.unitCard.itemsLink.class)) {
+                    e.preventDefault()
+                    BaseRenderer.renderFullscreenLoader()
+                    const unitCard = CartController.findParentElementByClass(e.target, 'unit-card')
+                    CartController.showUnitAvailableDetails(unitCard.dataset.unitPartsOems)
                 }
             })
         }
@@ -126,6 +143,18 @@ export default class CartController {
     static showProductModal(productInfo) {
         fetch(`/cart/get_product_cart_item?product_id=${productInfo['id']}`).then(resp => {
             ResponseHandler.handleShowProductModalResponse(resp, productInfo)
+        })
+    }
+
+    static showUnitAvailableDetails(unitPartsOems) {
+        fetch(Routes.DetailsController.details_list_details, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ oems: unitPartsOems })
+        }).then(resp => {
+            ResponseHandler.handleShowUnitAvailableDetailsResponse(resp)
         })
     }
 

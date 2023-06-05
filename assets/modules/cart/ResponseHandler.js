@@ -1,6 +1,7 @@
 import Renderer from "./Renderer"
 import AttributesNaming from "./HTMLAttributesNaming"
 import DOMElementsCreator from "./DOMElementsCreator";
+import BaseRenderer from "../BaseRenderer";
 
 export default class ResponseHandler {
     static handleDecreaseCartItemQuantityResponse(responsePromise) {
@@ -154,6 +155,13 @@ export default class ResponseHandler {
                 const notAuthorizedModal = DOMElementsCreator.createDOMElementByObject(AttributesNaming.notAuthorizedModal_forCreator)
                 document.querySelector('body').appendChild(notAuthorizedModal)
         }
+    }
+
+    static handleShowUnitAvailableDetailsResponse(responsePromise) {
+        responsePromise.text().then(productCardsTemplate => {
+            Renderer.renderDetailCardsModal(productCardsTemplate)
+            BaseRenderer.removeFullscreenLoader()
+        })
     }
 
     static handleShowProductFullInfoModal(responsePromise) {

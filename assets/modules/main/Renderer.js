@@ -3,10 +3,10 @@ import DOMElementsCreator from "./DOMElementsCreator";
 
 export default class Renderer {
 
-    static renderDetailCards(detailCards) {
+    static renderUnitCards(unitCards) {
         const detailsWindow = document.getElementById(HTMLElements.detailsWindow.id)
-        if (detailCards) {
-            detailsWindow.innerHTML = detailCards
+        if (unitCards) {
+            detailsWindow.innerHTML = unitCards
         }
         else {
             detailsWindow.innerHTML = ''

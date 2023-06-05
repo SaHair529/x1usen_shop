@@ -61,6 +61,12 @@ export default class HTMLAttributesNaming {
         }
     }
 
+    static unitCard = {
+        itemsLink: {
+            class: 'unit-card__items-link'
+        }
+    }
+
     static productSumPriceCounter = {
         class: 'sum-price'
     }

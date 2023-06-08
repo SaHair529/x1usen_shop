@@ -8,7 +8,7 @@ use App\Form\WriteOrderCommentFormType;
 use App\Repository\OrderCommentRepository;
 use App\Repository\OrderRepository;
 use App\Service\DataMapping;
-use ContainerKKxXyfh\getWriteOrderCommentFormTypeService;
+use App\Service\NotificationsCreator;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +32,7 @@ class OrderController extends AbstractController
 
     #[Route('/item/{id}', name: 'order_page')]
     #[IsGranted('ROLE_USER')]
-    public function show($id, OrderRepository $orderRep, Request $req, OrderCommentRepository $commentRep): Response
+    public function show($id, OrderRepository $orderRep, Request $req, OrderCommentRepository $commentRep, NotificationsCreator $notificationsCreator): Response
     {
         if (!is_numeric($id))
             return $this->redirectToRoute('homepage');
@@ -52,6 +52,7 @@ class OrderController extends AbstractController
                 ->setSender($user);
 
             $commentRep->save($comment, true);
+            $notificationsCreator->createNewCommentNotificationForAdmins($order);
         }
 
         return $this->render('order/show.html.twig', [

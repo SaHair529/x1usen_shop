@@ -8,6 +8,8 @@ namespace App\Service;
  */
 class DataMapping
 {
+    private array $admin_ids = [3];
+
     private array $order_statuses = [
         '1' => 'В обработке',
         '2' => 'Ожидание оплаты',

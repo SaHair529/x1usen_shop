@@ -7,6 +7,7 @@ use App\Entity\OrderComment;
 use App\Entity\User;
 use App\Form\UpdateOrderFormType;
 use App\Form\WriteOrderCommentFormType;
+use App\Repository\NotificationRepository;
 use App\Repository\OrderCommentRepository;
 use App\Repository\OrderRepository;
 use App\Service\DataMapping;
@@ -21,6 +22,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\HttpFoundation\Response;
 
 class OrderCrudController extends AbstractCrudController
 {
@@ -35,18 +37,24 @@ class OrderCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $updateOrderAction = Action::new('updateOrder', 'Обновить')
+        $updateOrderAction = Action::new('updateOrder', 'Управление заказом')
             ->linkToCrudAction('updateOrder');
 
         return $actions->add(Crud::PAGE_INDEX, $updateOrderAction)
-            ->remove(Crud::PAGE_INDEX, Action::EDIT);
+            ->add(Crud::PAGE_DETAIL, $updateOrderAction)
+            ->remove(Crud::PAGE_INDEX, Action::EDIT)
+            ->remove(Crud::PAGE_DETAIL, Action::EDIT);
     }
 
-    public function updateOrder(AdminContext $context, OrderCommentRepository $commentRep)
+    public function updateOrder(AdminContext $context, OrderCommentRepository $commentRep, NotificationRepository $notificationRep): Response
     {
+        $order = $this->getContext()->getEntity()->getInstance();
+        $orderNotification = $notificationRep->findOneBy(['updated_order' => $order->getId()]);
+        if ($orderNotification != null)
+            $notificationRep->remove($orderNotification, true);
+
         /** @var User $user */
         $user = $this->getUser();
-
         $updateOrderStatusForm = $this->createForm(UpdateOrderFormType::class, null, [
             'attr' => [
                 'placeholder' => $context->getEntity()->getInstance()->getStatus()
@@ -68,7 +76,6 @@ class OrderCrudController extends AbstractCrudController
         $commentForm = $this->createForm(WriteOrderCommentFormType::class, $comment);
         $commentForm->handleRequest($context->getRequest());
         if ($commentForm->isSubmitted()) {
-            $order = $this->getContext()->getEntity()->getInstance();
             $comment->setParentOrder($order)
                 ->setSender($user);
             $commentRep->save($comment, true);

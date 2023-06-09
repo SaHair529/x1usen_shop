@@ -8,6 +8,8 @@ namespace App\Service;
  */
 class DataMapping
 {
+    private array $admin_ids = [3];
+
     private array $order_statuses = [
         '1' => 'В обработке',
         '2' => 'Ожидание оплаты',
@@ -29,8 +31,8 @@ class DataMapping
     ];
 
     private array $notification_actions = [
-        '1' => 'order_status_changed',
-        '2' => 'new_comment'
+        '1' => 'Статус заказа изменён',
+        '2' => 'Новый комментарий'
     ];
 
     public function getData($dataContainer): array

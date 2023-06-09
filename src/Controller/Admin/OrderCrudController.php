@@ -35,11 +35,13 @@ class OrderCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $updateOrderAction = Action::new('updateOrder', 'Обновить')
+        $updateOrderAction = Action::new('updateOrder', 'Управление заказом')
             ->linkToCrudAction('updateOrder');
 
         return $actions->add(Crud::PAGE_INDEX, $updateOrderAction)
-            ->remove(Crud::PAGE_INDEX, Action::EDIT);
+            ->add(Crud::PAGE_DETAIL, $updateOrderAction)
+            ->remove(Crud::PAGE_INDEX, Action::EDIT)
+            ->remove(Crud::PAGE_DETAIL, Action::EDIT);
     }
 
     public function updateOrder(AdminContext $context, OrderCommentRepository $commentRep)

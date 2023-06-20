@@ -39,7 +39,7 @@ class NotificationsCreator
     public function createNewCommentNotification(Order $order)
     {
         $notification = new Notification();
-        $notification->setAction((new DataMapping())->getKeyByValue('notification_actions', 'new_comment'));
+        $notification->setAction((new DataMapping())->getKeyByValue('notification_actions', 'Новый комментарий'));
         $notification->setUpdatedOrder($order);
         $notification->setRecipient($order->getCustomer());
         $notification->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')));
@@ -56,7 +56,7 @@ class NotificationsCreator
 
         foreach ($adminIds as $id) {
             $notification = new Notification();
-            $notification->setAction((new DataMapping())->getKeyByValue('notification_actions', 'new_comment'));
+            $notification->setAction((new DataMapping())->getKeyByValue('notification_actions', 'Новый комментарий'));
             $notification->setUpdatedOrder($order);
             $notification->setRecipient($this->userRep->find($id));
             $notification->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')));

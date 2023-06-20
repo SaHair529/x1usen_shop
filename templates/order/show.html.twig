@@ -9,7 +9,7 @@
 
 {% set hasNewCommentsNewNotifications = false %}
 {% for notification in order.notifications %}
-    {% if notification.action == 2 %}
+    {% if notification.action == 2 and notification.recipient.id == app.user.id %}
         {% set hasNewCommentsNewNotifications = true %}
     {% endif %}
 {% endfor %}

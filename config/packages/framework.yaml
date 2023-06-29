@@ -18,6 +18,14 @@ framework:
     php_errors:
         log: true
 
+    cache:
+        app: cache.adapter.memcached
+        default_memcached_provider: '%env(MEMCACHED_SERVERS)%'
+        pools:
+            cache.memcached:
+                adapter: cache.adapter.memcached
+                public: false
+
 when@test:
     framework:
         test: true

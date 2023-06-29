@@ -19,3 +19,10 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    App\Service\Cacher\BaseCacher:
+        arguments:
+            $cacheAdapter: '@cache.app'
+    App\Service\Cacher\LaximoCacher:
+        arguments:
+            $cacheAdapter: '@cache.app'

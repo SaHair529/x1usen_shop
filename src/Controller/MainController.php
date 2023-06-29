@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\SearchFormType;
 use App\Repository\ProductRepository;
+use App\Service\Cacher\LaximoCacher;
 use App\Service\LaximoAPIWrapper;
 use GuayaquilLib\ServiceOem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,6 +19,7 @@ class MainController extends AbstractController
     public function __construct(
         private LaximoAPIWrapper $laximoAPIWrapper,
         private ProductRepository $productRep,
+        private LaximoCacher $lxCacher
     )
     {
         $this->serviceOem = new ServiceOem($_ENV['OEM_LOGIN'], $_ENV['OEM_PASSWORD']);
@@ -40,7 +42,6 @@ class MainController extends AbstractController
         }
         return $this->render('main/index.html.twig', [
             'search_form' => $searchForm
-//            'products' => $productRepo->getPaginator($page)
         ]);
     }
 
@@ -56,20 +57,22 @@ class MainController extends AbstractController
         $searchForm = $this->createForm(SearchFormType::class);
         return $this->render('main/index.html.twig', [
             'search_form' => $searchForm
-//            'products' => $productRepo->getPaginator($page)
         ]);
     }
 
     private function handleSearchRequest($queryStr): Response
     {
-        $nothingFound = false;
         if ($queryStr !== null) {
-            // vin Z94K241CBMR252528
-//            $vehicle = $oemService->findVehicle($queryStr)->getVehicles()[0] ?? []; # todo uncomment
-//            file_put_contents(__DIR__.'/../../serialized_data/serialized_vehicle.txt', serialize($vehicle)); # todo remove
-            $vehicle = unserialize(file_get_contents(__DIR__.'/../../serialized_data/serialized_vehicle.txt')); # todo remove
-//            $vehicle = []; // todo remove
-            if (!empty($vehicle)) {
+            $vehicle = $this->lxCacher->getVehicleObjectByVin($queryStr);
+            if ($vehicle === null) {
+                $vehicle = $this->serviceOem->findVehicleByVin($queryStr)->getVehicles()[0] ?? null;
+//                $vehicle = unserialize(file_get_contents(__DIR__.'/../../serialized_data/serialized_vehicle.txt')); # todo remove
+                if ($vehicle !== null) {
+                    $this->lxCacher->setVehicleData($vehicle, $queryStr);
+                }
+            }
+
+            if ($vehicle !== null) {
                 $detailGroups = $this->serviceOem->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
                 return $this->render('main/search_response.html.twig', [
                     'vehicle' => $vehicle,

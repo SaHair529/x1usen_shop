@@ -64,6 +64,7 @@ class MainController extends AbstractController
     private function handleSearchRequest($queryStr = ''): Response
     {
         $vehicle = $this->lxCacher->getVehicleObjectByVin($queryStr);
+
         if ($vehicle === null) {
             try {
                 $vehicle = $this->serviceOem->findVehicleByVin($queryStr)->getVehicles()[0] ?? null;
@@ -71,8 +72,14 @@ class MainController extends AbstractController
                 $this->lxCacher->setVehicleData($vehicle, $queryStr);
             } catch (InvalidParameterException) {}
         }
+
         if ($vehicle !== null) {
-            $detailGroups = $this->serviceOem->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
+            $detailGroups = $this->serviceOem->listQuickGroup(
+                $vehicle->getCatalog(),
+                $vehicle->getVehicleId(),
+                $vehicle->getSsd()
+            );
+
             return $this->render('main/search_response.html.twig', [
                 'vehicle' => $vehicle,
                 'query_str' => $queryStr,
@@ -83,6 +90,7 @@ class MainController extends AbstractController
         $replacementsOems = $this->laximoAPIWrapper->getReplacements($queryStr);
         $mainDetails = $this->productRep->findBy(['article_number' => $queryStr]);
         $replacementDetails = $this->productRep->findBy(['article_number' => $replacementsOems]);
+
         if ($mainDetails || $replacementDetails)
             return $this->render('main/oem_search_response.html.twig', [
                 'main_details' => $mainDetails,

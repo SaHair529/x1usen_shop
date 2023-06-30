@@ -6,6 +6,7 @@ use App\Form\SearchFormType;
 use App\Repository\ProductRepository;
 use App\Service\Cacher\LaximoCacher;
 use App\Service\LaximoAPIWrapper;
+use GuayaquilLib\exceptions\InvalidParameterException;
 use GuayaquilLib\ServiceOem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,44 +61,38 @@ class MainController extends AbstractController
         ]);
     }
 
-    private function handleSearchRequest($queryStr): Response
+    private function handleSearchRequest($queryStr = ''): Response
     {
-        if ($queryStr !== null) {
-            $vehicle = $this->lxCacher->getVehicleObjectByVin($queryStr);
-            if ($vehicle === null) {
+        $vehicle = $this->lxCacher->getVehicleObjectByVin($queryStr);
+        if ($vehicle === null) {
+            try {
                 $vehicle = $this->serviceOem->findVehicleByVin($queryStr)->getVehicles()[0] ?? null;
-//                $vehicle = unserialize(file_get_contents(__DIR__.'/../../serialized_data/serialized_vehicle.txt')); # todo remove
-                if ($vehicle !== null) {
-                    $this->lxCacher->setVehicleData($vehicle, $queryStr);
-                }
-            }
-
-            if ($vehicle !== null) {
-                $detailGroups = $this->serviceOem->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
-                return $this->render('main/search_response.html.twig', [
-                    'vehicle' => $vehicle,
-                    'query_str' => $queryStr,
-                    'detail_groups' => $detailGroups,
-                ]);
-            }
-
-            $replacementsOems = $this->laximoAPIWrapper->getReplacements($queryStr);
-            $mainDetails = $this->productRep->findBy(['article_number' => $queryStr]);
-            $replacementDetails = $this->productRep->findBy(['article_number' => $replacementsOems]);
-
-            if ($mainDetails || $replacementDetails)
-                return $this->render('main/oem_search_response.html.twig', [
-                    'main_details' => $mainDetails,
-                    'replacements' => $replacementDetails,
-                    'query_str' => $queryStr
-                ]);
-
-            $this->addFlash('danger', 'Ничего не найдено');
+                // $vehicle = unserialize(file_get_contents(__DIR__.'/../../serialized_data/serialized_vehicle.txt')); # todo remove
+                $this->lxCacher->setVehicleData($vehicle, $queryStr);
+            } catch (InvalidParameterException) {}
+        }
+        if ($vehicle !== null) {
+            $detailGroups = $this->serviceOem->listQuickGroup($vehicle->getCatalog(), $vehicle->getVehicleId(), $vehicle->getSsd());
+            return $this->render('main/search_response.html.twig', [
+                'vehicle' => $vehicle,
+                'query_str' => $queryStr,
+                'detail_groups' => $detailGroups,
+            ]);
         }
 
-        $searchForm = $this->createForm(SearchFormType::class);
+        $replacementsOems = $this->laximoAPIWrapper->getReplacements($queryStr);
+        $mainDetails = $this->productRep->findBy(['article_number' => $queryStr]);
+        $replacementDetails = $this->productRep->findBy(['article_number' => $replacementsOems]);
+        if ($mainDetails || $replacementDetails)
+            return $this->render('main/oem_search_response.html.twig', [
+                'main_details' => $mainDetails,
+                'replacements' => $replacementDetails,
+                'query_str' => $queryStr
+            ]);
+
+        $this->addFlash('danger', 'Ничего не найдено');
         return $this->render('main/index.html.twig', [
-            'search_form' => $searchForm
+            'search_form' => $this->createForm(SearchFormType::class)
         ]);
     }
 }

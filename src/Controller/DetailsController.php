@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\BrandRepository;
 use App\Repository\ProductRepository;
 use GuayaquilLib\ServiceOem;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -95,5 +97,11 @@ class DetailsController extends AbstractController
             'product' => $product,
             'in_cart_quantity' => $inCartQuantity
         ]);
+    }
+
+    #[Route('/ajax/brands', name: 'detail_brands')]
+    public function brands(BrandRepository $brandRep, SerializerInterface $serializer): JsonResponse
+    {
+        return (new JsonResponse(json_decode($serializer->serialize($brandRep->findAll(), 'json'))));
     }
 }

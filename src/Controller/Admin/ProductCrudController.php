@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Product;
 use App\Form\ImportProductsFormType;
+use App\Repository\BrandRepository;
 use App\Service\CsvProductImporter;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -16,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Exception\InsufficientEntityPermissionExcept
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductCrudController extends AbstractCrudController
@@ -53,7 +55,7 @@ class ProductCrudController extends AbstractCrudController
             });
     }
 
-    public function importCsv(AdminContext $context, CsvProductImporter $csvImporter)
+    public function importCsv(AdminContext $context, CsvProductImporter $csvImporter, BrandRepository $brandRep): RedirectResponse|Response
     {
         $importForm = $this->createForm(ImportProductsFormType::class);
         $importForm->handleRequest($context->getRequest());
@@ -66,7 +68,7 @@ class ProductCrudController extends AbstractCrudController
                     'form' => $importForm
                 ]);
             }
-            $csvImporter->importProducts($file);
+            $csvImporter->importProducts($file, $brandRep);
 
             return $this->redirectToRoute('admin');
         }
@@ -74,15 +76,4 @@ class ProductCrudController extends AbstractCrudController
             'form' => $importForm
         ]);
     }
-
-    /*
-    public function configureFields(string $pageName): iterable
-    {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
-    }
-    */
 }

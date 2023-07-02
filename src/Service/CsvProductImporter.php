@@ -2,8 +2,11 @@
 
 namespace App\Service;
 
+use App\Entity\Brand;
 use App\Entity\Product;
+use App\Repository\BrandRepository;
 use App\Repository\ProductRepository;
+use http\Env\Response;
 use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -23,7 +26,7 @@ class CsvProductImporter
      * Импорт товаров из CSV
      * @param UploadedFile $file - csv-файл, который менеджер отправляет по форме в админке
      */
-    public function importProducts(UploadedFile $file)
+    public function importProducts(UploadedFile $file, BrandRepository $brandRep)
     {
         $csvLines = explode(PHP_EOL, $file->getContent());
         $fullCsv = [];
@@ -33,12 +36,27 @@ class CsvProductImporter
         $columnNums = $this->identifyColumnNumbers($fullCsv[0]);
         unset($fullCsv[0]);
         unset($fullCsv[array_key_last($fullCsv)]);
-        $flush = false;
+
+        $brands = [];
         foreach (array_filter($fullCsv) as $key => $line) {
-            if ($key === array_key_last($fullCsv))
-                $flush = true;
+            if (!in_array($brand = trim($line[$columnNums['brand']]), $brands))
+                $brands[] = $brand;
+
             $product = $this->prepareProductEntityByCsvRow($line, $columnNums);
-            $this->productRepo->save($product, $flush);
+            $this->productRepo->save($product, $key === array_key_last($fullCsv));
+        }
+
+        $existingBrandNames = [];
+        $existingBrands = $brandRep->findBy(['brand' => $brands]);
+        foreach ($existingBrands as $brand) {
+            $existingBrandNames[] = $brand->getBrand();
+        }
+
+        $brandsToAdd = array_diff($brands, $existingBrandNames);
+        foreach ($brandsToAdd as $key => $brandName) {
+            $newBrand = new Brand();
+            $newBrand->setBrand($brandName);
+            $brandRep->save($newBrand, $key === array_key_last($brandsToAdd));
         }
     }
 

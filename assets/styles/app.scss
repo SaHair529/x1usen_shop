@@ -563,6 +563,12 @@ header {
     width: 30%;
     height: 30px;
   }
+  a {
+    color: grey;
+    &:hover {
+      color: red;
+    }
+  }
 }
 
 .search-form {

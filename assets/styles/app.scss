@@ -584,6 +584,30 @@ header {
   }
 }
 
+.brands-wrapper {
+  background-color: #fff;
+  width: 40%;
+  max-height: 70vh;
+  padding: 1rem;
+  border-radius: 5px;
+  overflow-x: auto;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10%, 1fr));
+  grid-gap: 1rem 4rem;
+  justify-items: center;
+
+  p {
+    text-align: center;
+    a {
+      color: grey;
+      &:hover {
+        color: red;
+      }
+    }
+  }
+}
+
 #search-response {
   display: flex;
   justify-content: space-between;

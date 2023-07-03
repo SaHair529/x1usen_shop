@@ -8,4 +8,8 @@ export default class ResponseHandler {
     static handleShowBrandsModalResponse(resp) {
         resp.json().then(brands => Renderer.renderBrandsModal(brands))
     }
+
+    static handleShowModelsModalResponse(resp) {
+        resp.json().then(brands => console.log(brands)) // todo show models modal
+    }
 }

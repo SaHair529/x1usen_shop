@@ -1,6 +1,7 @@
 import HTMLElements from "./HTMLElements";
 import DOMElementsCreator from "./DOMElementsCreator";
 import BaseElementsCreator from "../BaseElementsCreator";
+import Routes from "../Routes";
 
 export default class Renderer {
 
@@ -21,7 +22,8 @@ export default class Renderer {
             const brand_A = document.createElement('a')
 
             brand_A.textContent = brands[i]['brand']
-            brand_A.setAttribute('href', '#')
+            brand_A.setAttribute('href', Routes.DetailsController.detail_brand_models+brands[i]['brand'])
+            brand_A.className = 'js-show-models-modal'
 
             brand_P.appendChild(brand_A)
             brandsWrapper.appendChild(brand_P)

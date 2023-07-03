@@ -6,6 +6,7 @@ export default class Routes {
 
     static DetailsController = {
         details_list_details: '/details/ajax/details',
-        detail_brands: '/details/ajax/brands'
+        detail_brands: '/details/ajax/brands',
+        detail_brand_models: '/details/ajax/brand_models/'
     }
 }

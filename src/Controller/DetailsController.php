@@ -104,4 +104,23 @@ class DetailsController extends AbstractController
     {
         return (new JsonResponse(json_decode($serializer->serialize($brandRep->findAll(), 'json'))));
     }
+
+    #[Route('/ajax/brand_models/{brand}', name: 'detail_brand_models')]
+    public function brandModels(string $brand, ProductRepository $productRep)
+    {
+        if ($brand == null)
+            return new JsonResponse([
+                'message' => 'Invalid request data (brand must be stringable)',
+            ], Response::HTTP_BAD_REQUEST);
+
+        $models = [];
+        $products = $productRep->findBy(['brand' => $brand]);
+
+        foreach ($products as $product) {
+            if (!in_array($product->getBrand(), $models))
+                $models[] = $product->getBrand(); # todo Сменить марку на модель
+        }
+
+        return new JsonResponse($models, Response::HTTP_OK);
+    }
 }

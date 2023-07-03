@@ -10,6 +10,7 @@ export default class MainController {
         this.userMenuHoverHandle()
         this.closeModalButtonPressHandle()
         this.handleDynamicButtonsClicks()
+        this.brandsModalPressHandle()
     }
 
     // button handlers
@@ -22,6 +23,15 @@ export default class MainController {
                 }
             })
         }
+    }
+
+    static brandsModalPressHandle() {
+        document.addEventListener('click', function (e) {
+            if (e.target['classList'].contains('js-show-models-modal')) {
+                e.preventDefault()
+                MainController.showModelsModal(e.target.getAttribute('href'))
+            }
+        })
     }
 
     static detailsTreePressHandle() {
@@ -90,6 +100,11 @@ export default class MainController {
     static showBrandsModal() {
         fetch(Routes.DetailsController.detail_brands).then(resp => {
             ResponseHandler.handleShowBrandsModalResponse(resp)
+        })
+    }
+    static showModelsModal(href) {
+        fetch(href).then(resp => {
+            ResponseHandler.handleShowModelsModalResponse(resp)
         })
     }
 

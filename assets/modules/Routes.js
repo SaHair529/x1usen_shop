@@ -9,4 +9,8 @@ export default class Routes {
         detail_brands: '/details/ajax/brands',
         detail_brand_models: '/details/ajax/brand_models/'
     }
+
+    static MainController = {
+        search: '/search'
+    }
 }

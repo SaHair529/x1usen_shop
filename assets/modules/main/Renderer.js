@@ -21,7 +21,7 @@ export default class Renderer {
             const model_A = document.createElement('a')
 
             model_A.textContent = models[i]
-            model_A.setAttribute('href', '#'/*Routes.DetailsController.detail_brand_models+models[i]['brand']*/)
+            model_A.setAttribute('href', Routes.MainController.search+'?vehicle_model='+models[i])
 
             model_P.appendChild(model_A)
             modelsWrapper.appendChild(model_P)

@@ -50,6 +50,11 @@ class MainController extends AbstractController
     public function search(Request $req): Response
     {
         $queryStr = $req->query->get('query_string');
+        $vehicleModel = $req->query->get('vehicle_model');
+
+        if ($vehicleModel !== null)
+            if (($vehicleTreePage = $this->vehicleTreeByVehicleModel($vehicleModel)) !== null)
+                return $vehicleTreePage;
 
         if ($queryStr !== null) {
             return $this->handleSearchRequest($queryStr);
@@ -58,6 +63,25 @@ class MainController extends AbstractController
         $searchForm = $this->createForm(SearchFormType::class);
         return $this->render('main/index.html.twig', [
             'search_form' => $searchForm
+        ]);
+    }
+
+    public function vehicleTreeByVehicleModel($model): ?Response
+    {
+        $vehicle = $this->serviceOem->findVehicle($model)->getVehicles()[0] ?? null;
+        if ($vehicle === null)
+            return null;
+
+        $detailGroups = $this->serviceOem->listQuickGroup(
+            $vehicle->getCatalog(),
+            $vehicle->getVehicleId(),
+            $vehicle->getSsd()
+        );
+
+        return $this->render('main/search_response.html.twig', [
+            'vehicle' => $vehicle,
+            'query_str' => $model,
+            'detail_groups' => $detailGroups,
         ]);
     }
 

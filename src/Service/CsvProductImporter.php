@@ -42,22 +42,22 @@ class CsvProductImporter
         unset($fullCsv[0]);
         unset($fullCsv[array_key_last($fullCsv)]);
 
-        $brands = [];
+        $autoBrands = [];
         foreach (array_filter($fullCsv) as $key => $line) {
-            if (!in_array($brand = trim($line[$columnNums['brand']]), $brands))
-                $brands[] = $brand;
+            if (!in_array($autoBrand = trim($line[$columnNums['auto_brand']]), $autoBrands))
+                $autoBrands[] = $autoBrand;
 
             $product = $this->prepareProductEntityByCsvRow($line, $columnNums);
             $this->productRepo->save($product, $key === array_key_last($fullCsv));
         }
 
         $existingBrandNames = [];
-        $existingBrands = $brandRep->findBy(['brand' => $brands]);
-        foreach ($existingBrands as $brand) {
-            $existingBrandNames[] = $brand->getBrand();
+        $existingBrands = $brandRep->findBy(['brand' => $autoBrands]);
+        foreach ($existingBrands as $autoBrand) {
+            $existingBrandNames[] = $autoBrand->getBrand();
         }
 
-        $brandsToAdd = array_diff($brands, $existingBrandNames);
+        $brandsToAdd = array_diff($autoBrands, $existingBrandNames);
         foreach ($brandsToAdd as $key => $brandName) {
             $newBrand = new Brand();
             $newBrand->setBrand($brandName);
@@ -80,6 +80,8 @@ class CsvProductImporter
     {
         $product = new Product();
         $product->setBrand(trim($line[$columnNums['brand']]));
+        $product->setAutoBrand(trim($line[$columnNums['auto_brand']]));
+        $product->setAutoModel(trim($line[$columnNums['auto_model']]));
         $product->setName(trim($line[$columnNums['name']]));
         $product->setArticleNumber(trim($line[$columnNums['article_number']]));
         $product->setPrice((float) str_replace(',', '', $line[$columnNums['price']]));

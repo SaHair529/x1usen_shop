@@ -11,10 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
-use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
-use EasyCorp\Bundle\EasyAdminBundle\Exception\InsufficientEntityPermissionException;
-use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
+use Exception;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -68,7 +65,12 @@ class ProductCrudController extends AbstractCrudController
                     'form' => $importForm
                 ]);
             }
-            $csvImporter->importProducts($file, $brandRep);
+            try {
+                $csvImporter->importProducts($file, $brandRep);
+            }
+            catch (Exception $ex) {
+                $this->addFlash('danger', $ex->getMessage());
+            }
 
             return $this->redirectToRoute('admin');
         }

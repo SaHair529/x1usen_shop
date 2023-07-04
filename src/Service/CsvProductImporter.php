@@ -6,8 +6,7 @@ use App\Entity\Brand;
 use App\Entity\Product;
 use App\Repository\BrandRepository;
 use App\Repository\ProductRepository;
-use http\Env\Response;
-use JetBrains\PhpStorm\ArrayShape;
+use Exception;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -25,6 +24,7 @@ class CsvProductImporter
     /**
      * Импорт товаров из CSV
      * @param UploadedFile $file - csv-файл, который менеджер отправляет по форме в админке
+     * @throws Exception
      */
     public function importProducts(UploadedFile $file, BrandRepository $brandRep)
     {
@@ -34,6 +34,11 @@ class CsvProductImporter
             $fullCsv[] = str_getcsv($line);
         }
         $columnNums = $this->identifyColumnNumbers($fullCsv[0]);
+
+        $missingColumns = $this->validateTitleColumns($columnNums);
+        if (!empty($missingColumns))
+            throw new Exception('Невалидные заголовки таблицы. Проверьте на наличие следующих заголовков: '.$missingColumns);
+
         unset($fullCsv[0]);
         unset($fullCsv[array_key_last($fullCsv)]);
 
@@ -60,6 +65,17 @@ class CsvProductImporter
         }
     }
 
+    private function validateTitleColumns($columns): string
+    {
+        $missingColumns = '';
+        if (!isset($columns['brand']))
+            $missingColumns .= 'brand';
+        if (!isset($columns['image_link']))
+            $missingColumns .= 'image_link';
+
+        return $missingColumns;
+    }
+
     private function prepareProductEntityByCsvRow($line, $columnNums): Product
     {
         $product = new Product();
@@ -70,7 +86,8 @@ class CsvProductImporter
         $product->setTotalBalance((float) trim($line[$columnNums['total_balance']]));
         if (isset($columnNums['measurement_unit']))
             $product->setMeasurementUnit(trim($line[$columnNums['measurement_unit']]));
-        $product->setAdditionalPrice((float) trim($line[$columnNums['additional_price']]));
+        if (isset($columnNums['additional_price']))
+            $product->setAdditionalPrice((float) trim($line[$columnNums['additional_price']]));
         $product->setImageLink(trim($line[$columnNums['image_link']]));
         if (isset($columnNums['technical_description']))
             $product->setTechnicalDescription(trim($line[$columnNums['technical_description']]));

@@ -1,5 +1,6 @@
 import HTMLElements from "./HTMLElements";
 import DOMElementsCreator from "./DOMElementsCreator";
+import DOMElementsCreator_cart from "./../cart/DOMElementsCreator";
 import BaseElementsCreator from "../BaseElementsCreator";
 import Routes from "../Routes";
 
@@ -26,6 +27,15 @@ export default class Renderer {
             model_P.appendChild(model_A)
             modelsWrapper.appendChild(model_P)
         }
+
+        if (models.length === 0) {
+            const block404 = DOMElementsCreator_cart.createDetails404()
+
+            block404.setAttribute('style', 'height: 500px')
+            modelsWrapper.setAttribute('style', 'display: block')
+            modelsWrapper.appendChild(block404)
+        }
+
 
         modelsModal.appendChild(modelsWrapper)
 

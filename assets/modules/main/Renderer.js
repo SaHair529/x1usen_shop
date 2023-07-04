@@ -10,6 +10,29 @@ export default class Renderer {
         detailsWindow.innerHTML = unitCards
     }
 
+    static renderModelsModal(models) {
+        const modelsModal = document.querySelector('.js-delete-modal')
+        const modelsWrapper = document.createElement('div')
+
+        modelsWrapper.className = 'brands-wrapper'
+
+        for (let i = 0; i < models.length; i++) {
+            const model_P = document.createElement('p')
+            const model_A = document.createElement('a')
+
+            model_A.textContent = models[i]
+            model_A.setAttribute('href', '#'/*Routes.DetailsController.detail_brand_models+models[i]['brand']*/)
+
+            model_P.appendChild(model_A)
+            modelsWrapper.appendChild(model_P)
+        }
+
+        modelsModal.appendChild(modelsWrapper)
+
+        document.querySelector('.brands-wrapper').remove()
+        document.querySelector('body').appendChild(modelsModal)
+    }
+
     static renderBrandsModal(brands) {
         const brandsModal = BaseElementsCreator.createModal()
         const brandsWrapper = document.createElement('div')

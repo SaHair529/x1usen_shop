@@ -106,7 +106,7 @@ class DetailsController extends AbstractController
     }
 
     #[Route('/ajax/brand_models/{brand}', name: 'detail_brand_models')]
-    public function brandModels(string $brand, ProductRepository $productRep)
+    public function brandModels(string $brand, ProductRepository $productRep): JsonResponse
     {
         if ($brand == null)
             return new JsonResponse([
@@ -114,11 +114,11 @@ class DetailsController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
 
         $models = [];
-        $products = $productRep->findBy(['brand' => $brand]);
+        $products = $productRep->findBy(['auto_brand' => $brand]);
 
         foreach ($products as $product) {
-            if (!in_array($product->getBrand(), $models))
-                $models[] = $product->getBrand(); # todo Сменить марку на модель
+            if (!in_array($product->getAutoModel(), $models) && !empty($product->getAutoModel()))
+                $models[] = $product->getAutoModel();
         }
 
         return new JsonResponse($models, Response::HTTP_OK);

@@ -10,6 +10,6 @@ export default class ResponseHandler {
     }
 
     static handleShowModelsModalResponse(resp) {
-        resp.json().then(brands => console.log(brands)) // todo show models modal
+        resp.json().then(models => Renderer.renderModelsModal(models))
     }
 }

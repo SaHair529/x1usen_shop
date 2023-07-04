@@ -44,7 +44,7 @@ class CsvProductImporter
 
         $autoBrands = [];
         foreach (array_filter($fullCsv) as $key => $line) {
-            if (!in_array($autoBrand = trim($line[$columnNums['auto_brand']]), $autoBrands))
+            if (!in_array($autoBrand = trim($line[$columnNums['auto_brand']]), $autoBrands) && !empty($autoBrand))
                 $autoBrands[] = $autoBrand;
 
             $product = $this->prepareProductEntityByCsvRow($line, $columnNums);

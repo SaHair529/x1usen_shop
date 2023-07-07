@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\BrandRepository;
 use App\Repository\ProductRepository;
 use GuayaquilLib\ServiceOem;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -95,5 +97,30 @@ class DetailsController extends AbstractController
             'product' => $product,
             'in_cart_quantity' => $inCartQuantity
         ]);
+    }
+
+    #[Route('/ajax/brands', name: 'detail_brands')]
+    public function brands(BrandRepository $brandRep, SerializerInterface $serializer): JsonResponse
+    {
+        return (new JsonResponse(json_decode($serializer->serialize($brandRep->findAll(), 'json'))));
+    }
+
+    #[Route('/ajax/brand_models/{brand}', name: 'detail_brand_models')]
+    public function brandModels(string $brand, ProductRepository $productRep): JsonResponse
+    {
+        if ($brand == null)
+            return new JsonResponse([
+                'message' => 'Invalid request data (brand must be stringable)',
+            ], Response::HTTP_BAD_REQUEST);
+
+        $models = [];
+        $products = $productRep->findBy(['auto_brand' => $brand]);
+
+        foreach ($products as $product) {
+            if (!in_array($product->getAutoModel(), $models) && !empty($product->getAutoModel()))
+                $models[] = $product->getAutoModel();
+        }
+
+        return new JsonResponse($models, Response::HTTP_OK);
     }
 }

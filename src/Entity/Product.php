@@ -47,6 +47,12 @@ class Product
     #[ORM\Column(length: 1000, nullable: true)]
     private ?string $additional_images_links = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $auto_model = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $auto_brand = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -191,6 +197,30 @@ class Product
     public function setAdditionalImagesLinks(?string $additional_images_links): self
     {
         $this->additional_images_links = $additional_images_links;
+
+        return $this;
+    }
+
+    public function getAutoModel(): ?string
+    {
+        return $this->auto_model;
+    }
+
+    public function setAutoModel(?string $auto_model): self
+    {
+        $this->auto_model = $auto_model;
+
+        return $this;
+    }
+
+    public function getAutoBrand(): ?string
+    {
+        return $this->auto_brand;
+    }
+
+    public function setAutoBrand(?string $auto_brand): self
+    {
+        $this->auto_brand = $auto_brand;
 
         return $this;
     }

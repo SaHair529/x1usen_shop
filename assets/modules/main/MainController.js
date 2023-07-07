@@ -1,16 +1,39 @@
 import HTMLElements from "./HTMLElements";
 import ResponseHandler from "./ResponseHandler";
 import Renderer from "./Renderer";
+import Routes from "../Routes";
 
 export default class MainController {
     static init() {
+        this.searchFormContainerPressHandle()
         this.detailsTreePressHandle()
         this.userMenuHoverHandle()
         this.closeModalButtonPressHandle()
         this.handleDynamicButtonsClicks()
+        this.brandsModalPressHandle()
     }
 
     // button handlers
+    static searchFormContainerPressHandle() {
+        const searchFormContainer = document.querySelector('.search-form-container')
+        if (searchFormContainer != null) {
+            searchFormContainer.addEventListener('click', function (e) {
+                if (e.target['classList'].contains('js-show-brands-modal')) {
+                    MainController.showBrandsModal()
+                }
+            })
+        }
+    }
+
+    static brandsModalPressHandle() {
+        document.addEventListener('click', function (e) {
+            if (e.target['classList'].contains('js-show-models-modal')) {
+                e.preventDefault()
+                MainController.showModelsModal(e.target.getAttribute('href'))
+            }
+        })
+    }
+
     static detailsTreePressHandle() {
         const detailsTree = document.querySelector('.'+HTMLElements.detailsTree.class)
         if (detailsTree != null) {
@@ -72,6 +95,16 @@ export default class MainController {
         Renderer.renderLoaderInDetailsWindow()
         fetch(detailLinkTag.getAttribute('href')).then(resp => {
             ResponseHandler.handleGetUnits(resp)
+        })
+    }
+    static showBrandsModal() {
+        fetch(Routes.DetailsController.detail_brands).then(resp => {
+            ResponseHandler.handleShowBrandsModalResponse(resp)
+        })
+    }
+    static showModelsModal(href) {
+        fetch(href).then(resp => {
+            ResponseHandler.handleShowModelsModalResponse(resp)
         })
     }
 

@@ -53,8 +53,7 @@ class MainController extends AbstractController
         $vehicleModel = $req->query->get('vehicle_model');
 
         if ($vehicleModel !== null)
-            if (($vehicleTreePage = $this->vehicleTreeByVehicleModel($vehicleModel)) !== null)
-                return $vehicleTreePage;
+            return $this->searchByVehicleModel($vehicleModel);
 
         if ($queryStr !== null) {
             return $this->handleSearchRequest($queryStr);
@@ -66,22 +65,18 @@ class MainController extends AbstractController
         ]);
     }
 
-    public function vehicleTreeByVehicleModel($model): ?Response
+    private function searchByVehicleModel(string $vehicleModel)
     {
-        $vehicle = $this->serviceOem->findVehicle($model)->getVehicles()[0] ?? null;
-        if ($vehicle === null)
-            return null;
+        $products = $this->productRep->findBy(['auto_model' => $vehicleModel]);
+        if (empty($products)) {
+            $this->addFlash('danger', 'Ничего не найдено');
+            return $this->render('main/index.html.twig', [
+                'search_form' => $this->createForm(SearchFormType::class)
+            ]);
+        }
 
-        $detailGroups = $this->serviceOem->listQuickGroup(
-            $vehicle->getCatalog(),
-            $vehicle->getVehicleId(),
-            $vehicle->getSsd()
-        );
-
-        return $this->render('main/search_response.html.twig', [
-            'vehicle' => $vehicle,
-            'query_str' => $model,
-            'detail_groups' => $detailGroups,
+        return $this->render('main/vehicle_model_search_response.html.twig', [
+            'main_details' => $products
         ]);
     }
 

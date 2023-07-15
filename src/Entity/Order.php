@@ -53,6 +53,9 @@ class Order
     #[ORM\OneToMany(mappedBy: 'parentOrder', targetEntity: OrderComment::class, orphanRemoval: true)]
     private Collection $comments;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $email = null;
+
     #[Pure]
     public function __construct()
     {
@@ -260,6 +263,18 @@ class Order
                 $comment->setParentOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }

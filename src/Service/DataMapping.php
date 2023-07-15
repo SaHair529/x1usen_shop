@@ -35,6 +35,18 @@ class DataMapping
         '2' => 'Новый комментарий'
     ];
 
+    private array $google_services_credentials_filenames = [
+        'gmail' => 'gmail_credentials.json'
+    ];
+
+    private array $google_services_accesstoken_filenames = [
+        'gmail' => 'gmail_accesstoken.json'
+    ];
+
+    private array $igg_thirdparty_data = [
+        'email' => 'sa.hairulaev@gmail.com'
+    ];
+
     public function getData($dataContainer): array
     {
         return $this->$dataContainer;

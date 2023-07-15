@@ -29,15 +29,7 @@ class EmailSender
         $this->client->setAuthConfig($credentialsFilePath);
         $this->client->addScope(Gmail::GMAIL_SEND);
 
-        if (file_exists($accessTokenFilepath)) {
-            $accessToken = json_decode(file_get_contents($accessTokenFilepath), true);
-            $this->client->setAccessToken($accessToken);
-        }
-
-        if (!$this->client->getAccessToken() || $this->client->isAccessTokenExpired()) {
-            $accessToken = $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
-            file_put_contents($accessTokenFilepath, json_encode($accessToken));
-        }
+        $this->updateAccessTokenIfNeeded($accessTokenFilepath);
     }
 
     public function sendEmailByIGG(string $recipient)
@@ -49,5 +41,24 @@ class EmailSender
         $message->setRaw(base64_encode($raw));
 
         $service->users_messages->send('me', $message);
+    }
+
+    public function updateAccessTokenIfNeeded(string $accessTokenFilepath)
+    {
+        if (file_exists($accessTokenFilepath)) {
+            $accessToken = json_decode(file_get_contents($accessTokenFilepath), true);
+            $this->client->setAccessToken($accessToken);
+        }
+
+        if (!$this->client->getAccessToken() || $this->client->isAccessTokenExpired()) {
+            if ($this->client->getRefreshToken()) {
+                $accessToken = $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
+                file_put_contents($accessTokenFilepath, json_encode($accessToken));
+            }
+            else {
+                header('Location: '. $this->client->createAuthUrl());
+                die;
+            }
+        }
     }
 }

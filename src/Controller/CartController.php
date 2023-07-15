@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\ThirdParty\Google\EmailSender;
 use App\ControllerHelper\CartController\ResponseCreator;
 use App\Entity\Cart;
 use App\Entity\CartItem;
@@ -31,7 +32,7 @@ class CartController extends AbstractController
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping): Response
+    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping, EmailSender $emailSender): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -49,6 +50,8 @@ class CartController extends AbstractController
             $order->setPhoneNumber($orderForm->get('phone_number')->getData());
             $order->setPaymentType($orderForm->get('payment_type')->getData());
 
+            if (($email = $orderForm->get('email')->getData()) !== null)
+                $order->setEmail($email);
             if (($city = $orderForm->get('city')->getData()) !== null)
                 $order->setCity($city);
             if (($address = $orderForm->get('address')->getData()) !== null)
@@ -69,6 +72,8 @@ class CartController extends AbstractController
                 $cartItems[$i]->setInOrder(true);
                 $cartItemRep->save($cartItems[$i], $i+1 === count($cartItems));
             }
+            if ($email !== null)
+                $emailSender->sendEmailByIGG($email);
             $this->addFlash('success', 'Заказ успешно оформлен');
         }
         elseif ($orderForm->isSubmitted() && count($cartItemsIds) <= 0) {

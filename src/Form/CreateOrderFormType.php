@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Email;
 
 class CreateOrderFormType extends AbstractType
 {
@@ -38,6 +39,15 @@ class CreateOrderFormType extends AbstractType
                     'class' => 'form-control'
                 ],
                 'label' => false
+            ])
+            ->add('email', TextType::class, [
+                'required' => false,
+                'label' => false,
+                'attr' => [
+                    'placeholder' => 'Email(Необязательно)',
+                    'class' => 'form-control'
+                ],
+                'constraints' => [new Email()]
             ])
             ->add('city', TextType::class, [
                 'attr' => [

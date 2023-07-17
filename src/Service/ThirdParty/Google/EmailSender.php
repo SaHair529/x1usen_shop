@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\ThirdParty\Google;
+namespace App\Service\ThirdParty\Google;
 
 use App\Service\DataMapping;
 use Google\Client;

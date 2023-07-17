@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Controller\ThirdParty\Google\EmailSender;
+use App\Service\ThirdParty\Google\EmailSender;
 use App\ControllerHelper\CartController\ResponseCreator;
 use App\Entity\Cart;
 use App\Entity\CartItem;

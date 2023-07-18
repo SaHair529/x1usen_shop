@@ -16,10 +16,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class CsvProductImporter
 {
     private ProductRepository $productRepo;
+    private array $requiredColumns;
 
-    public function __construct(ProductRepository $productRepo, private DataMapping $dataMapping)
+    #[Pure]
+    public function __construct(ProductRepository $productRepo, DataMapping $dataMapping)
     {
         $this->productRepo = $productRepo;
+        $this->requiredColumns = $dataMapping->getData('import_table_title_columns');
     }
 
     /**
@@ -48,6 +51,7 @@ class CsvProductImporter
             if (!in_array($autoBrand = trim($line[$columnNums['auto_brand']]), $autoBrands) && !empty($autoBrand))
                 $autoBrands[] = $autoBrand;
 
+            $this->validateLine($line, $key+1, $columnNums);
             $product = $this->prepareProductEntityByCsvRow($line, $columnNums);
             $this->productRepo->save($product, $key === array_key_last($fullCsv));
         }
@@ -72,7 +76,7 @@ class CsvProductImporter
         $requiredColumns = $this->dataMapping->getData('import_table_title_columns');
         $missingColumns = '';
 
-        foreach ($requiredColumns as $requiredCol) {
+        foreach ($this->requiredColumns as $requiredCol) {
             if (!isset($columns[$requiredCol])) {
                 if (strlen($missingColumns) === 0)
                     $missingColumns .= $requiredCol;
@@ -82,6 +86,17 @@ class CsvProductImporter
         }
 
         return $missingColumns;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function validateLine(array $line, int $lineNum, array $columnNums)
+    {
+        foreach ($this->requiredColumns as $requiredCol) {
+            if (!isset($line[$columnNums[$requiredCol]]))
+                throw new Exception("Проверьте на валидность строку № $lineNum (Не видно $requiredCol)");
+        }
     }
 
     private function prepareProductEntityByCsvRow($line, $columnNums): Product

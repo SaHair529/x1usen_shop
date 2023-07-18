@@ -7,6 +7,7 @@ use App\Entity\Product;
 use App\Repository\BrandRepository;
 use App\Repository\ProductRepository;
 use Exception;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -16,7 +17,7 @@ class CsvProductImporter
 {
     private ProductRepository $productRepo;
 
-    public function __construct(ProductRepository $productRepo)
+    public function __construct(ProductRepository $productRepo, private DataMapping $dataMapping)
     {
         $this->productRepo = $productRepo;
     }
@@ -65,13 +66,20 @@ class CsvProductImporter
         }
     }
 
+    #[Pure]
     private function validateTitleColumns($columns): string
     {
+        $requiredColumns = $this->dataMapping->getData('import_table_title_columns');
         $missingColumns = '';
-        if (!isset($columns['brand']))
-            $missingColumns .= 'brand';
-        if (!isset($columns['image_link']))
-            $missingColumns .= 'image_link';
+
+        foreach ($requiredColumns as $requiredCol) {
+            if (!isset($columns[$requiredCol])) {
+                if (strlen($missingColumns) === 0)
+                    $missingColumns .= $requiredCol;
+                else
+                    $missingColumns .= ", $requiredCol";
+            }
+        }
 
         return $missingColumns;
     }

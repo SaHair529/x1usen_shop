@@ -73,7 +73,6 @@ class CsvProductImporter
     #[Pure]
     private function validateTitleColumns($columns): string
     {
-        $requiredColumns = $this->dataMapping->getData('import_table_title_columns');
         $missingColumns = '';
 
         foreach ($this->requiredColumns as $requiredCol) {

@@ -52,7 +52,8 @@ class CsvProductImporter
                 $autoBrands[] = $autoBrand;
 
             $this->validateLine($line, $key+1, $columnNums);
-            $product = $this->prepareProductEntityByCsvRow($line, $columnNums);
+            $product = $this->productRepo->findOneBy(['article_number' => trim($line[$columnNums['article_number']])]);
+            $product = $this->prepareProductEntityByCsvRow($line, $columnNums, $product);
             $this->productRepo->save($product, $key === array_key_last($fullCsv));
         }
 
@@ -98,16 +99,18 @@ class CsvProductImporter
         }
     }
 
-    private function prepareProductEntityByCsvRow($line, $columnNums): Product
+    private function prepareProductEntityByCsvRow($line, $columnNums, ?Product $product): Product
     {
-        $product = new Product();
+        if ($product === null)
+            $product = new Product();
+
         $product->setBrand(trim($line[$columnNums['brand']]));
         $product->setAutoBrand(trim($line[$columnNums['auto_brand']]));
         $product->setAutoModel(trim($line[$columnNums['auto_model']]));
         $product->setName(trim($line[$columnNums['name']]));
         $product->setArticleNumber(trim($line[$columnNums['article_number']]));
         $product->setPrice((float) str_replace(',', '', $line[$columnNums['price']]));
-        $product->setTotalBalance((float) trim($line[$columnNums['total_balance']]));
+        $product->setTotalBalance( (float) trim($line[$columnNums['total_balance']]) + $product->getTotalBalance() );
         if (isset($columnNums['measurement_unit']))
             $product->setMeasurementUnit(trim($line[$columnNums['measurement_unit']]));
         if (isset($columnNums['additional_price']))

@@ -75,8 +75,15 @@ class MainController extends AbstractController
             ]);
         }
 
+        $productCategories = [];
+        foreach ($products as $product) {
+            if (!in_array($product->getCategory(), $productCategories) && $product->getCategory())
+                $productCategories[] = $product->getCategory();
+        }
+
         return $this->render('main/vehicle_model_search_response.html.twig', [
-            'main_details' => $products
+            'products' => $products,
+            'product_categories' => $productCategories
         ]);
     }
 

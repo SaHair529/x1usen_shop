@@ -11,3 +11,14 @@
         <p class="product-card__name">{{ product.name|replace({"Б/У": "", "б/у": ""}) }}</p>
     </div>
 </div>
+
+<script>
+    const card{{ product.id }} = document.getElementById('{{ product.id }}')
+    const imgTag{{ product.id }} = card{{ product.id }}.querySelector('img')
+    setTimeout(() => {
+        if (!imgTag{{ product.id }}.complete) {
+            card{{ product.id }}.querySelector('.action-zoom-img').remove()
+            console.log('removed')
+        }
+    }, 1000)
+</script>

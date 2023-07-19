@@ -76,23 +76,21 @@ class DetailsController extends AbstractController
         ]);
     }
 
-    #[Route('/item/{article}', name: 'detail_page')]
+    #[Route('/item/{id}', name: 'detail_page')]
     #[IsGranted('ROLE_USER')]
-    public function show($article, ProductRepository $productRep): Response
+    public function show($id, ProductRepository $productRep): Response
     {
         /** @var User $user */
         $user = $this->getUser();
         $cartItems = $user->getCart()->getItems();
         $inCartQuantity = 0;
         foreach ($cartItems as $cartItem) {
-            $product = $cartItem->getProduct();
-            $productArticle = $product->getArticleNumber();
-            if ($productArticle === $article) {
+            if ($cartItem->getProduct()->getId() === $id) {
                 $inCartQuantity = $cartItem->getQuantity();
             }
         }
 
-        $product = $productRep->findOneBy(['article_number' => $article]);
+        $product = $productRep->find($id);
         return $this->render('details/detail_page.html.twig', [
             'product' => $product,
             'in_cart_quantity' => $inCartQuantity

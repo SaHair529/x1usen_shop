@@ -1,21 +1,24 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div id="oem-search-response" class="pt-3">
-        <div class="oem-table">
-            <div class="oem-table__header">
-                <div class="oem-table__header-cell brand"><strong>Бренд</strong></div>
-                <div class="oem-table__header-cell article"><strong>Артикул</strong></div>
-                <div class="oem-table__header-cell name"><strong>Наименование</strong></div>
-                <div class="oem-table__header-cell total_balance"><strong>Остаток</strong></div>
-                <div class="oem-table__header-cell price"><strong>Цена (₽)</strong></div>
+    <div class="accordion" id="detail-groups-accordion">
+        {% for product_category in product_categories %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ loop.index }}">
+                    <button class="accordion-button{{ loop.index == 1 ? '' : ' collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="{{ loop.index == 1 ? 'true' : 'false' }}" aria-controls="collapse{{ loop.index }}">
+                        {{ product_category }}
+                    </button>
+                </h2>
+                <div id="collapse{{ loop.index }}" class="accordion-collapse collapse{{ loop.index == 1 ? ' show' : '' }}" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#detail-groups-accordion">
+                    <div class="accordion-body">
+                        {% for product in products %}
+                            {% if product.category == product_category %}
+                                {% include 'pieces/product_card.html.twig' with { 'product': product } %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-        </div>
-        <div id="details-window">
-            {% for main_detail in main_details %}
-                <hr>
-                {% include 'pieces/table_product_card.html.twig' with { 'product': main_detail } %}
-            {% endfor %}
-        </div>
+        {% endfor %}
     </div>
 {% endblock %}

@@ -53,6 +53,9 @@ class Product
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $auto_brand = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $category = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -221,6 +224,18 @@ class Product
     public function setAutoBrand(?string $auto_brand): self
     {
         $this->auto_brand = $auto_brand;
+
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?string $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

@@ -7,6 +7,7 @@ use App\Entity\Product;
 use App\Repository\BrandRepository;
 use App\Repository\ProductRepository;
 use Exception;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -15,10 +16,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class CsvProductImporter
 {
     private ProductRepository $productRepo;
+    private array $requiredColumns;
 
-    public function __construct(ProductRepository $productRepo)
+    #[Pure]
+    public function __construct(ProductRepository $productRepo, DataMapping $dataMapping)
     {
         $this->productRepo = $productRepo;
+        $this->requiredColumns = $dataMapping->getData('import_table_title_columns');
     }
 
     /**
@@ -47,7 +51,9 @@ class CsvProductImporter
             if (!in_array($autoBrand = trim($line[$columnNums['auto_brand']]), $autoBrands) && !empty($autoBrand))
                 $autoBrands[] = $autoBrand;
 
-            $product = $this->prepareProductEntityByCsvRow($line, $columnNums);
+            $this->validateLine($line, $key+1, $columnNums);
+            $product = $this->productRepo->findOneBy(['article_number' => trim($line[$columnNums['article_number']])]);
+            $product = $this->prepareProductEntityByCsvRow($line, $columnNums, $product);
             $this->productRepo->save($product, $key === array_key_last($fullCsv));
         }
 
@@ -65,27 +71,47 @@ class CsvProductImporter
         }
     }
 
+    #[Pure]
     private function validateTitleColumns($columns): string
     {
         $missingColumns = '';
-        if (!isset($columns['brand']))
-            $missingColumns .= 'brand';
-        if (!isset($columns['image_link']))
-            $missingColumns .= 'image_link';
+
+        foreach ($this->requiredColumns as $requiredCol) {
+            if (!isset($columns[$requiredCol])) {
+                if (strlen($missingColumns) === 0)
+                    $missingColumns .= $requiredCol;
+                else
+                    $missingColumns .= ", $requiredCol";
+            }
+        }
 
         return $missingColumns;
     }
 
-    private function prepareProductEntityByCsvRow($line, $columnNums): Product
+    /**
+     * @throws Exception
+     */
+    private function validateLine(array $line, int $lineNum, array $columnNums)
     {
-        $product = new Product();
+        foreach ($this->requiredColumns as $requiredCol) {
+            if (!isset($line[$columnNums[$requiredCol]]))
+                throw new Exception("Проверьте на валидность строку № $lineNum (Не видно $requiredCol)");
+        }
+    }
+
+    private function prepareProductEntityByCsvRow($line, $columnNums, ?Product $product): Product
+    {
+        if ($product === null)
+            $product = new Product();
+
         $product->setBrand(trim($line[$columnNums['brand']]));
         $product->setAutoBrand(trim($line[$columnNums['auto_brand']]));
         $product->setAutoModel(trim($line[$columnNums['auto_model']]));
         $product->setName(trim($line[$columnNums['name']]));
         $product->setArticleNumber(trim($line[$columnNums['article_number']]));
         $product->setPrice((float) str_replace(',', '', $line[$columnNums['price']]));
-        $product->setTotalBalance((float) trim($line[$columnNums['total_balance']]));
+        $product->setTotalBalance( (float) trim($line[$columnNums['total_balance']]) + $product->getTotalBalance() );
+        $product->setCategory(trim($line[$columnNums['category']]));
         if (isset($columnNums['measurement_unit']))
             $product->setMeasurementUnit(trim($line[$columnNums['measurement_unit']]));
         if (isset($columnNums['additional_price']))

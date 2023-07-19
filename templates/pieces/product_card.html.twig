@@ -1,13 +1,24 @@
-<div class="product-card small" id="{{ product.id }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'article': product.articleNumber}) }}">
+<div class="product-card small" id="{{ product.id }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product.id}) }}">
     <p class="product-card__used small" title="code">
         {% if product.used == 1 %}Б/У{% endif %}
     </p>
     <div class="product-card__img-wrapper">
         <div class="img-zoom action-zoom-img"><i class="fa-solid fa-magnifying-glass-plus action-zoom-img"></i></div>
-        <img class="product-card__img" src="{{ product.imageLink }}" alt="Card image cap">
+        <img class="product-card__img" src="{{ product.imageLink }}">
     </div>
     <div class="product-card__info">
         <h5 class="product-card__price">{{ product.price }} ₽</h5>
         <p class="product-card__name">{{ product.name|replace({"Б/У": "", "б/у": ""}) }}</p>
     </div>
 </div>
+
+<script>
+    const card{{ product.id }} = document.getElementById('{{ product.id }}')
+    const imgTag{{ product.id }} = card{{ product.id }}.querySelector('img')
+    setTimeout(() => {
+        if (!imgTag{{ product.id }}.complete) {
+            card{{ product.id }}.querySelector('.action-zoom-img').remove()
+            console.log('removed')
+        }
+    }, 1000)
+</script>

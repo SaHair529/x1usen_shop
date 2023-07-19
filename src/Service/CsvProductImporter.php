@@ -111,6 +111,7 @@ class CsvProductImporter
         $product->setArticleNumber(trim($line[$columnNums['article_number']]));
         $product->setPrice((float) str_replace(',', '', $line[$columnNums['price']]));
         $product->setTotalBalance( (float) trim($line[$columnNums['total_balance']]) + $product->getTotalBalance() );
+        $product->setCategory(trim($line[$columnNums['category']]));
         if (isset($columnNums['measurement_unit']))
             $product->setMeasurementUnit(trim($line[$columnNums['measurement_unit']]));
         if (isset($columnNums['additional_price']))

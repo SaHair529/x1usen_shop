@@ -24,6 +24,70 @@ class DetailsController extends AbstractController
         $this->serviceOem = new ServiceOem($_ENV['OEM_LOGIN'], $_ENV['OEM_PASSWORD']);
     }
 
+    /**
+     * Отдельная страница с информацией об определённом товаре
+     */
+    #[Route('/item/{id}', name: 'detail_page')]
+    #[IsGranted('ROLE_USER')]
+    public function show($id, ProductRepository $productRep): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $cartItems = $user->getCart()->getItems();
+        $inCartQuantity = 0;
+        foreach ($cartItems as $cartItem) {
+            if ($cartItem->getProduct()->getId() === $id) {
+                $inCartQuantity = $cartItem->getQuantity();
+            }
+        }
+
+        $product = $productRep->find($id);
+        return $this->render('details/detail_page.html.twig', [
+            'product' => $product,
+            'in_cart_quantity' => $inCartQuantity
+        ]);
+    }
+
+    /**
+     * Кусок html-блока с информацией о товаре
+     */
+    #[Route('/{id}', name: 'detail_info')]
+    public function info($id, ProductRepository $productRep): Response
+    {
+        if (!is_numeric($id))
+            return $this->redirectToRoute('homepage');
+
+        $product = $productRep->find($id);
+        return $this->render('details/detail_info.html.twig', [
+            'product' => $product
+        ]);
+    }
+
+    #[Route('/ajax/brands', name: 'detail_brands')]
+    public function brands(BrandRepository $brandRep, SerializerInterface $serializer): JsonResponse
+    {
+        return (new JsonResponse(json_decode($serializer->serialize($brandRep->findAll(), 'json'))));
+    }
+
+    #[Route('/ajax/brand_models/{brand}', name: 'detail_brand_models')]
+    public function brandModels(string $brand, ProductRepository $productRep): JsonResponse
+    {
+        if ($brand == null)
+            return new JsonResponse([
+                'message' => 'Invalid request data (brand must be stringable)',
+            ], Response::HTTP_BAD_REQUEST);
+
+        $models = [];
+        $products = $productRep->findBy(['auto_brand' => $brand]);
+
+        foreach ($products as $product) {
+            if (!in_array($product->getAutoModel(), $models) && !empty($product->getAutoModel()))
+                $models[] = $product->getAutoModel();
+        }
+
+        return new JsonResponse($models, Response::HTTP_OK);
+    }
+
     #[Route('/ajax/categories', name: 'details_list_categories')]
     public function listCategories(Request $req): Response
     {
@@ -62,63 +126,5 @@ class DetailsController extends AbstractController
         return $this->render('details/details-list.html.twig', [
             'products' => $products
         ]);
-    }
-
-    #[Route('/{id}', name: 'detail_info')]
-    public function info($id, ProductRepository $productRep): Response
-    {
-        if (!is_numeric($id))
-            return $this->redirectToRoute('homepage');
-
-        $product = $productRep->find($id);
-        return $this->render('details/detail_info.html.twig', [
-            'product' => $product
-        ]);
-    }
-
-    #[Route('/item/{id}', name: 'detail_page')]
-    #[IsGranted('ROLE_USER')]
-    public function show($id, ProductRepository $productRep): Response
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        $cartItems = $user->getCart()->getItems();
-        $inCartQuantity = 0;
-        foreach ($cartItems as $cartItem) {
-            if ($cartItem->getProduct()->getId() === $id) {
-                $inCartQuantity = $cartItem->getQuantity();
-            }
-        }
-
-        $product = $productRep->find($id);
-        return $this->render('details/detail_page.html.twig', [
-            'product' => $product,
-            'in_cart_quantity' => $inCartQuantity
-        ]);
-    }
-
-    #[Route('/ajax/brands', name: 'detail_brands')]
-    public function brands(BrandRepository $brandRep, SerializerInterface $serializer): JsonResponse
-    {
-        return (new JsonResponse(json_decode($serializer->serialize($brandRep->findAll(), 'json'))));
-    }
-
-    #[Route('/ajax/brand_models/{brand}', name: 'detail_brand_models')]
-    public function brandModels(string $brand, ProductRepository $productRep): JsonResponse
-    {
-        if ($brand == null)
-            return new JsonResponse([
-                'message' => 'Invalid request data (brand must be stringable)',
-            ], Response::HTTP_BAD_REQUEST);
-
-        $models = [];
-        $products = $productRep->findBy(['auto_brand' => $brand]);
-
-        foreach ($products as $product) {
-            if (!in_array($product->getAutoModel(), $models) && !empty($product->getAutoModel()))
-                $models[] = $product->getAutoModel();
-        }
-
-        return new JsonResponse($models, Response::HTTP_OK);
     }
 }

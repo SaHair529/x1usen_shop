@@ -11,6 +11,7 @@ export default class CartController {
         this.cartItemCardPressHandle()
         this.imagesModalPressHandle()
         this.unitCardPressHandle()
+        this.showUnitNodesModal() // todo
     }
 
     // button handles------------------------
@@ -153,6 +154,19 @@ export default class CartController {
         }).then(resp => {
             ResponseHandler.handleShowUnitAvailableDetailsResponse(resp)
         })
+    }
+
+    static showUnitNodesModal() {
+        const modal = DOMElementsCreator.createDOMElementByObject(AttributesNaming.unitNodesModal_forCreator)
+        const unitNodesImage_img = modal.querySelector('.unit-nodes-image')
+
+        for (let i = 0; i < 3; i++) {
+            const unitsListItem = DOMElementsCreator.createDOMElementByObject(AttributesNaming.unitsListItem_forCreator)
+            modal.querySelector('.units-list').appendChild(unitsListItem)
+        }
+
+        unitNodesImage_img.setAttribute('src', 'https://img.laximo.ru/HYUNDAI/source/cat/REURPH520/28281A11.gif?s=7227&k=ffcf811a297fe94d9a7fd2afef682824') // todo
+        document.querySelector('body').appendChild(modal)
     }
 
     static showProductImageModal(imgUrls) {

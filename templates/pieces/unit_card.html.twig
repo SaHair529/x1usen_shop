@@ -3,9 +3,10 @@
     {% set unitPartsOems = unitPartsOems~part.oem~',' %}
 {% endfor %}
 
-<div class="unit-card small" data-unit-parts-oems="{{ unitPartsOems|trim(',') }}">
-    <div class="unit-card__img-wrapper">
-        <img src="{{ unit.imageUrl }}" alt="">
+<div class="unit-card small" data-unit-parts-json="{{ unit.parts|serialize(format='json') }}" data-unit-id="{{ unit.unitId }}" data-unit-parts-oems="{{ unitPartsOems|trim(',') }}">
+    <div class="unit-card__img-wrapper js-show-unit-nodes-modal">
+        <div class="img-zoom js-show-unit-nodes-modal"><i class="fa-solid fa-magnifying-glass-plus action-zoom-img js-show-unit-nodes-modal"></i></div>
+        <img class="js-show-unit-nodes-modal" src="{{ unit.imageUrl }}" alt="">
     </div>
     <div class="unit-card__info">
         <h5>{{ unit.name|capitalize }}</h5>

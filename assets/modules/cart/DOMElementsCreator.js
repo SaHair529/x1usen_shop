@@ -111,4 +111,35 @@ export default class DOMElementsCreator {
 
         return HElement
     }
+
+    static createUnitsListItem(unitPartObject) {
+        const $unitsListItem = document.createElement('div')
+
+        const $order   = document.createElement('div')
+        const $name    = document.createElement('div')
+        const $number  = document.createElement('div')
+        const $link    = document.createElement('a')
+        const $linkTxt = document.createElement('span')
+
+        $unitsListItem.className        = 'units-list-item'
+        $order.className   = 'order'
+        $name.className    = 'name'
+        $number.className  = 'number'
+        $link.className    = 'link'
+        $linkTxt.className = 'link-text'
+
+        $order.innerText = unitPartObject['codeOnImage']
+        $name.innerText = unitPartObject['name']
+        $number.innerText = unitPartObject['oem']
+        $linkTxt.innerText = 'Цены и аналоги'
+
+        $link.appendChild($linkTxt)
+        $unitsListItem.appendChild($order)
+        $unitsListItem.appendChild($name)
+        $unitsListItem.appendChild($number)
+        $unitsListItem.appendChild($link)
+        console.log('$unitsListItem', $unitsListItem)
+
+        return $unitsListItem
+    }
 }

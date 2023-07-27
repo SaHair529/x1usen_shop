@@ -1,5 +1,5 @@
 {% for category in categories %}
     {% for unit in category.units %}
-        {% include 'pieces/unit_card.html.twig' with { 'unit': unit } %}
+        {% include 'pieces/unit_card.html.twig' with { 'unit': unit, 'unit_image_maps': unit_image_maps } %}
     {% endfor %}
 {% endfor %}

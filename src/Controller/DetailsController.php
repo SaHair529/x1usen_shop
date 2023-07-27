@@ -88,6 +88,9 @@ class DetailsController extends AbstractController
         return new JsonResponse($models, Response::HTTP_OK);
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route('/ajax/categories', name: 'details_list_categories')]
     public function listCategories(Request $req): Response
     {
@@ -106,8 +109,20 @@ class DetailsController extends AbstractController
             $req->query->get('vehicle_ssd'),
             $req->query->get('group_id'))->getCategories();
 
+        $unitImageMaps = [];
+        foreach ($categories as $category) {
+            foreach ($category->getUnits() as $unit) {
+                $unitImageMap = $this->serviceOem->listImageMapByUnit($req->query->get('catalog'), $req->query->get('vehicle_ssd'), $unit->getUnitId());
+                if (array_key_exists($unit->getUnitId(), $unitImageMaps))
+                    throw new \Exception('В $unitImageMaps уже есть элемент с ключом '.$unit->getUnitId());
+
+                $unitImageMaps[$unit->getUnitId()] = $unitImageMap;
+            }
+        }
+
         return $this->render('details/categories-list.html.twig', [
-            'categories' => $categories
+            'categories' => $categories,
+            'unit_image_maps' => $unitImageMaps
         ]);
     }
 

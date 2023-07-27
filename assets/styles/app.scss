@@ -526,6 +526,8 @@ header {
       }
     }
     .units-list {
+      overflow-y: auto;
+      height: 90%;
       &-item {
         display: flex;
         flex-direction: row;

@@ -138,7 +138,6 @@ export default class DOMElementsCreator {
         $unitsListItem.appendChild($name)
         $unitsListItem.appendChild($number)
         $unitsListItem.appendChild($link)
-        console.log('$unitsListItem', $unitsListItem)
 
         return $unitsListItem
     }

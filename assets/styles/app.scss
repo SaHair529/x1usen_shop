@@ -529,14 +529,16 @@ header {
       overflow-y: auto;
       max-height: 90%;
       &-item {
+        cursor: pointer;
         display: flex;
         flex-direction: row;
         align-items: center;
         margin-right: 8px;
-        margin-left: 8px;
-        padding-top: 8px;
-        padding-bottom: 11px;
+        padding: 8px 0 11px 8px;
         border-top: solid thin #e6e9ed;
+        &.hovered {
+          background-color: lightyellow;
+        }
 
         .order {
           min-width: 85px;

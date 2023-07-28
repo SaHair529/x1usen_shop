@@ -71,6 +71,15 @@ export default class HTMLAttributesNaming {
         class: 'sum-price'
     }
 
+    static unitNodesWindow = {
+        unitsList: {
+            class: 'units-list',
+            unitsListItem: {
+                class: 'units-list-item'
+            }
+        }
+    }
+
 
     static imageModal_forCreator = {
         tagName: 'div',

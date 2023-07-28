@@ -56,11 +56,23 @@ export default class CartController {
                 else if (e.target.classList.contains('js-show-unit-nodes-modal')) {
                     const unitCard = e.target.closest('.unit-card')
                     const unitParts = JSON.parse(unitCard.dataset.unitPartsJson)
-                    const imageUrl = e.target.closest('img').getAttribute('src')
-                    CartController.showUnitNodesModal(unitParts, imageUrl)
+                    const unitImageMaps = JSON.parse(unitCard.dataset.unitImageMaps)
+                    const imageUrl = e.target.closest('img').getAttribute('src').replace(/\/150/g, '/source')
+                    CartController.showUnitNodesModal(unitParts, unitImageMaps, imageUrl)
+                    CartController.addUnitNodesModalEventsListeners()
                 }
             })
         }
+    }
+
+    static addUnitNodesModalEventsListeners() {
+        const unitNodesWindow = document.querySelector('.unit-nodes-window')
+
+        unitNodesWindow.addEventListener('mouseover', (e) => {
+            if (e.target.classList.contains(AttributesNaming.unitNodesWindow.unitsList.unitsListItem.class)) {
+                CartController.highlightHoveredNodeOnListAndImage(unitNodesWindow, e.target)
+            }
+        })
     }
 
     static productInfoModalPressHandle() {
@@ -161,18 +173,63 @@ export default class CartController {
         })
     }
 
-    static showUnitNodesModal(unitParts, imageUrl) {
+    static showUnitNodesModal(unitParts, unitImageMaps, imageUrl) {
         const $modal = DOMElementsCreator.createDOMElementByObject(AttributesNaming.unitNodesModal_forCreator)
         const $unitNodesImage_img = $modal.querySelector('.unit-nodes-image')
+        $unitNodesImage_img.setAttribute('src', imageUrl)
 
+        CartController.appendUnitNodesToModalList(unitParts, $modal.querySelector('.units-list'))
+
+        document.querySelector('body').appendChild($modal) // Сначала рендерим модалку, т.к. для дальнейших действий требуется информация по размерам
+
+        setTimeout(() => {
+            CartController.appendUnitNodesToModalMap($unitNodesImage_img, unitImageMaps, $modal.querySelector('.unit-nodes-image-map'))
+        }, 250)
+    }
+
+    static appendUnitNodesToModalMap($unitNodesImage_img, unitImageMaps, $unitNodesImageMap) {
+
+        const $mapObjectsWrapper = document.createElement('div')
+        $mapObjectsWrapper.classList.add('map-objects-wrapper')
+        $mapObjectsWrapper.style.position = 'absolute'
+        $mapObjectsWrapper.style.width = $unitNodesImage_img.width+'px'
+        $mapObjectsWrapper.style.height = $unitNodesImage_img.height+'px'
+
+        $unitNodesImageMap.appendChild($mapObjectsWrapper)
+
+        for (let imageMapKey in unitImageMaps) {
+            const imageMap = unitImageMaps[imageMapKey]
+            for (let mapObjectKey in imageMap['mapObjects']) {
+                const mapObject = imageMap['mapObjects'][mapObjectKey]
+                const $mapObject = DOMElementsCreator.createMapObjectByMapObject(mapObject, $unitNodesImage_img)
+                $mapObjectsWrapper.appendChild($mapObject)
+            }
+        }
+    }
+
+    static appendUnitNodesToModalList(unitParts, $unitsList) {
         for (let i = 0; i < unitParts.length; i++) {
             const unitPart = unitParts[i]
             const $unitsListItem = DOMElementsCreator.createUnitsListItem(unitPart)
-            $modal.querySelector('.units-list').appendChild($unitsListItem)
+            $unitsList.appendChild($unitsListItem)
         }
+    }
 
-        $unitNodesImage_img.setAttribute('src', imageUrl)
-        document.querySelector('body').appendChild($modal)
+    static highlightHoveredNodeOnListAndImage(unitNodesWindow, hoveredNode) {
+        const oldHoveredItems = unitNodesWindow.querySelectorAll('.units-list-item.hovered, .map-object.hovered')
+        oldHoveredItems.forEach(item => {
+            item.classList.remove('hovered')
+        })
+
+        hoveredNode.classList.add('hovered')
+
+        const hoveredNodeCode = hoveredNode.dataset.code
+        const otherSideNodeClass = hoveredNode.classList.contains('units-list-item') ? 'map-object' : 'units-list-item'
+        const $otherSideNodes = unitNodesWindow.querySelectorAll('.'+otherSideNodeClass+`[data-code="${hoveredNodeCode}"]`)
+
+        $otherSideNodes.forEach($node => {
+            $node.classList.add('hovered')
+        })
     }
 
     static showProductImageModal(imgUrls) {

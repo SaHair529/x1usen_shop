@@ -513,6 +513,21 @@ header {
       align-items: center;
       justify-content: center;
       height: 100%;
+      position: relative;
+      img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+      .map-objects-wrapper {
+        .map-object {
+          border: 1px solid grey;
+          &.hovered {
+            border-color: red;
+            border-width: 3px;
+            background-color: rgba(129, 175, 226, .24);
+          }
+        }
+      }
     }
   }
   .right {

@@ -68,14 +68,46 @@ export default class CartController {
     static addUnitNodesModalEventsListeners() {
         const unitNodesWindow = document.querySelector('.unit-nodes-window')
 
-        unitNodesWindow.addEventListener('mouseover', (e) => {
-            if (e.target.dataset.code) {
-                CartController.highlightHoveredNodeOnListAndImage(unitNodesWindow, e.target)
-            }
-            else {
-                CartController.clearAllUnitNodesHoverStates()
-            }
-        })
+        unitNodesWindow.addEventListener('mouseover', CartController.unitNodesModalMouseOverCallback.bind(null, unitNodesWindow))
+
+        unitNodesWindow.addEventListener('click', CartController.unitNodesModalClickCallback.bind(null, unitNodesWindow))
+
+        document.addEventListener('keydown', CartController.unitNodesModalKeydownCallback)
+    }
+
+    static removeUnitNodesModalEventsListeners() {
+        const unitNodesWindow = document.querySelector('.unit-nodes-window')
+
+        unitNodesWindow.removeEventListener('mouseover', CartController.unitNodesModalMouseOverCallback)
+
+        unitNodesWindow.removeEventListener('click', CartController.unitNodesModalClickCallback)
+
+        document.removeEventListener('keydown', CartController.unitNodesModalKeydownCallback)
+    }
+
+    static unitNodesModalKeydownCallback(e) {
+        if (e.key === 'Escape') {
+            CartController.removeUnitNodesModalEventsListeners()
+            document.querySelector('.custom-modal').remove()
+        }
+    }
+
+    static unitNodesModalClickCallback(unitNodesWindow, e) {
+        if (e.target.dataset.code)
+            CartController.toggleActiveStateOnListAndImageNodes(unitNodesWindow, e.target)
+        else if (e.target.classList.contains('js-close-units-modal')) {
+            CartController.removeUnitNodesModalEventsListeners()
+            document.querySelector('.custom-modal').remove()
+        }
+    }
+
+    static unitNodesModalMouseOverCallback(unitNodesWindow, e) {
+        if (e.target.dataset.code) {
+            CartController.highlightHoveredNodeOnListAndImage(unitNodesWindow, e.target)
+        }
+        else {
+            CartController.clearAllUnitNodesHoverStates()
+        }
     }
 
     static productInfoModalPressHandle() {
@@ -234,8 +266,17 @@ export default class CartController {
         })
     }
 
+    static toggleActiveStateOnListAndImageNodes($unitNodesWindow, $clickedNode) {
+        const $clickedNodeCode = $clickedNode.dataset.code
+
+        const $linkedNodes = $unitNodesWindow.querySelectorAll(`[data-code="${$clickedNodeCode}"]`)
+        $linkedNodes.forEach($node => {
+            $node.classList.toggle('active')
+        })
+    }
+
     static clearAllUnitNodesHoverStates() {
-        const $nodes = document.querySelectorAll('.unit-list-item, .map-object')
+        const $nodes = document.querySelectorAll('.units-list-item, .map-object')
 
         $nodes.forEach($node => $node.classList.remove('hovered'))
     }

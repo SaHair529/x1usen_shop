@@ -140,6 +140,11 @@ export default class HTMLAttributesNaming {
                         children: [
                             {
                                 tagName: 'div',
+                                class: 'js-close-units-modal',
+                                text: 'Esc'
+                            },
+                            {
+                                tagName: 'div',
                                 class: 'left',
                                 children: [
                                     {

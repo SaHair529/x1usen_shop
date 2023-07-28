@@ -127,7 +127,13 @@ export default class DOMElementsCreator {
         $number.className           = 'number'
         $link.className             = 'link'
         $linkTxt.className          = 'link-text'
+
         $unitsListItem.dataset.code = unitPartObject['codeOnImage']
+        $order.dataset.code = unitPartObject['codeOnImage']
+        $name.dataset.code = unitPartObject['codeOnImage']
+        $number.dataset.code = unitPartObject['codeOnImage']
+        $link.dataset.code = unitPartObject['codeOnImage']
+        $linkTxt.dataset.code = unitPartObject['codeOnImage']
 
         $order.innerText = unitPartObject['codeOnImage']
         $name.innerText = unitPartObject['name']

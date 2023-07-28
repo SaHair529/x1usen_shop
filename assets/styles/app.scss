@@ -521,6 +521,7 @@ header {
       .map-objects-wrapper {
         .map-object {
           border: 1px solid grey;
+          cursor: pointer;
           &.hovered {
             border-color: red;
             border-width: 3px;

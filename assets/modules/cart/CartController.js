@@ -69,8 +69,11 @@ export default class CartController {
         const unitNodesWindow = document.querySelector('.unit-nodes-window')
 
         unitNodesWindow.addEventListener('mouseover', (e) => {
-            if (e.target.classList.contains(AttributesNaming.unitNodesWindow.unitsList.unitsListItem.class)) {
+            if (e.target.dataset.code) {
                 CartController.highlightHoveredNodeOnListAndImage(unitNodesWindow, e.target)
+            }
+            else {
+                CartController.clearAllUnitNodesHoverStates()
             }
         })
     }
@@ -224,12 +227,17 @@ export default class CartController {
         hoveredNode.classList.add('hovered')
 
         const hoveredNodeCode = hoveredNode.dataset.code
-        const otherSideNodeClass = hoveredNode.classList.contains('units-list-item') ? 'map-object' : 'units-list-item'
-        const $otherSideNodes = unitNodesWindow.querySelectorAll('.'+otherSideNodeClass+`[data-code="${hoveredNodeCode}"]`)
+        const $linkedNodes = unitNodesWindow.querySelectorAll(`[data-code="${hoveredNodeCode}"]`)
 
-        $otherSideNodes.forEach($node => {
+        $linkedNodes.forEach($node => {
             $node.classList.add('hovered')
         })
+    }
+
+    static clearAllUnitNodesHoverStates() {
+        const $nodes = document.querySelectorAll('.unit-list-item, .map-object')
+
+        $nodes.forEach($node => $node.classList.remove('hovered'))
     }
 
     static showProductImageModal(imgUrls) {

@@ -71,12 +71,124 @@ export default class HTMLAttributesNaming {
         class: 'sum-price'
     }
 
+    static unitNodesWindow = {
+        unitsList: {
+            class: 'units-list',
+            unitsListItem: {
+                class: 'units-list-item'
+            }
+        }
+    }
+
 
     static imageModal_forCreator = {
         tagName: 'div',
         class: 'custom-modal detail-image-modal js-delete-modal',
         attributes: [
             { id: 'detail-image-modal' }
+        ]
+    }
+
+    static unitsListItem_forCreator = {
+        tagName: 'div',
+        class: 'units-list-item',
+        children: [
+            {
+                tagName: 'div',
+                class: 'order',
+                text: '22211' // todo
+            },
+            {
+                tagName: 'div',
+                class: 'name',
+                text: 'Клапан впускной двигателя' // todo
+            },
+            {
+                tagName: 'div',
+                class: 'number',
+                text: '22211-22003' // todo
+            },
+            {
+                tagName: 'a',
+                class: 'link',
+                text: '', // todo
+                attributes: [
+                    { href: '#' } // todo
+                ],
+                children: [
+                    {
+                        tagName: 'span',
+                        class: 'link-text',
+                        text: 'Цены и аналоги'
+                    }
+                ]
+            },
+        ]
+    }
+
+    static unitNodesModal_forCreator = {
+        tagName: 'div',
+        class: 'custom-modal',
+        children: [
+            {
+                tagName: 'div',
+                class: 'modal-inner-fullscreen',
+                children: [
+                    {
+                        tagName: 'div',
+                        class: 'unit-nodes-window',
+                        children: [
+                            {
+                                tagName: 'div',
+                                class: 'js-close-units-modal',
+                                text: 'Esc'
+                            },
+                            {
+                                tagName: 'div',
+                                class: 'left',
+                                children: [
+                                    {
+                                        tagName: 'div',
+                                        class: 'unit-nodes-image-map',
+                                        children: [
+                                            {
+                                                tagName: 'img',
+                                                class: 'unit-nodes-image'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                tagName: 'div',
+                                class: 'right',
+                                children: [
+                                    {
+                                        tagName: 'div',
+                                        class: 'header',
+                                        children: [
+                                            {
+                                                tagName: 'h4',
+                                                class: 'right-title',
+                                                text: 'Воздушный фильтр' // todo
+                                            },
+                                            {
+                                                tagName: 'p',
+                                                class: 'right-subtitle',
+                                                text: 'Узел 20-240',
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        tagName: 'div',
+                                        class: 'units-list',
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         ]
     }
 

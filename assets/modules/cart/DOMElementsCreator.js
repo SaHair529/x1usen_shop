@@ -1,4 +1,5 @@
 import AttributesNaming from './HTMLAttributesNaming'
+import Routes from "../Routes";
 
 export default class DOMElementsCreator {
 
@@ -110,5 +111,69 @@ export default class DOMElementsCreator {
         }
 
         return HElement
+    }
+
+    static createUnitsListItem(unitPartObject) {
+        const $unitsListItem = document.createElement('div')
+
+        const $order   = document.createElement('div')
+        const $name    = document.createElement('div')
+        const $number  = document.createElement('div')
+        const $link    = document.createElement('a')
+        const $linkTxt = document.createElement('span')
+
+        $unitsListItem.className    = 'units-list-item'
+        $order.className            = 'order'
+        $name.className             = 'name'
+        $number.className           = 'number'
+        $link.className             = 'link'
+        $linkTxt.className          = 'link-text'
+
+        $unitsListItem.dataset.code = unitPartObject['codeOnImage']
+        $order.dataset.code = unitPartObject['codeOnImage']
+        $name.dataset.code = unitPartObject['codeOnImage']
+        $number.dataset.code = unitPartObject['codeOnImage']
+        $link.dataset.code = unitPartObject['codeOnImage']
+        $linkTxt.dataset.code = unitPartObject['codeOnImage']
+
+        $order.innerText = unitPartObject['codeOnImage']
+        $name.innerText = unitPartObject['name']
+        $number.innerText = unitPartObject['oem']
+        $linkTxt.innerText = 'Цены и аналоги'
+
+        $link.setAttribute('href', Routes.MainController.search+`?query_string=${unitPartObject['oem']}`)
+        $link.setAttribute('target', '_blank')
+
+        $link.appendChild($linkTxt)
+        $unitsListItem.appendChild($order)
+        $unitsListItem.appendChild($name)
+        $unitsListItem.appendChild($number)
+        $unitsListItem.appendChild($link)
+
+        return $unitsListItem
+    }
+
+    static createMapObjectByMapObject(mapObject, $unitNodesImage_img) {
+        const $mapObject = document.createElement('div')
+
+        $mapObject.classList.add('map-object')
+        $mapObject.dataset.code = mapObject.code
+
+        const scale_x = $unitNodesImage_img.width / $unitNodesImage_img.naturalWidth
+        const scale_y = $unitNodesImage_img.height / $unitNodesImage_img.naturalHeight
+
+        const x1_adapted = mapObject.x1 * scale_x
+        const x2_adapted = mapObject.x2 * scale_x
+        const y1_adapted = mapObject.y1 * scale_y
+        const y2_adapted = mapObject.y2 * scale_y
+
+        $mapObject.style.position = 'absolute'
+        $mapObject.style.left = x1_adapted+'px'
+        $mapObject.style.width = x2_adapted - x1_adapted+'px'
+        $mapObject.style.top = y1_adapted+'px'
+        $mapObject.style.height = y2_adapted - y1_adapted+'px'
+        // $mapObject.style.border = '1px solid pink'
+
+        return $mapObject
     }
 }

@@ -53,7 +53,60 @@ export default class CartController {
                     const unitCard = CartController.findParentElementByClass(e.target, 'unit-card')
                     CartController.showUnitAvailableDetails(unitCard.dataset.unitPartsOems)
                 }
+                else if (e.target.classList.contains('js-show-unit-nodes-modal')) {
+                    const unitCard = e.target.closest('.unit-card')
+                    const unitParts = JSON.parse(unitCard.dataset.unitPartsJson)
+                    const unitImageMaps = JSON.parse(unitCard.dataset.unitImageMaps)
+                    const imageUrl = e.target.closest('img').getAttribute('src').replace(/\/150/g, '/source')
+                    CartController.showUnitNodesModal(unitParts, unitImageMaps, imageUrl)
+                    CartController.addUnitNodesModalEventsListeners()
+                }
             })
+        }
+    }
+
+    static addUnitNodesModalEventsListeners() {
+        const unitNodesWindow = document.querySelector('.unit-nodes-window')
+
+        unitNodesWindow.addEventListener('mouseover', CartController.unitNodesModalMouseOverCallback.bind(null, unitNodesWindow))
+
+        unitNodesWindow.addEventListener('click', CartController.unitNodesModalClickCallback.bind(null, unitNodesWindow))
+
+        document.addEventListener('keydown', CartController.unitNodesModalKeydownCallback)
+    }
+
+    static removeUnitNodesModalEventsListeners() {
+        const unitNodesWindow = document.querySelector('.unit-nodes-window')
+
+        unitNodesWindow.removeEventListener('mouseover', CartController.unitNodesModalMouseOverCallback)
+
+        unitNodesWindow.removeEventListener('click', CartController.unitNodesModalClickCallback)
+
+        document.removeEventListener('keydown', CartController.unitNodesModalKeydownCallback)
+    }
+
+    static unitNodesModalKeydownCallback(e) {
+        if (e.key === 'Escape') {
+            CartController.removeUnitNodesModalEventsListeners()
+            document.querySelector('.custom-modal').remove()
+        }
+    }
+
+    static unitNodesModalClickCallback(unitNodesWindow, e) {
+        if (e.target.dataset.code)
+            CartController.toggleActiveStateOnListAndImageNodes(unitNodesWindow, e.target)
+        else if (e.target.classList.contains('js-close-units-modal')) {
+            CartController.removeUnitNodesModalEventsListeners()
+            document.querySelector('.custom-modal').remove()
+        }
+    }
+
+    static unitNodesModalMouseOverCallback(unitNodesWindow, e) {
+        if (e.target.dataset.code) {
+            CartController.highlightHoveredNodeOnListAndImage(unitNodesWindow, e.target)
+        }
+        else {
+            CartController.clearAllUnitNodesHoverStates()
         }
     }
 
@@ -153,6 +206,79 @@ export default class CartController {
         }).then(resp => {
             ResponseHandler.handleShowUnitAvailableDetailsResponse(resp)
         })
+    }
+
+    static showUnitNodesModal(unitParts, unitImageMaps, imageUrl) {
+        const $modal = DOMElementsCreator.createDOMElementByObject(AttributesNaming.unitNodesModal_forCreator)
+        const $unitNodesImage_img = $modal.querySelector('.unit-nodes-image')
+        $unitNodesImage_img.setAttribute('src', imageUrl)
+
+        CartController.appendUnitNodesToModalList(unitParts, $modal.querySelector('.units-list'))
+
+        document.querySelector('body').appendChild($modal) // Сначала рендерим модалку, т.к. для дальнейших действий требуется информация по размерам
+
+        setTimeout(() => {
+            CartController.appendUnitNodesToModalMap($unitNodesImage_img, unitImageMaps, $modal.querySelector('.unit-nodes-image-map'))
+        }, 250)
+    }
+
+    static appendUnitNodesToModalMap($unitNodesImage_img, unitImageMaps, $unitNodesImageMap) {
+
+        const $mapObjectsWrapper = document.createElement('div')
+        $mapObjectsWrapper.classList.add('map-objects-wrapper')
+        $mapObjectsWrapper.style.position = 'absolute'
+        $mapObjectsWrapper.style.width = $unitNodesImage_img.width+'px'
+        $mapObjectsWrapper.style.height = $unitNodesImage_img.height+'px'
+
+        $unitNodesImageMap.appendChild($mapObjectsWrapper)
+
+        for (let imageMapKey in unitImageMaps) {
+            const imageMap = unitImageMaps[imageMapKey]
+            for (let mapObjectKey in imageMap['mapObjects']) {
+                const mapObject = imageMap['mapObjects'][mapObjectKey]
+                const $mapObject = DOMElementsCreator.createMapObjectByMapObject(mapObject, $unitNodesImage_img)
+                $mapObjectsWrapper.appendChild($mapObject)
+            }
+        }
+    }
+
+    static appendUnitNodesToModalList(unitParts, $unitsList) {
+        for (let i = 0; i < unitParts.length; i++) {
+            const unitPart = unitParts[i]
+            const $unitsListItem = DOMElementsCreator.createUnitsListItem(unitPart)
+            $unitsList.appendChild($unitsListItem)
+        }
+    }
+
+    static highlightHoveredNodeOnListAndImage(unitNodesWindow, hoveredNode) {
+        const oldHoveredItems = unitNodesWindow.querySelectorAll('.units-list-item.hovered, .map-object.hovered')
+        oldHoveredItems.forEach(item => {
+            item.classList.remove('hovered')
+        })
+
+        hoveredNode.classList.add('hovered')
+
+        const hoveredNodeCode = hoveredNode.dataset.code
+        const $linkedNodes = unitNodesWindow.querySelectorAll(`[data-code="${hoveredNodeCode}"]`)
+
+        $linkedNodes.forEach($node => {
+            $node.classList.add('hovered')
+        })
+    }
+
+    static toggleActiveStateOnListAndImageNodes($unitNodesWindow, $clickedNode) {
+        const $clickedNodeCode = $clickedNode.dataset.code
+
+        const $linkedNodes = $unitNodesWindow.querySelectorAll(`[data-code="${$clickedNodeCode}"]`)
+        $linkedNodes.forEach($node => {
+            $node.classList.toggle('active')
+        })
+    }
+
+    static clearAllUnitNodesHoverStates() {
+        const $nodes = document.querySelectorAll('.units-list-item, .map-object')
+
+        $nodes.forEach($node => $node.classList.remove('hovered'))
     }
 
     static showProductImageModal(imgUrls) {

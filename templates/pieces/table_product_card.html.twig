@@ -1,4 +1,4 @@
-<div class="product-card table-product-card" id="{{ product.id }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'article': product.articleNumber}) }}">
+<div class="product-card table-product-card" id="{{ product.id }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product.id}) }}">
     <div class="table-product-card__field">{{ product.brand }}</div>
     <div class="table-product-card__field">{{ product.articleNumber }}</div>
     <div class="table-product-card__field name">{{ product.name }}</div>

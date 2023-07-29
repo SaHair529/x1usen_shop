@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Exception;
 use GuayaquilLib\ServiceAm;
 
 class LaximoAPIWrapper
@@ -15,17 +16,16 @@ class LaximoAPIWrapper
 
     /**
      * @return string[]
+     * @throws Exception
      */
     public function getReplacements(string $oem): array
     {
         $result = [];
-        //            $details = $amService->findOem($queryStr, '', # todo uncomment
-//                ['crosses', 'weights', 'names', 'properties', 'images'],
-//                ['synonym', 'PartOfTheWhole', 'Replacement', 'Duplicate', 'Tuning', 'Bidirectional'],
-//            );
+        $details = $this->am->findOem($oem, '',
+            ['crosses', 'weights', 'names', 'properties', 'images'],
+            ['synonym', 'PartOfTheWhole', 'Replacement', 'Duplicate', 'Tuning', 'Bidirectional'],
+        );
 
-//            file_put_contents(__DIR__.'/serialized_details.txt', serialize($details)); # todo remove
-        $details = unserialize(file_get_contents(__DIR__.'/../../serialized_data/serialized_details.txt')); # todo remove
         foreach ($details->getOems() as $detail) {
             $replacements = $detail->getReplacements();
             foreach($replacements as $replacement) {

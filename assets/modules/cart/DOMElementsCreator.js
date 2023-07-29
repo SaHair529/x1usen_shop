@@ -1,4 +1,5 @@
 import AttributesNaming from './HTMLAttributesNaming'
+import Routes from "../Routes";
 
 export default class DOMElementsCreator {
 
@@ -139,6 +140,9 @@ export default class DOMElementsCreator {
         $name.innerText = unitPartObject['name']
         $number.innerText = unitPartObject['oem']
         $linkTxt.innerText = 'Цены и аналоги'
+
+        $link.setAttribute('href', Routes.MainController.search+`?query_string=${unitPartObject['oem']}`)
+        $link.setAttribute('target', '_blank')
 
         $link.appendChild($linkTxt)
         $unitsListItem.appendChild($order)

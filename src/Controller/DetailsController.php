@@ -112,7 +112,7 @@ class DetailsController extends AbstractController
         $unitImageMaps = [];
         foreach ($categories as $category) {
             foreach ($category->getUnits() as $unit) {
-                $unitImageMap = $this->serviceOem->listImageMapByUnit($req->query->get('catalog'), $req->query->get('vehicle_ssd'), $unit->getUnitId());
+                $unitImageMap = $this->serviceOem->listImageMapByUnit($req->query->get('catalog'), $unit->getSsd(), $unit->getUnitId());
                 if (array_key_exists($unit->getUnitId(), $unitImageMaps))
                     throw new \Exception('В $unitImageMaps уже есть элемент с ключом '.$unit->getUnitId());
 

@@ -6,6 +6,7 @@ use App\Form\SearchFormType;
 use App\Repository\ProductRepository;
 use App\Service\Cacher\LaximoCacher;
 use App\Service\LaximoAPIWrapper;
+use App\Service\ThirdParty\Dellin\DellinApi;
 use GuayaquilLib\exceptions\InvalidParameterException;
 use GuayaquilLib\ServiceOem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

@@ -26,3 +26,7 @@ services:
     App\Service\Cacher\LaximoCacher:
         arguments:
             $cacheAdapter: '@cache.app'
+
+    App\Service\ThirdParty\Dellin\DellinApi:
+        arguments:
+            $cacheAdapter: '@cache.app'

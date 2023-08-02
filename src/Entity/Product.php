@@ -56,6 +56,15 @@ class Product
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $category = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $length = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $width = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $height = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -236,6 +245,42 @@ class Product
     public function setCategory(?string $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getLength(): ?float
+    {
+        return $this->length;
+    }
+
+    public function setLength(?float $length): self
+    {
+        $this->length = $length;
+
+        return $this;
+    }
+
+    public function getWidth(): ?float
+    {
+        return $this->width;
+    }
+
+    public function setWidth(?float $width): self
+    {
+        $this->width = $width;
+
+        return $this;
+    }
+
+    public function getHeight(): ?float
+    {
+        return $this->height;
+    }
+
+    public function setHeight(?float $height): self
+    {
+        $this->height = $height;
 
         return $this;
     }

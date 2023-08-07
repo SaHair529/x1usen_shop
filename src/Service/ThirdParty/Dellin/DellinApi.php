@@ -16,25 +16,61 @@ class DellinApi
     private HttpClientInterface $client;
     private AdapterInterface $memcached;
     private string $sessionId;
+    private DellinRequestDataPreparer $dataPreparer;
 
     #[NoReturn]
     public function __construct(TraceableAdapter $cacheAdapter) {
         $this->client = HttpClient::create();
         $this->memcached = $cacheAdapter->getPool();
         $this->setSessionId();
+        $this->dataPreparer = new DellinRequestDataPreparer();
     }
 
     /**
      * Запрос на перевозку сборных грузов
      * https://dev.dellin.ru/api/ordering/ltl-request/#_header3
      */
-    public function requestConsolidatedCargoTransportation()
+    public function requestConsolidatedCargoTransportation(
+        string $deliveryProduceDate,
+        string $derivalAddress,
+        string $arrivalAddress,
+        string $cargoMaxLength,
+        string $cargoMaxWidth,
+        string $cargoMaxHeight,
+        string $cargoWeight,
+        string $cargoTotalWeight,
+        string $cargoTotalVolume,
+        string $requesterUID,
+        string $senderFullname,
+        string $senderINN,
+        string $senderContactPersonName,
+        string $senderContactPersonPhone,
+        string $receiverPhone,
+        string $receiverName
+    )
     {
-        $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/request.json", [
-            'appkey' => $_ENV['DELLIN_APP_KEY'],
-            'sessionID' => $this->sessionId,
-            'inOrder' => false, # todo поменять на true после тестов
-        ]);
+        $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/request.json",
+            $this->dataPreparer->prepareConsolidatedCargoTransportationData(
+                $_ENV['DELLIN_APP_KEY'],
+                $this->sessionId,
+                $deliveryProduceDate,
+                $derivalAddress,
+                $arrivalAddress,
+                $cargoMaxLength,
+                $cargoMaxWidth,
+                $cargoMaxHeight,
+                $cargoWeight,
+                $cargoTotalWeight,
+                $cargoTotalVolume,
+                $requesterUID,
+                $senderFullname,
+                $senderINN,
+                $senderContactPersonName,
+                $senderContactPersonPhone,
+                $receiverPhone,
+                $receiverName
+            )
+        );
     }
 
     /**

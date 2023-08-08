@@ -5,7 +5,6 @@ namespace App\Service\ThirdParty\Dellin;
 class DellinRequestDataPreparer
 {
     public function prepareConsolidatedCargoTransportationData(
-        string $appKey,
         string $sessionId,
         string $deliveryProduceDate,
         string $derivalAddress,
@@ -30,7 +29,7 @@ class DellinRequestDataPreparer
     ): array
     {
         return [
-            'appkey' => $appKey,
+            'appkey' => $_ENV['DELLIN_APP_KEY'],
             'sessionID' => $sessionId,
             'inOrder' => false, # todo поменять на true после тестов
             'delivery' => [
@@ -103,6 +102,65 @@ class DellinRequestDataPreparer
             'payment' => [
                 'type' => 'noncash',
                 'primaryPayer' => 'receiver'
+            ]
+        ];
+    }
+
+    public function prepareCostAndDeliveryTimeCalculatorData(
+        string $sessionId,
+        string $produceDate,
+        string $derivalAddress,
+        string $arrivalAddress,
+        string $cargoMaxLength,
+        string $cargoMaxWidth,
+        string $cargoMaxHeight,
+        string $cargoWeight,
+        string $cargoTotalWeight,
+        string $cargoTotalVolume,
+        string $derivalWorktimeStart,
+        string $derivalWorktimeEnd,
+        string $arrivalWorktimeStart,
+        string $arrivalWorktimeEnd
+    ): array
+    {
+        return [
+            'appkey' => $_ENV['DELLIN_APP_KEY'],
+            'sessionID' => $sessionId,
+            'delivery' => [
+                'deliveryType' => [
+                    'type' => 'auto'
+                ],
+                'derival' => [
+                    'produceDate' => $produceDate,
+                    'variant' => 'address',
+                    'address' => [
+                        'search' => $derivalAddress
+                    ],
+                    'time' => [
+                        'worktimeStart' => $derivalWorktimeStart,
+                        'worktimeEnd' => $derivalWorktimeEnd
+                    ]
+                ],
+                'arrival' => [
+                    'variant' => 'address',
+                    'address' => [
+                        'search' => $arrivalAddress
+                    ],
+                    'time' => [
+                        'worktimeStart' => $arrivalWorktimeStart,
+                        'worktimeEnd' => $arrivalWorktimeEnd
+                    ]
+                ]
+            ],
+            'cargo' => [
+                'quantity' => '1',
+                'length' => $cargoMaxLength,
+                'width' => $cargoMaxWidth,
+                'height' => $cargoMaxHeight,
+                'weight' => $cargoWeight,
+                'totalVolume' => $cargoTotalVolume,
+                'totalWeight' => $cargoTotalWeight,
+                'freightUID' => '0x982400215e7024d411e1e844ef594aad'
             ]
         ];
     }

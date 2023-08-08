@@ -55,7 +55,6 @@ class DellinApi
     {
         $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/request.json",
             $this->dataPreparer->prepareConsolidatedCargoTransportationData(
-                $_ENV['DELLIN_APP_KEY'],
                 $this->sessionId,
                 $deliveryProduceDate,
                 $derivalAddress,
@@ -94,50 +93,35 @@ class DellinApi
         string $cargoMaxHeight,
         string $cargoWeight,
         string $cargoTotalWeight,
-        string $cargoTotalVolume
+        string $cargoTotalVolume,
+        string $derivalWorktimeStart,
+        string $derivalWorktimeEnd,
+        string $arrivalWorktimeStart,
+        string $arrivalWorktimeEnd
     )
     {
-        $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/calculator.json", [
-            'appkey' => $_ENV['DELLIN_APP_KEY'],
-            'sessionID' => $this->sessionId,
-            'delivery' => [
-                'deliveryType' => [
-                    'type' => 'auto'
-                ],
-                'derival' => [
-                    'produceDate' => $produceDate,
-                    'variant' => 'address',
-                    'address' => [
-                        'search' => $derivalAddress
-                    ],
-                    'time' => [ # todo заменить тестовое время на реальное и узнать подробнее об этом параметре
-                        'worktimeStart' => '12:00',
-                        'worktimeEnd' => '21:00'
-                    ]
-                ],
-                'arrival' => [
-                    'variant' => 'address',
-                    'address' => [
-                        'search' => $arrivalAddress
-                    ],
-                    'time' => [ # todo заменить тестовое время на реальное и узнать подробнее об этом параметре
-                        'worktimeStart' => '16:00',
-                        'worktimeEnd' => '16:30'
-                    ]
-                ]
-            ],
-            'cargo' => [
-                'quantity' => '1',
-                'length' => $cargoMaxLength,
-                'width' => $cargoMaxWidth,
-                'height' => $cargoMaxHeight,
-                'weight' => $cargoWeight,
-                'totalVolume' => $cargoTotalVolume,
-                'totalWeight' => $cargoTotalWeight,
-                'freightUID' => '0x982400215e7024d411e1e844ef594aad'
-            ]
-        ]);
+        $requestData = $this->dataPreparer->prepareCostAndDeliveryTimeCalculatorData(
+            $this->sessionId,
+            $produceDate,
+            $derivalAddress,
+            $arrivalAddress,
+            $cargoMaxLength,
+            $cargoMaxWidth,
+            $cargoMaxHeight,
+            $cargoWeight,
+            $cargoTotalWeight,
+            $cargoTotalVolume,
+            $derivalWorktimeStart,
+            $derivalWorktimeEnd,
+            $arrivalWorktimeStart,
+            $arrivalWorktimeEnd
+        );
+        $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/calculator.json", $requestData);
     }
+
+
+
+
 
     private function setSessionId(): void
     {

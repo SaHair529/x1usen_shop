@@ -22,7 +22,11 @@ class DellinRequestDataPreparer
         string $senderContactPersonName,
         string $senderContactPersonPhone,
         string $receiverPhone,
-        string $receiverName
+        string $receiverName,
+        string $derivalWorktimeStart,
+        string $derivalWorktimeEnd,
+        string $arrivalWorktimeStart,
+        string $arrivalWorktimeEnd
     ): array
     {
         return [
@@ -39,9 +43,9 @@ class DellinRequestDataPreparer
                     'address' => [
                         'search' => $derivalAddress
                     ],
-                    'time' => [ # todo Заменить тестовое время на реальное
-                        'worktimeStart' => '12:00',
-                        'worktimeEnd' => '21:00'
+                    'time' => [
+                        'worktimeStart' => $derivalWorktimeStart,
+                        'worktimeEnd' => $derivalWorktimeEnd
                     ]
                 ],
                 'arrival' => [
@@ -49,9 +53,9 @@ class DellinRequestDataPreparer
                     'address' => [
                         'search' => $arrivalAddress
                     ],
-                    'time' => [ # todo Заменить тестовое время на реальное
-                        'worktimeStart' => '16:00',
-                        'worktimeEnd' => '16:30'
+                    'time' => [
+                        'worktimeStart' => $arrivalWorktimeStart,
+                        'worktimeEnd' => $arrivalWorktimeEnd
                     ]
                 ]
             ],

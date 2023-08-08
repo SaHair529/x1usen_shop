@@ -46,7 +46,11 @@ class DellinApi
         string $senderContactPersonName,
         string $senderContactPersonPhone,
         string $receiverPhone,
-        string $receiverName
+        string $receiverName,
+        string $derivalWorktimeStart,
+        string $derivalWorktimeEnd,
+        string $arrivalWorktimeStart,
+        string $arrivalWorktimeEnd
     )
     {
         $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/request.json",
@@ -68,7 +72,11 @@ class DellinApi
                 $senderContactPersonName,
                 $senderContactPersonPhone,
                 $receiverPhone,
-                $receiverName
+                $receiverName,
+                $derivalWorktimeStart,
+                $derivalWorktimeEnd,
+                $arrivalWorktimeStart,
+                $arrivalWorktimeEnd
             )
         );
     }
@@ -77,15 +85,17 @@ class DellinApi
      * Запрос на калькулятор стоимости и сроков перевозки
      * https://dev.dellin.ru/api/calculation/calculator/#_header14
      */
-    public function requestCostAndDeliveryTimeCalculator(string $produceDate,
-                                                         string $derivalAddress,
-                                                         string $arrivalAddress,
-                                                         string $cargoMaxLength,
-                                                         string $cargoMaxWidth,
-                                                         string $cargoMaxHeight,
-                                                         string $cargoWeight,
-                                                         string $cargoTotalWeight,
-                                                         string $cargoTotalVolume)
+    public function requestCostAndDeliveryTimeCalculator(
+        string $produceDate,
+        string $derivalAddress,
+        string $arrivalAddress,
+        string $cargoMaxLength,
+        string $cargoMaxWidth,
+        string $cargoMaxHeight,
+        string $cargoWeight,
+        string $cargoTotalWeight,
+        string $cargoTotalVolume
+    )
     {
         $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/calculator.json", [
             'appkey' => $_ENV['DELLIN_APP_KEY'],

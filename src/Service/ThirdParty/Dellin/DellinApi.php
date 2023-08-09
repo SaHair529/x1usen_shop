@@ -139,7 +139,7 @@ class DellinApi
      * Возвращает данные о сессии, если статус 200
      * @throws TransportExceptionInterface
      */
-    public function auth(): ResponseInterface
+    private function auth(): ResponseInterface
     {
         return $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v3/auth/login.json", [
             'json' => [

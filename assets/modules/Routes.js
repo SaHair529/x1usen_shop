@@ -13,4 +13,8 @@ export default class Routes {
     static MainController = {
         search: '/search'
     }
+
+    static DellinApiController = {
+        dellin_calculate_cost_and_delivery_time: '/thirdparty/dellin/calculate_cost_and_delivery_time'
+    }
 }

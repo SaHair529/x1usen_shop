@@ -3,6 +3,7 @@ import ResponseHandler from "./ResponseHandler";
 import DOMElementsCreator from "./DOMElementsCreator";
 import Routes from "../Routes";
 import BaseRenderer from "../BaseRenderer";
+import Renderer from "./Renderer";
 
 export default class CartController {
     static init() {
@@ -211,6 +212,8 @@ export default class CartController {
 
 
         function calculateShippingCost() {
+            Renderer.renderLoaderBeforeCalculating()
+
             fetch(Routes.DellinApiController.dellin_calculate_cost_and_delivery_time, {
                 method: 'POST',
                 headers: {
@@ -218,7 +221,9 @@ export default class CartController {
                 },
                 body: JSON.stringify(requestData)
             }).then(resp => {
-
+                resp.json().then(calculateData => {
+                    Renderer.replaceLoaderWithCalculateData(calculateData)
+                })
             })
         }
         function alertErrors(validationErrors) {

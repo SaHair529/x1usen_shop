@@ -20,7 +20,6 @@ class DellinApiController extends AbstractController
     public function calculateCostAndDeliveryTime(Request $req, DellinApi $dellinApi, DataMapping $dataMapping): JsonResponse
     {
         $requestData = json_decode($req->getContent(), true);
-        dd($requestData);
 
         $user = /** @var User $user */ $this->getUser();
         $cartItems = $user->getCart()->getItems();
@@ -46,7 +45,7 @@ class DellinApiController extends AbstractController
         $arrivalWorktimeEnd = '16:30'; # todo
 
 
-        $dellinApi->requestCostAndDeliveryTimeCalculator(
+        $dellinResponse = $dellinApi->requestCostAndDeliveryTimeCalculator(
             $produceDate,
             $dataMapping->getData('companyStockAddress'),
             "{$requestData['city']}, {$requestData['address']}",
@@ -62,6 +61,8 @@ class DellinApiController extends AbstractController
             $arrivalWorktimeEnd
         );
 
-        return new JsonResponse();
+        $dellinResponseData = $dellinResponse->toArray();
+
+        return new JsonResponse($dellinResponseData);
     }
 }

@@ -98,7 +98,7 @@ class DellinApi
         string $derivalWorktimeEnd,
         string $arrivalWorktimeStart,
         string $arrivalWorktimeEnd
-    )
+    ): ResponseInterface
     {
         $requestData = $this->dataPreparer->prepareCostAndDeliveryTimeCalculatorData(
             $this->sessionId,
@@ -116,7 +116,10 @@ class DellinApi
             $arrivalWorktimeStart,
             $arrivalWorktimeEnd
         );
-        $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/calculator.json", $requestData);
+
+        return $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/calculator.json", [
+            'json' => $requestData
+        ]);
     }
 
 

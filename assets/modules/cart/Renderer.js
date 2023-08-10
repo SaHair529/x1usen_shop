@@ -1,6 +1,7 @@
 import AttributesNaming from "./HTMLAttributesNaming"
 import ElementsCreator from "./DOMElementsCreator";
 import DOMElementsCreator from "./DOMElementsCreator";
+import MainDOMElementsCreator from "../main/DOMElementsCreator";
 import BaseElementsCreator from "../BaseElementsCreator";
 
 export default class Renderer {
@@ -63,6 +64,24 @@ export default class Renderer {
     static enableIncreaseButton() {
         const increaseBtn = document.querySelector('.'+AttributesNaming.BUTTONS.INCREASE_CART_ITEM.CLASS)
         increaseBtn.removeAttribute('disabled')
+    }
+
+    static renderLoaderBeforeCalculating() {
+        const loader = MainDOMElementsCreator.createLoader()
+        loader.classList.add('calculate_loader')
+
+        const calculateDataBlock = document.querySelector('.calculate-data')
+        if (!calculateDataBlock)
+            document.querySelector('.order-form__buttons').before(loader)
+        else
+            calculateDataBlock.replaceWith(loader)
+
+    }
+
+    static replaceLoaderWithCalculateData(calculateData) {
+        const loader = document.querySelector('.calculate_loader')
+        const calculateDataBlock = DOMElementsCreator.createCalculateDataBlock(calculateData)
+        loader.replaceWith(calculateDataBlock)
     }
 
     /**

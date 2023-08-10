@@ -18,6 +18,15 @@ export default class DOMElementsCreator {
         return cartItemCounter
     }
 
+    static createCalculateDataBlock(calculateData) {
+        const calculateDataBlock = document.createElement('div')
+
+        calculateDataBlock.classList.add('calculate-data')
+        calculateDataBlock.textContent = `Стоимость доставки: ${calculateData['data']['price']}₽`
+
+        return calculateDataBlock
+    }
+
     static createToCartButton() {
         const buttonsContainer = document.createElement('div')
         buttonsContainer.className = AttributesNaming.CONTAINERS.MODAL_BUTTONS.CLASS

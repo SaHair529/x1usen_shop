@@ -394,6 +394,10 @@ header {
     max-height: 45px;
     margin-bottom: auto;
     overflow: hidden;
+    color: gray;
+    &:hover {
+      color: red;
+    }
   }
   &:last-child {
     margin-bottom: 0;

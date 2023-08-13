@@ -24,14 +24,6 @@ class DellinApiController extends AbstractController
         $user = /** @var User $user */ $this->getUser();
         $cartItems = $user->getCart()->getItems();
 
-        $requestedCartItems  = /** @var CartItem[] */ [];
-
-        /** @var CartItem $cartItem */
-        foreach ($cartItems as $cartItem) {
-            if (str_contains($requestData['checkedCartItemsIds'], $cartItem->getId()))
-                $requestedCartItems[] = $cartItem;
-        }
-
         $produceDate = '2023-08-30'; # todo
         $cargoMaxLength = 0.42; # todo
         $cargoMaxWidth = 0.18; # todo
@@ -44,6 +36,24 @@ class DellinApiController extends AbstractController
         $arrivalWorktimeStart = '16:00'; # todo
         $arrivalWorktimeEnd = '16:30'; # todo
 
+        /** @var CartItem $cartItem */
+        foreach ($cartItems as $cartItem) {
+            if (str_contains($requestData['checkedCartItemsIds'], $cartItem->getId())) {
+                if ($cargoMaxLength < $productLength = $cartItem->getProduct()->getLength())
+                    $cargoMaxLength = $productLength;
+                if ($cargoMaxWidth < $productWidth = $cartItem->getProduct()->getWidth())
+                    $cargoMaxWidth = $productWidth;
+                if ($cargoMaxHeight < $productHeight = $cartItem->getProduct()->getHeight())
+                    $cargoMaxHeight = $productHeight;
+                if ($cargoWeight < $productWeight = $cartItem->getProduct()->getWeight())
+                    $cargoWeight = $productWeight;
+                $cargoTotalWeight += $cartItem->getProduct()->getWeight();
+                $cargoTotalVolume +=
+                    $cartItem->getProduct()->getLength() *
+                    $cartItem->getProduct()->getWidth() *
+                    $cartItem->getProduct()->getHeight();
+            }
+        }
 
         $dellinResponse = $dellinApi->requestCostAndDeliveryTimeCalculator(
             $produceDate,

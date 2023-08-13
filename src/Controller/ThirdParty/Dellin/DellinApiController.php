@@ -25,12 +25,12 @@ class DellinApiController extends AbstractController
         $cartItems = $user->getCart()->getItems();
 
         $produceDate = '2023-08-30'; # todo
-        $cargoMaxLength = 0.42; # todo
-        $cargoMaxWidth = 0.18; # todo
-        $cargoMaxHeight = 0.3; # todo
-        $cargoWeight = 25.0; # todo
-        $cargoTotalWeight = 0.02; # todo
-        $cargoTotalVolume = 0.02; # todo
+        $cargoMaxLength = 0;
+        $cargoMaxWidth = 0;
+        $cargoMaxHeight = 0;
+        $cargoWeight = 0;
+        $cargoTotalWeight = 0;
+        $cargoTotalVolume = 0;
         $derivalWorktimeStart = '12:00'; # todo
         $derivalWorktimeEnd = '21:00'; # todo
         $arrivalWorktimeStart = '16:00'; # todo

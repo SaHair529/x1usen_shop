@@ -84,6 +84,12 @@ export default class Renderer {
         loader.replaceWith(calculateDataBlock)
     }
 
+    static replaceLoaderWithCalculateClientError(calculateData) {
+        const loader = document.querySelector('.calculate_loader')
+        const calculateDataBlock = DOMElementsCreator.createCalculateClientErrorBlock(calculateData)
+        loader.replaceWith(calculateDataBlock)
+    }
+
     /**
      * Смена кнопки "В корзину" на кнопку увеличения и уменьшения количества товара в корзине
      */

@@ -27,6 +27,16 @@ export default class DOMElementsCreator {
         return calculateDataBlock
     }
 
+    static createCalculateClientErrorBlock(clientErrorData) {
+        const calculateClientErrorBlock = document.createElement('div')
+
+        calculateClientErrorBlock.classList.add('calculate-data')
+        calculateClientErrorBlock.textContent = clientErrorData['error_message_for_client']
+        calculateClientErrorBlock.style.color = 'red'
+
+        return calculateClientErrorBlock
+    }
+
     static createToCartButton() {
         const buttonsContainer = document.createElement('div')
         buttonsContainer.className = AttributesNaming.CONTAINERS.MODAL_BUTTONS.CLASS

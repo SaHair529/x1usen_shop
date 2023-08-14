@@ -164,6 +164,19 @@ export default class ResponseHandler {
         })
     }
 
+    static handleCalculateResponse(resp) {
+        resp.json().then(calculateData => {
+            switch (resp.status) {
+                case 200:
+                    Renderer.replaceLoaderWithCalculateData(calculateData)
+                    break
+                case 400:
+                    Renderer.replaceLoaderWithCalculateClientError(calculateData)
+                    break
+            }
+        })
+    }
+
     static handleShowProductFullInfoModal(responsePromise) {
         responsePromise.text().then(productInfoTemplate => {
             Renderer.showProductFullInfoModal(productInfoTemplate)

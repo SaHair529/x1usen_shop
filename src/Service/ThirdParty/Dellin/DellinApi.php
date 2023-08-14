@@ -83,6 +83,7 @@ class DellinApi
     /**
      * Запрос на калькулятор стоимости и сроков перевозки
      * https://dev.dellin.ru/api/calculation/calculator/#_header14
+     * @throws TransportExceptionInterface
      */
     public function requestCostAndDeliveryTimeCalculator(
         string $produceDate,

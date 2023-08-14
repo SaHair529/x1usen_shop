@@ -6,9 +6,11 @@ use App\Entity\CartItem;
 use App\Entity\User;
 use App\Service\DataMapping;
 use App\Service\ThirdParty\Dellin\DellinApi;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -55,24 +57,35 @@ class DellinApiController extends AbstractController
             }
         }
 
-        $dellinResponse = $dellinApi->requestCostAndDeliveryTimeCalculator(
-            $produceDate,
-            $dataMapping->getData('companyStockAddress'),
-            "{$requestData['city']}, {$requestData['address']}",
-            $cargoMaxLength,
-            $cargoMaxWidth,
-            $cargoMaxHeight,
-            $cargoWeight,
-            $cargoTotalWeight,
-            $cargoTotalVolume,
-            $derivalWorktimeStart,
-            $derivalWorktimeEnd,
-            $arrivalWorktimeStart,
-            $arrivalWorktimeEnd
-        );
+        $response = new JsonResponse();
 
-        $dellinResponseData = $dellinResponse->toArray();
+        try {
+            $dellinResponse = $dellinApi->requestCostAndDeliveryTimeCalculator(
+                $produceDate,
+                $dataMapping->getData('companyStockAddress'),
+                "{$requestData['city']}, {$requestData['address']}",
+                $cargoMaxLength,
+                $cargoMaxWidth,
+                $cargoMaxHeight,
+                $cargoWeight,
+                $cargoTotalWeight,
+                $cargoTotalVolume,
+                $derivalWorktimeStart,
+                $derivalWorktimeEnd,
+                $arrivalWorktimeStart,
+                $arrivalWorktimeEnd
+            );
+            $response->setData($dellinResponse->toArray());
+        }
+        catch (Exception $e) {
+            if ($e->getResponse()->getStatusCode() === 400) {
+                $response->setData([
+                    'error_message_for_client' => 'Введите корректный адрес'
+                ]);
+                $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+            }
+        }
 
-        return new JsonResponse($dellinResponseData);
+        return $response;
     }
 }

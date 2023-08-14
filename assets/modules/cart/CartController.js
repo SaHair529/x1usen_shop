@@ -221,9 +221,7 @@ export default class CartController {
                 },
                 body: JSON.stringify(requestData)
             }).then(resp => {
-                resp.json().then(calculateData => {
-                    Renderer.replaceLoaderWithCalculateData(calculateData)
-                })
+                ResponseHandler.handleCalculateResponse(resp)
             })
         }
         function alertErrors(validationErrors) {

@@ -258,7 +258,7 @@ export default class CartController {
             if (requestData.wayToGet === 'create_order_form_way_to_get_1')
                 return 'Санкт-Петербург'
             else
-                return  document.querySelector('#create_order_form_city')
+                return  document.querySelector('#create_order_form_city').value
         }
         function getCheckedCartItemsIds() {
             let checkedCartItemsIds = ''

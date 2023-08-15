@@ -30,14 +30,24 @@
 
         <div class="container">
             <nav class="navbar navbar-light">
+                <a class="navbar-brand" href="{{ path('homepage') }}"><span class="navbar-brand__title">IGG</span><span class="navbar-brand__undertitle">motors</span></a>
                 <div class="brand-form">
-                    <a class="navbar-brand" href="{{ path('homepage') }}">IGG</a>
                     <form id="search-form-mini" class="nav-item d-flex search-form search-form--mini" method="get" action="{{ path('homepage') }}">
-                        <input name="query_string" id="search_form_query_string_mini" class="form-control me-2 search-form__query" type="search" placeholder="VIN | Номер кузова | Номер з/ч" aria-label="Search"
-                        {% if query_str|default(null) is not null %}
+                        <input name="query_string" id="search_form_query_string_mini" class="form-control me-2 search-form__query" type="search" placeholder="VIN | Номер кузова | Номер запчасти" aria-label="Search"
+                                {% if query_str|default(null) is not null %}
                             value="{{ query_str }}"
-                        {% endif %}>
+                                {% endif %}>
                     </form>
+                </div>
+                <div class="subnavbar">
+                    <i class="fa-solid fa-phone nav-item">
+                        <div class="nav-item__menu">
+                            <a href="tel:+79958907742" class="nav-item nav-item__menu-item">Менеджер | +7(995)890-77-42</a>
+                        </div>
+                    </i>
+                    {% if is_granted('ROLE_USER') %}
+                        <a href="{{ path('cart_items') }}"><i class="fa-solid fa-cart-shopping nav-item"></i></a>
+                    {% endif %}
                 </div>
 
 

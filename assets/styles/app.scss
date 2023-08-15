@@ -1,5 +1,8 @@
 @import '~bootstrap/scss/bootstrap';
 
+$mainColor: red;
+$mainColorMuted: #ff6a6a;
+
 .hidden {
   display: none !important;
 }
@@ -79,6 +82,57 @@ header {
       right: -5px;
       bottom: 0;
     }
+  }
+  .subnavbar {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    flex-grow: 1;
+    padding-right: 1rem;
+  }
+  .nav-item {
+    color: gray;
+    cursor: pointer;
+    margin-right: 1rem;
+    position: relative;
+    &__menu {
+      display: none;
+      position: absolute;
+      right: -20px;
+      top: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      font-weight: normal;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,.175);
+      padding: 13px 0;
+      &-item {
+        line-height: 22px;
+        font-size: 13px;
+        padding: 3px 20px;
+      }
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+    &:hover {
+      color: red;
+      & .nav-item__menu {
+        display: block;
+      }
+    }
+  }
+}
+.navbar-brand {
+  color: $mainColor;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  &__title {
+    line-height: 25px;
+  }
+  &__undertitle {
+    font-size: 11px;
+    line-height: 5px;
   }
 }
 
@@ -725,12 +779,19 @@ header {
     width: 30%;
     height: 30px;
   }
+  h2 {
+    color: $mainColor;
+  }
   a {
     color: grey;
     &:hover {
       color: red;
     }
   }
+}
+
+#search_form_query_string_mini {
+  min-width: 300px;
 }
 
 .search-form {

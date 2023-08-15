@@ -105,24 +105,33 @@ class CsvProductImporter
             $product = new Product();
 
         $product->setBrand(trim($line[$columnNums['brand']]));
-        $product->setAutoBrand(trim($line[$columnNums['auto_brand']]));
-        $product->setAutoModel(trim($line[$columnNums['auto_model']]));
         $product->setName(trim($line[$columnNums['name']]));
         $product->setArticleNumber(trim($line[$columnNums['article_number']]));
         $product->setPrice((float) str_replace(',', '', $line[$columnNums['price']]));
         $product->setTotalBalance( (float) trim($line[$columnNums['total_balance']]) + $product->getTotalBalance() );
-        $product->setCategory(trim($line[$columnNums['category']]));
+        $product->setImageLink(trim($line[$columnNums['image_link']]));
+        if (isset($columnNums['auto_brand']))
+            $product->setAutoBrand(trim($line[$columnNums['auto_brand']]));
+        if (isset($columnNums['auto_model']))
+            $product->setAutoModel(trim($line[$columnNums['auto_model']]));
+        if (isset($columnNums['category']))
+            $product->setCategory(trim($line[$columnNums['category']]));
         if (isset($columnNums['measurement_unit']))
             $product->setMeasurementUnit(trim($line[$columnNums['measurement_unit']]));
         if (isset($columnNums['additional_price']))
             $product->setAdditionalPrice((float) trim($line[$columnNums['additional_price']]));
-        $product->setImageLink(trim($line[$columnNums['image_link']]));
         if (isset($columnNums['technical_description']))
             $product->setTechnicalDescription(trim($line[$columnNums['technical_description']]));
         if (isset($columnNums['used']))
             $product->setUsed(trim($line[$columnNums['used']]) === 'новая' ? 0 : 1);
         if (isset($columnNums['additional_images_links']))
             $product->setAdditionalImagesLinks(trim($line[$columnNums['additional_images_links']]));
+        if (isset($columnNums['length']))
+            $product->setLength($line[$columnNums['length']]);
+        if (isset($columnNums['width']))
+            $product->setWidth($line[$columnNums['width']]);
+        if (isset($columnNums['height']))
+            $product->setHeight($line[$columnNums['height']]);
 
         return $product;
     }

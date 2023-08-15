@@ -165,6 +165,19 @@ header {
       margin-right: 1rem;
     }
   }
+  .loader {
+    margin: 2rem 0;
+  }
+  .calculate-data {
+    padding: 1rem 0;
+    color: gray;
+  }
+  .order-form__buttons {
+    transition: all 5ms;
+    &.under-loader {
+
+    }
+  }
 }
 
 .unit-card {
@@ -381,6 +394,10 @@ header {
     max-height: 45px;
     margin-bottom: auto;
     overflow: hidden;
+    color: gray;
+    &:hover {
+      color: red;
+    }
   }
   &:last-child {
     margin-bottom: 0;

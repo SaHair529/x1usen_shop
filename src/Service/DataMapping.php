@@ -52,7 +52,9 @@ class DataMapping
         'image_link', 'auto_model', 'auto_brand'
     ];
 
-    public function getData($dataContainer): array
+    private string $companyStockAddress = 'Санкт-Петербург, ул Уральская, д 4';
+
+    public function getData($dataContainer): array|string
     {
         return $this->$dataContainer;
     }

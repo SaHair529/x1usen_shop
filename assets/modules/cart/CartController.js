@@ -3,6 +3,7 @@ import ResponseHandler from "./ResponseHandler";
 import DOMElementsCreator from "./DOMElementsCreator";
 import Routes from "../Routes";
 import BaseRenderer from "../BaseRenderer";
+import Renderer from "./Renderer";
 
 export default class CartController {
     static init() {
@@ -11,6 +12,7 @@ export default class CartController {
         this.cartItemCardPressHandle()
         this.imagesModalPressHandle()
         this.unitCardPressHandle()
+        this.orderFormButtonsPressHandle()
     }
 
     // button handles------------------------
@@ -175,9 +177,100 @@ export default class CartController {
             }
         })
     }
+
+    static orderFormButtonsPressHandle() {
+        console.log('orderFormButtonsPressHandle')
+        const orderForm = document.getElementsByName('create_order_form')[0]
+        if (!orderForm)
+            return
+
+        orderForm.addEventListener('click', e => {
+            if (e.target.classList.contains('js-calculate-shipping-cost')) {
+                CartController.calculateShippingCost()
+            }
+        })
+
+        console.log('orderForm')
+    }
     // ______________________________________
 
     // button handles actions--------
+
+    static calculateShippingCost() {
+        const requestData = {}
+
+        requestData.wayToGet = getWayToGet()
+        requestData.checkedCartItemsIds = getCheckedCartItemsIds()
+        requestData.city = getCity()
+        requestData.address = document.querySelector('#create_order_form_address').value
+
+        const validationErrors = validateRequestData(requestData)
+        if (Object.keys(validationErrors).length > 0)
+            alertErrors(validationErrors)
+        else
+            calculateShippingCost(requestData)
+
+
+        function calculateShippingCost() {
+            Renderer.renderLoaderBeforeCalculating()
+
+            fetch(Routes.DellinApiController.dellin_calculate_cost_and_delivery_time, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            }).then(resp => {
+                ResponseHandler.handleCalculateResponse(resp)
+            })
+        }
+        function alertErrors(validationErrors) {
+            let validationErrorsString = ''
+            for (let key in validationErrors) {
+                const error = validationErrors[key]
+                validationErrorsString += '- '+error+"\n"
+            }
+            alert(validationErrorsString)
+        }
+        function validateRequestData(requestData) {
+            const validationErrors = {}
+
+            if (requestData.checkedCartItemsIds === '')
+                validationErrors.checkedCartItemsIds = 'Выделите необходимые товары'
+            if (requestData.city === '')
+                validationErrors.checkedCartItemsIds = 'Укажите город'
+            if (requestData.address === '')
+                validationErrors.address = 'Укажите адрес'
+
+            return validationErrors
+        }
+        function getWayToGet() {
+            let wayToGet = ''
+            document.querySelectorAll('#way_to_get_inputs input')
+                .forEach(item => {
+                    if (item.checked)
+                        wayToGet = item.getAttribute('id')
+                })
+
+            return wayToGet
+        }
+        function getCity() {
+            if (requestData.wayToGet === 'create_order_form_way_to_get_1')
+                return 'Санкт-Петербург'
+            else
+                return  document.querySelector('#create_order_form_city').value
+        }
+        function getCheckedCartItemsIds() {
+            let checkedCartItemsIds = ''
+            const cartItemsCheckboxes = document.getElementById('cart-items').querySelectorAll('input[type="checkbox"]')
+            for (let i = 0; i < cartItemsCheckboxes.length; i++)
+                if(cartItemsCheckboxes[i].checked)
+                    checkedCartItemsIds +=' '+cartItemsCheckboxes[i].getAttribute('value')
+
+            return checkedCartItemsIds
+        }
+    }
+
     static addToCart(productId) {
         return fetch(`/cart/add_item?item_id=${productId}`)
     }

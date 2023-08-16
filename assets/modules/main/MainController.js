@@ -11,7 +11,29 @@ export default class MainController {
         this.handleDynamicButtonsClicks()
         this.brandsModalPressHandle()
         this.mainPageKeysPressHandle()
+        this.headerKeysPressHandle()
+        this.headerPressHandle()
     }
+
+    static headerKeysPressHandle() {
+        document.addEventListener('keydown', function (e) {
+            const queryInput = document.getElementById('search_form_query_string_mini')
+            if (e.key === 'Enter' && queryInput === document.activeElement) {
+                e.preventDefault()
+                document.getElementById('search-form-mini').submit()
+            }
+        })
+    }
+
+    static headerPressHandle() {
+        const queryInput = document.getElementById('search_form_query_string_mini')
+        document.querySelector('header').addEventListener('click', function (e) {
+            if (e.target['classList'].contains('search-form-mini-submit') && queryInput.value !== '') {
+                    e.preventDefault()
+                    document.getElementById('search-form-mini').submit()
+                }
+            })
+        }
 
     // button handlers
     static searchFormContainerPressHandle() {

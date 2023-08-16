@@ -33,10 +33,13 @@
                 <a class="navbar-brand" href="{{ path('homepage') }}"><span class="navbar-brand__title">IGG</span><span class="navbar-brand__undertitle">motors</span></a>
                 <div class="brand-form">
                     <form id="search-form-mini" class="nav-item d-flex search-form search-form--mini" method="get" action="{{ path('homepage') }}">
-                        <input name="query_string" id="search_form_query_string_mini" class="form-control me-2 search-form__query" type="search" placeholder="VIN | Номер кузова | Номер запчасти" aria-label="Search"
-                                {% if query_str|default(null) is not null %}
-                            value="{{ query_str }}"
-                                {% endif %}>
+                        <div class="search-form--mini-wrapper">
+                            <input name="query_string" id="search_form_query_string_mini" class="form-control me-2 search-form__query" type="search" placeholder="VIN | Номер кузова | Номер запчасти" aria-label="Search"
+                                    {% if query_str|default(null) is not null %}
+                                value="{{ query_str }}"
+                                    {% endif %}>
+                            <i class="fa-solid fa-magnifying-glass search-form-mini-submit"></i>
+                        </div>
                     </form>
                 </div>
                 <div class="subnavbar">
@@ -96,18 +99,6 @@
         <div class="container">
             {% block body %}{% endblock %}
         </div>
-
-    {% block base_javascripts %}
-        <script>
-            document.addEventListener('keydown', function (e) {
-                const queryInput = document.getElementById('search_form_query_string_mini')
-                if (e.key === 'Enter' && queryInput === document.activeElement) {
-                    e.preventDefault()
-                    document.getElementById('search-form-mini').submit()
-                }
-            })
-        </script>
-    {% endblock %}
 
     {% block fakit %}
         <script src="https://kit.fontawesome.com/2fbf3fbf33.js" crossorigin="anonymous"></script>

@@ -769,6 +769,16 @@ header {
   }
 }
 
+.search-form--mini-wrapper {
+  position: relative;
+  .search-form-mini-submit {
+    position: absolute;
+    top: 7px;
+    right: 10px;
+    font-size: 13px;
+  }
+}
+
 .search-form-container {
   height: 70vh;
   display: flex;

@@ -7,7 +7,6 @@ export default class MainController {
     static init() {
         this.searchFormContainerPressHandle()
         this.detailsTreePressHandle()
-        this.userMenuHoverHandle()
         this.closeModalButtonPressHandle()
         this.handleDynamicButtonsClicks()
         this.brandsModalPressHandle()
@@ -46,12 +45,6 @@ export default class MainController {
                 }
             })
         }
-    }
-
-    static userMenuHoverHandle() {
-        const userIcon = document.querySelector('.'+HTMLElements.userIcon.class)
-        if (userIcon != null)
-            userIcon.onmouseover = userIcon.onmouseout = this.toggleUserMenuVisibility
     }
 
     static closeModalButtonPressHandle() {
@@ -106,15 +99,5 @@ export default class MainController {
         fetch(href).then(resp => {
             ResponseHandler.handleShowModelsModalResponse(resp)
         })
-    }
-
-    static toggleUserMenuVisibility(e) {
-        const userMenu = document.querySelector('.'+HTMLElements.userMenu.class)
-        if (e.type === 'mouseover') {
-            userMenu.classList.remove('hidden')
-        }
-        else if (e.type === 'mouseout') {
-            userMenu.classList.add('hidden')
-        }
     }
 }

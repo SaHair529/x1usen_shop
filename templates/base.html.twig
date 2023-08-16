@@ -46,36 +46,45 @@
                         </div>
                     </i>
                     {% if is_granted('ROLE_USER') %}
-                        <a href="{{ path('cart_items') }}"><i class="fa-solid fa-cart-shopping nav-item"></i></a>
+                        <a class="nav-item" href="{{ path('order_my_orders') }}"><i title="Мои заказы" class="fa-solid fa-bag-shopping"></i></a>
+                        <a class="nav-item" href="{{ path('cart_items') }}"><i title="Корзина" class="fa-solid fa-cart-shopping"></i></a>
+                        <i class="fa-solid fa-user nav-item">
+                            <div class="nav-item__menu">
+                                <a href="#" class="nav-item nav-item__menu-item">Настройки</a>
+                                <div>
+                                    <a class="nav-item nav-item__menu-item" href="{{ path('app_logout') }}">Выход</a>
+                                </div>
+                            </div>
+                        </i>
                     {% endif %}
                 </div>
+                {# TODO добавить оповещения #}
 
 
 
-                {% if is_granted('ROLE_USER') %}
-                    <div class="nav-item user-button">
-                        <i class="fa-solid fa-user"></i>
-                        <div class="user-menu hidden">
-                            <div class="user-menu-item user-info">
-                                <p class="user-fullname">Хайрулев Шамиль</p>
-                            </div>
-                            <div class="user-menu-item">
-                                <a class="btn btn-outline-dark cart-link" href="{{ path('cart_items') }}">Корзина</a>
-                                <a class="btn btn-outline-dark order-link" href="{{ path('order_my_orders') }}">Заказы
-                                    {% if notifications.order_status_changed|length > 0 or notifications.new_comment|length > 0 %}
-                                        <span class="notifications-indicator"></span>
-                                    {% endif %}
-                                </a>
-                            </div>
-                            <div class="user-menu-item">
-                                <a class="btn btn-outline-danger w-100 exit-link" href="{{ path('app_logout') }}">Выход</a>
-                            </div>
-                        </div>
-                        {% if hasNotifications %}
-                            <div class="user-button__notifications-indicator"></div>
-                        {% endif %}
-                    </div>
-                {% else %}
+{#                {% if is_granted('ROLE_USER') %}#}
+{#                    <div class="nav-item user-button">#}
+{#                        <i class="fa-solid fa-user"></i>#}
+{#                        <div class="user-menu hidden">#}
+{#                            <div class="user-menu-item user-info">#}
+{#                                <p class="user-fullname">Хайрулев Шамиль</p>#}
+{#                            </div>#}
+{#                            <div class="user-menu-item">#}
+{#                                <a class="btn btn-outline-dark order-link" href="{{ path('order_my_orders') }}">Заказы#}
+{#                                    {% if notifications.order_status_changed|length > 0 or notifications.new_comment|length > 0 %}#}
+{#                                        <span class="notifications-indicator"></span>#}
+{#                                    {% endif %}#}
+{#                                </a>#}
+{#                            </div>#}
+{#                            <div class="user-menu-item">#}
+{#                                <a class="btn btn-outline-danger w-100 exit-link" href="{{ path('app_logout') }}">Выход</a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        {% if hasNotifications %}#}
+{#                            <div class="user-button__notifications-indicator"></div>#}
+{#                        {% endif %}#}
+{#                    </div>#}
+                {% if not is_granted('ROLE_USER') %}
                     <div class="auth-item">
                         <a class="btn btn-outline-dark" href="{{ path('app_register') }}">Регистрация</a><a
                                 class="btn btn-outline-dark" href="{{ path('app_login') }}">Вход</a>

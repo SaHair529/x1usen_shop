@@ -29,11 +29,14 @@ export default class MainController {
         const queryInput = document.getElementById('search_form_query_string_mini')
         document.querySelector('header').addEventListener('click', function (e) {
             if (e.target['classList'].contains('search-form-mini-submit') && queryInput.value !== '') {
-                    e.preventDefault()
-                    document.getElementById('search-form-mini').submit()
-                }
-            })
-        }
+                e.preventDefault()
+                document.getElementById('search-form-mini').submit()
+            }
+            else if (e.target['classList'].contains('js-show-brands-modal')) {
+                MainController.showBrandsModal()
+            }
+        })
+    }
 
     // button handlers
     static searchFormContainerPressHandle() {

@@ -775,8 +775,21 @@ header {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  & .search-form-wrapper {
+    position: relative;
+    & .search-form-submit {
+      position: absolute;
+      right: 15px;
+      top: 13px;
+      color: gray;
+      cursor: pointer;
+      &:hover {
+        color: $mainColor;
+      }
+    }
+  }
   & .search-form {
-    width: 30%;
+    width: 35%;
     height: 30px;
   }
   h2 {

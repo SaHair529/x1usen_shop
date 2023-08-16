@@ -10,18 +10,34 @@ export default class MainController {
         this.closeModalButtonPressHandle()
         this.handleDynamicButtonsClicks()
         this.brandsModalPressHandle()
+        this.mainPageKeysPressHandle()
     }
 
     // button handlers
     static searchFormContainerPressHandle() {
         const searchFormContainer = document.querySelector('.search-form-container')
+        const queryInput = document.getElementById('search_form_query_string')
         if (searchFormContainer != null) {
             searchFormContainer.addEventListener('click', function (e) {
                 if (e.target['classList'].contains('js-show-brands-modal')) {
                     MainController.showBrandsModal()
                 }
+                else if (e.target['classList'].contains('search-form-submit') && queryInput.value !== '') {
+                    e.preventDefault()
+                    document.getElementById('search-form').submit()
+                }
             })
         }
+    }
+
+    static mainPageKeysPressHandle() {
+        document.addEventListener('keydown', function (e) {
+            const queryInput = document.getElementById('search_form_query_string')
+            if (e.key === 'Enter' && queryInput === document.activeElement && queryInput.value !== '') {
+                e.preventDefault()
+                document.getElementById('search-form').submit()
+            }
+        })
     }
 
     static brandsModalPressHandle() {

@@ -11,7 +11,10 @@
     <div class="search-form-container container">
         <h2>IGG Motors</h2>
         {{ form_start(search_form, { 'attr': {'class': 'search-form', 'id': search_form_id} }) }}
-        {{ form_widget(search_form.query_string, { 'attr': {'class': 'form-control search-form__query', 'placeholder': search_form_query_ph} }) }}
+            <div class="search-form-wrapper">
+                {{ form_widget(search_form.query_string, { 'attr': {'class': 'form-control search-form__query', 'placeholder': search_form_query_ph} }) }}
+                <i class="fa-solid fa-magnifying-glass search-form-submit"></i>
+            </div>
         {{ form_end(search_form) }}
         <a href="#" class="mt-3 js-show-brands-modal">По марке/модели</a>
     </div>
@@ -19,9 +22,9 @@
 
 {% block index_javascripts %}
     <script>
-        document.addEventListener('keydown', function (e) {
-            const queryInput = document.getElementById('search_form_query_string')
-            if (e.key === 'Enter' && queryInput === document.activeElement) {
+
+        document.addEventListener('click', function (e) {
+            if (e.classList.contains('search-form-submit')) {
                 e.preventDefault()
                 document.getElementById('{{ search_form_id }}').submit()
             }

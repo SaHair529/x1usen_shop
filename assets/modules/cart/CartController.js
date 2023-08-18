@@ -156,10 +156,13 @@ export default class CartController {
                     })
                 }
                 else if (e.target.classList.contains(AttributesNaming.cartItemCard.delButton.class)) {
-                    const cartItemId = e.target.closest('.'+AttributesNaming.cartItemCard.class).dataset.cartItemId
-                    CartController.deleteCartItem(cartItemId).then(resp => {
-                        ResponseHandler.handleCartItemCardRemoveCartItemResponse(resp, cartItemCard)
-                    })
+                    const deleteConfirm = window.confirm('Вы уверены, что хотите убрать товар из корзины?')
+                    if (deleteConfirm) {
+                        const cartItemId = e.target.closest('.'+AttributesNaming.cartItemCard.class).dataset.cartItemId
+                        CartController.deleteCartItem(cartItemId).then(resp => {
+                            ResponseHandler.handleCartItemCardRemoveCartItemResponse(resp, cartItemCard)
+                        })
+                    }
                 }
             })
         }

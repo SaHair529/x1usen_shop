@@ -41,15 +41,22 @@
 
 <script>
     document.querySelector('.way_to_get').addEventListener('change', function (e) {
-        if (e.target.getAttribute('id') === 'create_order_form_way_to_get_0' ||
-            e.target.getAttribute('id') === 'create_order_form_way_to_get_1') {
-            hideCityAndAddressInputs()
+        if (e.target.getAttribute('id') === 'create_order_form_way_to_get_0') {
+            hideCityInput()
+            hideAddressInput()
             hideCalculateButton()
             showOfflinePaymentType()
         }
+        else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_1') {
+            hideCityInput()
+            hideCalculateButton()
+            hideOfflinePaymentType()
+            showAddressInput()
+        }
         else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_2') {
-            showCityAndAddressInputs()
+            showAddressInput()
             showCalculateButton()
+            showCityInput()
             hideOfflinePaymentType()
         }
     })
@@ -59,45 +66,63 @@
         for (let i = 0; i < wayToGetInputs.length; i++) {
             if (wayToGetInputs[i].checked) {
                 const checkedWayToGetInput = wayToGetInputs[i]
-                if (checkedWayToGetInput.getAttribute('id') === 'create_order_form_way_to_get_0' ||
-                    checkedWayToGetInput.getAttribute('id') === 'create_order_form_way_to_get_1') {
-                    hideCityAndAddressInputs()
+                if (checkedWayToGetInput.getAttribute('id') === 'create_order_form_way_to_get_0') {
+                    hideCityInput()
+                    hideAddressInput()
                     hideCalculateButton()
                     showOfflinePaymentType()
                 }
+                else if (checkedWayToGetInput.getAttribute('id') === 'create_order_form_way_to_get_1') {
+                    hideCityInput()
+                    hideCalculateButton()
+                    hideOfflinePaymentType()
+                    showAddressInput()
+                }
                 else if (checkedWayToGetInput.getAttribute('id') === 'create_order_form_way_to_get_2') {
-                    showCityAndAddressInputs()
+                    showAddressInput()
                     showCalculateButton()
+                    showCityInput()
                     hideOfflinePaymentType()
                 }
             }
         }
     })
 
-    function hideCityAndAddressInputs() {
+    function hideCityInput() {
         const cityInput = document.getElementById('create_order_form_city')
-        const addressInput = document.getElementById('create_order_form_address')
 
         if (!cityInput.classList.contains('hidden'))
             cityInput.classList.add('hidden')
-        if (!addressInput.classList.contains('hidden'))
-            addressInput.classList.add('hidden')
 
         if (cityInput.hasAttribute('required'))
             cityInput.removeAttribute('required')
+    }
+
+    function hideAddressInput() {
+        const addressInput = document.getElementById('create_order_form_address')
+
+        if (!addressInput.classList.contains('hidden'))
+            addressInput.classList.add('hidden')
+
         if (addressInput.hasAttribute('required'))
             addressInput.removeAttribute('required')
     }
 
-    function showCityAndAddressInputs() {
+    function showCityInput() {
         const cityInput = document.getElementById('create_order_form_city')
-        const addressInput = document.getElementById('create_order_form_address')
 
         cityInput.classList.remove('hidden')
-        addressInput.classList.remove('hidden')
 
         if (!cityInput.hasAttribute('required'))
             cityInput.setAttribute('required', 'required')
+    }
+
+    function showAddressInput() {
+        const addressInput = document.getElementById('create_order_form_address')
+        console.log('addressInput', addressInput)
+
+        addressInput.classList.remove('hidden')
+
         if (!addressInput.hasAttribute('required'))
             addressInput.setAttribute('required', 'required')
     }

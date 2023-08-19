@@ -724,10 +724,10 @@ header {
   &__gallery {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     &-item {
       width: 100px;
       margin-bottom: 7px;
+      margin-right: 12px;
       border: 2px solid #fff;
       overflow: hidden;
       cursor: pointer;

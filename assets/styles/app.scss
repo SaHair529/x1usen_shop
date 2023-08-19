@@ -970,9 +970,9 @@ header {
     box-shadow: none;
     //border-top: 1px solid grey;
     border-radius: 0;
+    cursor: default;
     &:hover {
       box-shadow: none;
-      background-color: #fff4c7;
     }
     &__field {
       width: 10%;

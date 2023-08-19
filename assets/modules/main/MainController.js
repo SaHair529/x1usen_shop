@@ -1,7 +1,9 @@
 import HTMLElements from "./HTMLElements";
 import ResponseHandler from "./ResponseHandler";
 import Renderer from "./Renderer";
+import CartRenderer from "./../cart/Renderer";
 import Routes from "../Routes";
+import CartController from "../cart/CartController";
 
 export default class MainController {
     static init() {
@@ -13,6 +15,31 @@ export default class MainController {
         this.mainPageKeysPressHandle()
         this.headerKeysPressHandle()
         this.headerPressHandle()
+        this.tableProductCardPressHandle()
+        this.productFullInfoModalPressHandle()
+    }
+
+    static productFullInfoModalPressHandle() {
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('js-put-to-image-wrapper') || e.target.parentElement.classList.contains('js-put-to-image-wrapper')) {
+                const clickedGalleryItem = e.target.classList.contains('js-put-to-image-wrapper') ? e.target : e.target.parentElement
+                MainController.putGalleryItemToImageWrapper(clickedGalleryItem)
+            }
+        })
+    }
+
+    static tableProductCardPressHandle() {
+        document.querySelector('body').addEventListener('click', function (e) {
+            const clickedItemParentProductCard = CartController.findParentElementByClass(e.target, 'table-product-card')
+            if (clickedItemParentProductCard === null)
+                return
+
+            let productInfo = JSON.parse(clickedItemParentProductCard.dataset.product)
+
+            if (e.target.classList.contains('js-show-details')) {
+                MainController.showProductFullInfoModal(productInfo.id)
+            }
+        })
     }
 
     static headerKeysPressHandle() {
@@ -108,6 +135,14 @@ export default class MainController {
 
 
     // handlers actions
+    static putGalleryItemToImageWrapper(clickedGalleryItem) {
+        document.querySelectorAll('.detail-full-info__gallery-item')
+            .forEach(galleryItem => galleryItem.classList.remove('active'))
+        clickedGalleryItem.classList.add('active')
+
+        const clickedGalleryImageHref = clickedGalleryItem.querySelector('img').getAttribute('src')
+        document.querySelector('.detail-full-info__img').setAttribute('src', clickedGalleryImageHref)
+    }
     static toggleTreeItem(item) {
         // открытие/закрытие родительского элемента дерева
         if (item.classList.contains(HTMLElements.detailsTree.parentItem.class)) {
@@ -140,5 +175,13 @@ export default class MainController {
         fetch(href).then(resp => {
             ResponseHandler.handleShowModelsModalResponse(resp)
         })
+    }
+    static showProductFullInfoModal(productId) {
+        fetch(Routes.DetailsController.detail_info+'/'+productId)
+            .then(resp => {
+                resp.text().then(productInfoTemplate => {
+                    CartRenderer.showProductFullInfoModal(productInfoTemplate)
+                })
+            })
     }
 }

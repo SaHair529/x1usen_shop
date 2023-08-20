@@ -296,6 +296,8 @@ header {
   margin-bottom: 1rem;
   transition: .1s;
   cursor: pointer;
+  max-height: 100px;
+  overflow: hidden;
   &:hover {
     box-shadow: 0 0 30px #d6d6d6;
   }

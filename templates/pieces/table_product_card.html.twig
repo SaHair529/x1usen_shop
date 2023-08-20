@@ -5,5 +5,14 @@
     <div class="table-product-card__field">{{ product.totalBalance }} шт</div>
     <div class="table-product-card__field"><strong>{{ product.price }}</strong></div>
     <div class="table-product-card__field"><a href="#" class="js-show-details">Подробнее</a></div>
-    <div class="table-product-card__field"><i class="fa-solid fa-cart-plus js-add-to-cart" title="Добавить в корзину"></i></div>
+{#    <div class="table-product-card__field"><i class="fa-solid fa-cart-plus js-add-to-cart" title="Добавить в корзину"></i></div>#}
+    <div class="cart-item-card__quantity-counter">
+        <div class="cart-item-card__minus-btn js-decrease-cart-item {% if cart_items[product.id] is not defined  %}disabled{% endif %}">-</div>
+        {% if cart_items[product.id] is defined  %}
+            <div class="cart-item-card__amount">{{ cart_items[product.id].quantity }}</div>
+        {% else %}
+            <div class="cart-item-card__amount">0</div>
+        {% endif %}
+        <div class="cart-item-card__plus-btn js-increase-cart-item">+</div>
+    </div>
 </div>

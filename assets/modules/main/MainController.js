@@ -39,6 +39,16 @@ export default class MainController {
             if (e.target.classList.contains('js-show-details')) {
                 MainController.showProductFullInfoModal(productInfo.id)
             }
+            else if (e.target.classList.contains('js-increase-cart-item') && !e.target.classList.contains('disabled')) {
+                CartController.addToCart(productInfo.id).then(resp => {
+                    ResponseHandler.handleTableProductCardIncreaseCartItemQuantityResponse(resp, clickedItemParentProductCard)
+                })
+            }
+            else if (e.target.classList.contains('js-decrease-cart-item') && !e.target.classList.contains('disabled')) {
+                CartController.decreaseCartItemQuantity(productInfo.id).then(resp => {
+                    ResponseHandler.handleTableProductCardDecreaseCartItemQuantityResponse(resp, clickedItemParentProductCard)
+                })
+            }
         })
     }
 
@@ -183,5 +193,8 @@ export default class MainController {
                     CartRenderer.showProductFullInfoModal(productInfoTemplate)
                 })
             })
+    }
+    static addToCart(productId) {
+        fetch(`/cart/add_item?item_id=${productId}`)
     }
 }

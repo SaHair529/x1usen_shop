@@ -72,4 +72,8 @@ export default class Renderer {
         detailsWindow.innerHTML = ''
         detailsWindow.appendChild(loader)
     }
+
+    static updateTableProductCardData(cartItemCard, data) {
+        cartItemCard.querySelector('.cart-item-card__amount').textContent = data['quantity']
+    }
 }

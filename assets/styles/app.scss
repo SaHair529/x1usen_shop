@@ -507,7 +507,7 @@ header {
     border-bottom: .5px #ddd solid;
 
     .order-label, .order-value {
-      padding: 1rem;
+      padding: 5px 1rem;
     }
 
     .order-label {
@@ -521,6 +521,15 @@ header {
       color: red;
     }
   }
+}
+
+.order-comment-items {
+  height: 25vh;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  word-wrap: break-word;
 }
 
 .detail-cards-wrapper {

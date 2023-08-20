@@ -68,7 +68,7 @@ class MainController extends AbstractController
 
     private function searchByVehicleModel(string $vehicleModel)
     {
-        $products = $this->productRep->findBy(['auto_model' => $vehicleModel]);
+        $products = $this->productRep->findBy(['auto_model' => $vehicleModel], ['name' => 'ASC']);
         if (empty($products)) {
             $this->addFlash('danger', 'Ничего не найдено');
             return $this->render('main/index.html.twig', [

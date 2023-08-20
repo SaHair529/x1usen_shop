@@ -52,13 +52,25 @@ export default class Renderer {
 
         for (let i = 0; i < brands.length; i++) {
             const brand_P = document.createElement('p')
-            const brand_A = document.createElement('a')
+            const brand_IMG = document.createElement('img')
 
+            const brand_A = document.createElement('a')
             brand_A.textContent = brands[i]['brand']
             brand_A.setAttribute('href', Routes.DetailsController.detail_brand_models+brands[i]['brand'])
             brand_A.className = 'js-show-models-modal'
-
             brand_P.appendChild(brand_A)
+            brand_A.style.display = 'none'
+
+            brand_IMG.setAttribute('src', `images/car_marks_icons/${brands[i]['brand'].toLowerCase()}.png`)
+            brand_IMG.setAttribute('href', Routes.DetailsController.detail_brand_models+brands[i]['brand'])
+            brand_IMG.className = 'js-show-models-modal'
+
+            brand_IMG.onerror = function () {
+                brand_A.style.display = 'inline'
+                brand_IMG.style.display = 'none'
+            }
+
+            brand_P.appendChild(brand_IMG)
             brandsWrapper.appendChild(brand_P)
         }
         brandsModal.appendChild(brandsWrapper)

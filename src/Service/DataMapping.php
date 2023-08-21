@@ -49,7 +49,7 @@ class DataMapping
 
     private array $import_table_title_columns = [
         'brand', 'name', 'article_number', 'price', 'total_balance',
-        'image_link', 'auto_model', 'auto_brand'
+        'image_link', 'width', 'length', 'height'
     ];
 
     private string $companyStockAddress = 'Санкт-Петербург, ул Уральская, д 4';

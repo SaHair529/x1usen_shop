@@ -30,7 +30,7 @@ class CsvProductImporter
      * @param UploadedFile $file - csv-файл, который менеджер отправляет по форме в админке
      * @throws Exception
      */
-    public function importProducts(UploadedFile $file, BrandRepository $brandRep)
+    public function importProducts(UploadedFile $file, BrandRepository $brandRep): array
     {
         $csvLines = explode(PHP_EOL, $file->getContent());
         $fullCsv = [];
@@ -46,12 +46,19 @@ class CsvProductImporter
         unset($fullCsv[0]);
         unset($fullCsv[array_key_last($fullCsv)]);
 
+        $invalidLines = [];
+
         $autoBrands = [];
         foreach (array_filter($fullCsv) as $key => $line) {
-            if (!in_array($autoBrand = trim($line[$columnNums['auto_brand']]), $autoBrands) && !empty($autoBrand))
+            if (isset($columnNums['auto_brand']) && !in_array($autoBrand = trim($line[$columnNums['auto_brand']]), $autoBrands) && !empty($autoBrand))
                 $autoBrands[] = $autoBrand;
 
-            $this->validateLine($line, $key+1, $columnNums);
+            $lineInvalidCells = $this->validateLine($line, $key+1, $columnNums);
+            if (!empty($lineInvalidCells)) {
+                $invalidLines[$key + 1] = $lineInvalidCells;
+                continue;
+            }
+
             $product = $this->productRepo->findOneBy(['article_number' => trim($line[$columnNums['article_number']])]);
             $product = $this->prepareProductEntityByCsvRow($line, $columnNums, $product);
             $this->productRepo->save($product, $key === array_key_last($fullCsv));
@@ -69,6 +76,8 @@ class CsvProductImporter
             $newBrand->setBrand($brandName);
             $brandRep->save($newBrand, $key === array_key_last($brandsToAdd));
         }
+
+        return $invalidLines;
     }
 
     #[Pure]
@@ -91,12 +100,19 @@ class CsvProductImporter
     /**
      * @throws Exception
      */
-    private function validateLine(array $line, int $lineNum, array $columnNums)
+    private function validateLine(array $line, int $lineNum, array $columnNums): array
     {
+        $validationData = [];
         foreach ($this->requiredColumns as $requiredCol) {
+            if (!isset($columnNums[$requiredCol])) {
+                $validationData[] = $requiredCol;
+                continue;
+            }
             if (!isset($line[$columnNums[$requiredCol]]))
-                throw new Exception("Проверьте на валидность строку № $lineNum (Не видно $requiredCol)");
+                $validationData[] = $requiredCol;
         }
+
+        return $validationData;
     }
 
     private function prepareProductEntityByCsvRow($line, $columnNums, ?Product $product): Product

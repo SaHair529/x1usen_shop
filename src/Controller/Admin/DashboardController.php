@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractDashboardController
@@ -37,6 +38,24 @@ class DashboardController extends AbstractDashboardController
         // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
         //
         // return $this->render('some/path/my-dashboard.html.twig');
+    }
+
+    #[Route('/download-invalid-import-lines-file', name: 'download_invalid_import_lines_file')]
+    public function downloadInvalidImportLinesFile(): StreamedResponse
+    {
+        $invalidLinesFilePath = $this->getParameter('kernel.project_dir') . '/var/invalid_lines.json';
+
+        $response = new StreamedResponse(function () use ($invalidLinesFilePath) {
+            $fileStream = fopen($invalidLinesFilePath, 'rb');
+            fpassthru($fileStream);
+            fclose($fileStream);
+        });
+
+        $response->headers->set('Content-Type', 'application/octet-stream');
+        $response->headers->set('Content-Disposition', 'attachment; filename="invalid_lines.json"');
+        $response->headers->set('Content-Length', filesize($invalidLinesFilePath));
+
+        return $response;
     }
 
     public function configureDashboard(): Dashboard

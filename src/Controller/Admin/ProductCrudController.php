@@ -71,11 +71,11 @@ class ProductCrudController extends AbstractCrudController
                     $invalidLinesFilePath = $this->getParameter('kernel.project_dir') . '/var/invalid_lines.json';
 
                     $fileStream = fopen($invalidLinesFilePath, 'wb');
-                    fwrite($fileStream, json_encode($invalidLines));
+                    fwrite($fileStream, json_encode($invalidLines, JSON_PRETTY_PRINT));
                     fclose($fileStream);
 
                     $downloadUrl = $urlGenerator->generate('download_invalid_import_lines_file', [], UrlGeneratorInterface::ABSOLUTE_URL);
-                    $this->addFlash('info',
+                    $this->addFlash('warning',
                         'В таблице есть невалидные строки. Чтобы загрузить файл с информацией о них, нажмите '.
                         '<a href="'.$downloadUrl.'">здесь</a>');
                 }

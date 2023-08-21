@@ -104,7 +104,7 @@ class CsvProductImporter
     {
         $validationData = [];
         foreach ($this->requiredColumns as $requiredCol) {
-            if (!isset($columnNums[$requiredCol])) {
+            if (!isset($columnNums[$requiredCol]) || empty($line[$columnNums[$requiredCol]])) {
                 $validationData[] = $requiredCol;
                 continue;
             }

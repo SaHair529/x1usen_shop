@@ -122,6 +122,47 @@ header {
       }
     }
   }
+  .underheader-catalog {
+    display: inline-block;
+    position: absolute;
+    &-button {
+      position: relative;
+      background: #ff4a4a;
+      color: #fff;
+      padding: .5rem 9.5rem;
+      &__arrow {
+        width: 13px;
+        height: 13px;
+        border-bottom: 2px #fff solid;
+        border-right: 2px #fff solid;
+        position: absolute;
+        right: 20px;
+        top: 11px;
+        transform: rotate(45deg);
+      }
+    }
+    &__menu {
+      border: 1px red solid;
+      display: none;
+      &-item {
+        padding: .5rem 1.5rem;
+        color: gray;
+        cursor: pointer;
+        border-bottom: 1px solid #ccc;
+        &:hover {
+          background-color: #f3f3f3;
+        }
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+    &:hover {
+      .underheader-catalog__menu {
+        display: block;
+      }
+    }
+  }
 }
 .navbar-brand {
   color: $mainColor;

@@ -22,6 +22,7 @@ export default class Renderer {
             const model_A = document.createElement('a')
 
             model_A.textContent = models[i]
+            model_P.className = 'brands-wrapper__model-item'
             model_A.setAttribute('href', Routes.MainController.search+'?vehicle_model='+models[i])
 
             model_P.appendChild(model_A)
@@ -58,19 +59,18 @@ export default class Renderer {
             brand_A.textContent = brands[i]['brand']
             brand_A.setAttribute('href', Routes.DetailsController.detail_brand_models+brands[i]['brand'])
             brand_A.className = 'js-show-models-modal'
+            brand_P.className = 'brands-wrapper__item'
+            brand_P.appendChild(brand_IMG)
             brand_P.appendChild(brand_A)
-            brand_A.style.display = 'none'
 
             brand_IMG.setAttribute('src', `images/car_marks_icons/${brands[i]['brand'].toLowerCase()}.png`)
             brand_IMG.setAttribute('href', Routes.DetailsController.detail_brand_models+brands[i]['brand'])
             brand_IMG.className = 'js-show-models-modal'
 
             brand_IMG.onerror = function () {
-                brand_A.style.display = 'inline'
                 brand_IMG.style.display = 'none'
             }
 
-            brand_P.appendChild(brand_IMG)
             brandsWrapper.appendChild(brand_P)
         }
         brandsModal.appendChild(brandsWrapper)

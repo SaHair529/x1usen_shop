@@ -910,7 +910,7 @@ header {
 
 .brands-wrapper {
   background-color: #fff;
-  width: 40%;
+  width: 60%;
   max-height: 70vh;
   padding: 1rem;
   border-radius: 5px;
@@ -921,11 +921,12 @@ header {
   grid-gap: 1rem 4rem;
   justify-items: center;
 
-  p {
+  &__item, &__model-item {
     text-align: center;
-    width: 100px;
-    height: 100px;
+    width: 140px;
+    height: 110px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     border: 1px solid #d8d8d8;

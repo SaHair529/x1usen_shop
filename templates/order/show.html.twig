@@ -93,12 +93,17 @@
                 Товары
             </div>
             <div class="order-value">
+                <a href="#" class="js-toggle-order-products-visibility">Показать товары</a>
+                <br>
+                <br>
                 {% for item in order.items %}
-                    <p><a href="{{ path('detail_info', { 'id': item.product.id }) }}" class="product-link">{{ item.product.name|slice(0, 100) }}</a></p>
-                    <p>{{ item.quantity }}<span class="small">шт</span> - {{ item.product.price }}<span class="small">₽</span></p>
-                    {% if not loop.last %}
-                        <hr>
-                    {% endif %}
+                    <div class="order-product hidden">
+                        <p><a href="{{ path('detail_info', { 'id': item.product.id }) }}" class="product-link">{{ item.product.name|slice(0, 100) }}</a></p>
+                        <p>{{ item.quantity }}<span class="small">шт</span> - {{ item.product.price }}<span class="small">₽</span></p>
+                        {% if not loop.last %}
+                            <hr>
+                        {% endif %}
+                    </div>
                 {% endfor %}
             </div>
         </div>

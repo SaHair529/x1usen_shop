@@ -19,12 +19,28 @@ export default class OrderController {
                     const productHref = e.target.getAttribute('href')
                     OrderController.showProductInfoModal(productHref)
                 }
+                else if (e.target.classList.contains('js-toggle-order-products-visibility')) {
+                    OrderController.toggleOrderProductsVisibility(e.target)
+                }
             })
         }
     }
     // ________________________________________
 
     // actions --------------------
+    static toggleOrderProductsVisibility(clickedButton) {
+        const CLICKED_BUTTON_TEXT_STATES = [
+            'Показать товары',
+            'Скрыть товары'
+        ]
+
+        clickedButton.textContent = clickedButton.textContent === CLICKED_BUTTON_TEXT_STATES[0] ?
+            CLICKED_BUTTON_TEXT_STATES[1] : CLICKED_BUTTON_TEXT_STATES[0]
+
+        document.querySelectorAll('.order-product')
+            .forEach(item => item.classList.toggle('hidden'))
+    }
+
     static showProductInfoModal(productHref) {
         fetch(productHref).then(resp => {
             ResponseHandler.handleShowProductInfoModalResponse(resp)

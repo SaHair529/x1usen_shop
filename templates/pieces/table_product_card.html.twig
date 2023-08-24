@@ -1,11 +1,16 @@
 <div class="product-card table-product-card" id="{{ product.id }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product.id}) }}">
+    <div class="table-product-card__field">
+        <div class="product-card__img-wrapper" style="max-width: 90%; padding: 0">
+            <div class="img-zoom action-zoom-img"><i class="fa-solid fa-magnifying-glass-plus action-zoom-img"></i></div>
+            <img class="product-card__img" src="{{ product.imageLink }}">
+        </div>
+    </div>
     <div class="table-product-card__field">{{ product.brand }}</div>
     <div class="table-product-card__field">{{ product.articleNumber }}</div>
     <div class="table-product-card__field name">{{ product.name }}</div>
     <div class="table-product-card__field">{{ product.totalBalance }} шт</div>
     <div class="table-product-card__field"><strong>{{ product.price }}</strong></div>
     <div class="table-product-card__field"><a href="#" class="js-show-details">Подробнее</a></div>
-{#    <div class="table-product-card__field"><i class="fa-solid fa-cart-plus js-add-to-cart" title="Добавить в корзину"></i></div>#}
     <div class="cart-item-card__quantity-counter">
         <div class="cart-item-card__minus-btn js-decrease-cart-item {% if cart_items[product.id] is not defined  %}disabled{% endif %}">-</div>
         {% if cart_items[product.id] is defined  %}

@@ -1034,29 +1034,36 @@ header {
       }
     }
   }
-  .table-product-card {
-    padding: 5px;
-    align-items: normal;
+}
+
+#search-result-accordion-item {
+  .product-card {
+    border-bottom: #ccc solid 1px;
+  }
+}
+
+.table-product-card {
+  padding: 5px;
+  align-items: normal;
+  box-shadow: none;
+  //border-top: 1px solid grey;
+  border-radius: 0;
+  cursor: default;
+  &:hover {
     box-shadow: none;
-    //border-top: 1px solid grey;
-    border-radius: 0;
-    cursor: default;
+  }
+  &__field {
+    width: 10%;
+    color: #6c6c6c;
+    &.name {
+      width: 25%;
+    }
+  }
+  .js-add-to-cart, .js-show-details {
+    cursor: pointer;
+    color: cornflowerblue;
     &:hover {
-      box-shadow: none;
-    }
-    &__field {
-      width: 10%;
-      color: #6c6c6c;
-      &.name {
-        width: 25%;
-      }
-    }
-    .js-add-to-cart, .js-show-details {
-      cursor: pointer;
-      color: cornflowerblue;
-      &:hover {
-        color: red;
-      }
+      color: red;
     }
   }
 }

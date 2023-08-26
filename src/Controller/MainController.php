@@ -82,9 +82,21 @@ class MainController extends AbstractController
                 $productCategories[] = $product->getCategory();
         }
 
+        $user = $this->getUser();
+        $cartItems = $user->getCart()->getItems();
+        $cartItemsArray = [];
+        foreach ($cartItems->getIterator() as $item) {
+            foreach ($products as $product) {
+                if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
+                    $cartItemsArray[$product->getId()] = $item;
+                }
+            }
+        }
+
         return $this->render('main/vehicle_model_search_response.html.twig', [
             'products' => $products,
-            'product_categories' => $productCategories
+            'product_categories' => $productCategories,
+            'cart_items' => $cartItemsArray
         ]);
     }
 

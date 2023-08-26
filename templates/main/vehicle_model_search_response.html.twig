@@ -15,7 +15,7 @@
                  aria-labelledby="headingSearchResult" style="">
                 <div class="accordion-body">
                     {% for product in products %}
-                        {% include 'pieces/product_card.html.twig' with { 'product': product, 'hidden': 'true' } %}
+                        {% include 'pieces/table_product_card.html.twig' with { 'product': product, 'cart_items': cart_items } %}
                     {% endfor %}
                 </div>
             </div>
@@ -32,7 +32,8 @@
                     <div class="accordion-body">
                         {% for product in products %}
                             {% if product.category == product_category %}
-                                {% include 'pieces/product_card.html.twig' with { 'product': product } %}
+                                {% include 'pieces/table_product_card.html.twig' with { 'product': product, 'cart_items': cart_items } %}
+                                <hr>
                             {% endif %}
                         {% endfor %}
                     </div>

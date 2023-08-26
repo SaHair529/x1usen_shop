@@ -170,7 +170,7 @@ export default class MainController {
 
         for (let i = 0; i < $productCards.length; i++) {
             const $productCard = $productCards[i]
-            const productName = $productCard.querySelector('.product-card__name').textContent.toLowerCase()
+            const productName = $productCard.querySelector('.name').textContent.toLowerCase()
 
             if (!productName.includes(searchText) && !$productCard.classList.contains('hidden')) {
                 if ($searchResultAccordionItem.classList.contains('hidden'))

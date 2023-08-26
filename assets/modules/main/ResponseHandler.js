@@ -1,6 +1,7 @@
 import Renderer from './Renderer'
 import CartRenderer from './../cart/Renderer'
 import AttributesNaming from "../cart/HTMLAttributesNaming";
+import CartDOMElementsCreator from "../cart/DOMElementsCreator";
 
 export default class ResponseHandler {
     static handleGetUnits(resp) {
@@ -32,6 +33,10 @@ export default class ResponseHandler {
                     }
                 })
                 break
+            case 403:
+                const notAuthorizedModal = CartDOMElementsCreator.createDOMElementByObject(AttributesNaming.notAuthorizedModal_forCreator)
+                document.querySelector('body').appendChild(notAuthorizedModal)
+                break
         }
     }
 
@@ -50,6 +55,10 @@ export default class ResponseHandler {
                         }
                     }
                 })
+                break
+            case 403:
+                const notAuthorizedModal = CartDOMElementsCreator.createDOMElementByObject(AttributesNaming.notAuthorizedModal_forCreator)
+                document.querySelector('body').appendChild(notAuthorizedModal)
                 break
         }
     }

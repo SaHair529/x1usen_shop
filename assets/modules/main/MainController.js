@@ -23,6 +23,10 @@ export default class MainController {
     static pageProductSearchInputHandle() {
         const pageProductSearchInput = document.getElementById('page-product-search-input')
         const $searchResultAccordionItem = document.getElementById('search-result-accordion-item')
+
+        if (!$searchResultAccordionItem)
+            return
+
         const pageProductCards = $searchResultAccordionItem.getElementsByClassName('product-card')
 
         if (!pageProductSearchInput || !pageProductCards)

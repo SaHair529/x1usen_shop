@@ -83,12 +83,14 @@ class MainController extends AbstractController
         }
 
         $user = $this->getUser();
-        $cartItems = $user->getCart()->getItems();
         $cartItemsArray = [];
-        foreach ($cartItems->getIterator() as $item) {
-            foreach ($products as $product) {
-                if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
-                    $cartItemsArray[$product->getId()] = $item;
+        if ($user) {
+            $cartItems = $user->getCart()->getItems();
+            foreach ($cartItems->getIterator() as $item) {
+                foreach ($products as $product) {
+                    if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
+                        $cartItemsArray[$product->getId()] = $item;
+                    }
                 }
             }
         }
@@ -131,19 +133,20 @@ class MainController extends AbstractController
         $replacementDetails = $this->productRep->findBy(['article_number' => $replacementsOems]);
 
         $user = $this->getUser();
-        $cartItems = $user->getCart()->getItems();
-
         $cartItemsArray = [];
-        foreach ($cartItems->getIterator() as $item) {
-            foreach ($mainDetails as $product) {
-                if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
-                    $cartItemsArray[$product->getId()] = $item;
+        if ($user) {
+            $cartItems = $user->getCart()->getItems();
+            foreach ($cartItems->getIterator() as $item) {
+                foreach ($mainDetails as $product) {
+                    if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
+                        $cartItemsArray[$product->getId()] = $item;
+                    }
                 }
-            }
 
-            foreach ($replacementDetails as $product) {
-                if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
-                    $cartItemsArray[$product->getId()] = $item;
+                foreach ($replacementDetails as $product) {
+                    if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
+                        $cartItemsArray[$product->getId()] = $item;
+                    }
                 }
             }
         }

@@ -17,6 +17,20 @@ export default class MainController {
         this.headerPressHandle()
         this.tableProductCardPressHandle()
         this.productFullInfoModalPressHandle()
+        this.pageProductSearchInputHandle()
+    }
+
+    static pageProductSearchInputHandle() {
+        const pageProductSearchInput = document.getElementById('page-product-search-input')
+        const $searchResultAccordionItem = document.getElementById('search-result-accordion-item')
+        const pageProductCards = $searchResultAccordionItem.getElementsByClassName('product-card')
+
+        if (!pageProductSearchInput || !pageProductCards)
+            return
+
+        pageProductSearchInput.addEventListener('input', function (e) {
+            MainController.searchPageProductCardsByName(e.target, pageProductCards, $searchResultAccordionItem)
+        })
     }
 
     static productFullInfoModalPressHandle() {
@@ -145,6 +159,30 @@ export default class MainController {
 
 
     // handlers actions
+    static searchPageProductCardsByName($searchInput, $productCards, $searchResultAccordionItem) {
+        const searchText = $searchInput.value.toLowerCase().replace(/\s+/g, ' ').trim()
+
+        if (searchText.length === 0) {
+            if (!$searchResultAccordionItem.classList.contains('hidden'))
+                $searchResultAccordionItem.classList.add('hidden')
+            return
+        }
+
+        for (let i = 0; i < $productCards.length; i++) {
+            const $productCard = $productCards[i]
+            const productName = $productCard.querySelector('.product-card__name').textContent.toLowerCase()
+
+            if (!productName.includes(searchText) && !$productCard.classList.contains('hidden')) {
+                if ($searchResultAccordionItem.classList.contains('hidden'))
+                    $searchResultAccordionItem.classList.remove('hidden')
+                $productCard.classList.add('hidden')
+            }
+            else if (productName.includes(searchText) && $productCard.classList.contains('hidden')) {
+                $productCard.classList.remove('hidden')
+            }
+        }
+    }
+
     static putGalleryItemToImageWrapper(clickedGalleryItem) {
         document.querySelectorAll('.detail-full-info__gallery-item')
             .forEach(galleryItem => galleryItem.classList.remove('active'))

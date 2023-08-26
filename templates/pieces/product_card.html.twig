@@ -1,4 +1,4 @@
-<div class="product-card small" id="{{ product.id }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product.id}) }}">
+<div class="product-card small {% if hidden is defined %}hidden{% endif %}" id="{{ product.id }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product.id}) }}">
     <p class="product-card__used small" title="code">
         {% if product.used == 1 %}Б/У{% endif %}
     </p>

@@ -25,6 +25,11 @@ class DataMapping
         '3' => 'Доставка по РФ'
     ];
 
+    private array $order_delivery_types = [
+        '1' => 'По адресу',
+        '2' => 'До терминала'
+    ];
+
     private array $order_payment_types = [
         '1' => 'Картой через сайт',
         '2' => 'Наличными'

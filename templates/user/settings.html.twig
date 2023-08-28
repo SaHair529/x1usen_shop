@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Настройки{% endblock %}
+
+{% block body %}
+    {{ include('@EasyAdmin/flash_messages.html.twig') }}
+    <div class="user-settings-form-container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Условия оплаты</th>
+                <th scope="col">Тип оплаты</th>
+                <th scope="col">Ваш логин</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>По факту</td>
+                <td>Наличными</td>
+                <td>{{ app.user.username }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <br>
+
+        <h4>Смена пароля</h4>
+        {{ form_start(form) }}
+        {{ form_row(form.old_password) }}
+        {{ form_row(form.new_password) }}
+        <br>
+        <button type="submit" class="btn btn-dark btn-sm">Сохранить изменения</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

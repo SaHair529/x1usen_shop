@@ -27,68 +27,95 @@
     </head>
     <body>
     <header class="mb-3">
-
         <div class="container">
             <nav class="navbar navbar-light">
+                <a class="navbar-brand" href="{{ path('homepage') }}"><span class="navbar-brand__title">IGG</span><span class="navbar-brand__undertitle">motors</span></a>
                 <div class="brand-form">
-                    <a class="navbar-brand" href="{{ path('homepage') }}">IGG</a>
                     <form id="search-form-mini" class="nav-item d-flex search-form search-form--mini" method="get" action="{{ path('homepage') }}">
-                        <input name="query_string" id="search_form_query_string_mini" class="form-control me-2 search-form__query" type="search" placeholder="VIN | Номер кузова | Номер з/ч" aria-label="Search"
-                        {% if query_str|default(null) is not null %}
-                            value="{{ query_str }}"
-                        {% endif %}>
+                        <div class="search-form--mini-wrapper">
+                            <input name="query_string" id="search_form_query_string_mini" class="form-control me-2 search-form__query" type="search" placeholder="VIN | Номер кузова | Номер запчасти" aria-label="Search"
+                                    {% if query_str|default(null) is not null %}
+                                value="{{ query_str }}"
+                                    {% endif %}>
+                            <i class="fa-solid fa-magnifying-glass search-form-mini-submit"></i>
+                        </div>
                     </form>
                 </div>
-
-
-
-                {% if is_granted('ROLE_USER') %}
-                    <div class="nav-item user-button">
-                        <i class="fa-solid fa-user"></i>
-                        <div class="user-menu hidden">
-                            <div class="user-menu-item user-info">
-                                <p class="user-fullname">Хайрулев Шамиль</p>
-                            </div>
-                            <div class="user-menu-item">
-                                <a class="btn btn-outline-dark cart-link" href="{{ path('cart_items') }}">Корзина</a>
-                                <a class="btn btn-outline-dark order-link" href="{{ path('order_my_orders') }}">Заказы
-                                    {% if notifications.order_status_changed|length > 0 or notifications.new_comment|length > 0 %}
-                                        <span class="notifications-indicator"></span>
-                                    {% endif %}
-                                </a>
-                            </div>
-                            <div class="user-menu-item">
-                                <a class="btn btn-outline-danger w-100 exit-link" href="{{ path('app_logout') }}">Выход</a>
-                            </div>
+                <div class="subnavbar">
+                    <a href="#" class="nav-item">Оптовым покупателям</a>
+                    <a href="#" class="nav-item">Доставка</a>
+                    <a href="#" class="nav-item">О нас</a>
+                    <a href="#" class="nav-item">|</a>
+                    <i class="fa-solid fa-phone nav-item">
+                        <div class="nav-item__menu">
+                            <a href="tel:+79958907742" class="nav-item nav-item__menu-item">Менеджер | +7(995)890-77-42</a>
                         </div>
-                        {% if hasNotifications %}
-                            <div class="user-button__notifications-indicator"></div>
-                        {% endif %}
-                    </div>
-                {% else %}
+                    </i>
+                    {% if is_granted('ROLE_USER') %}
+                        <a class="nav-item" href="{{ path('order_my_orders') }}"><i title="Мои заказы" class="fa-solid fa-bag-shopping"></i></a>
+                        <a class="nav-item" href="{{ path('cart_items') }}"><i title="Корзина" class="fa-solid fa-cart-shopping"></i></a>
+                        <i class="fa-solid fa-user nav-item">
+                            <div class="nav-item__menu">
+                                <p class="nav-item nav-item__menu-item">ID: {{ app.user.id }}</p>
+                                <a href="{{ path('user_settings') }}" class="nav-item nav-item__menu-item">Настройки</a>
+                                <div>
+                                    <a class="nav-item nav-item__menu-item" href="{{ path('app_logout') }}">Выход</a>
+                                </div>
+                            </div>
+                        </i>
+                    {% endif %}
+                </div>
+                {# TODO добавить оповещения #}
+
+
+
+{#                {% if is_granted('ROLE_USER') %}#}
+{#                    <div class="nav-item user-button">#}
+{#                        <i class="fa-solid fa-user"></i>#}
+{#                        <div class="user-menu hidden">#}
+{#                            <div class="user-menu-item user-info">#}
+{#                                <p class="user-fullname">Хайрулев Шамиль</p>#}
+{#                            </div>#}
+{#                            <div class="user-menu-item">#}
+{#                                <a class="btn btn-outline-dark order-link" href="{{ path('order_my_orders') }}">Заказы#}
+{#                                    {% if notifications.order_status_changed|length > 0 or notifications.new_comment|length > 0 %}#}
+{#                                        <span class="notifications-indicator"></span>#}
+{#                                    {% endif %}#}
+{#                                </a>#}
+{#                            </div>#}
+{#                            <div class="user-menu-item">#}
+{#                                <a class="btn btn-outline-danger w-100 exit-link" href="{{ path('app_logout') }}">Выход</a>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        {% if hasNotifications %}#}
+{#                            <div class="user-button__notifications-indicator"></div>#}
+{#                        {% endif %}#}
+{#                    </div>#}
+                {% if not is_granted('ROLE_USER') %}
                     <div class="auth-item">
                         <a class="btn btn-outline-dark" href="{{ path('app_register') }}">Регистрация</a><a
                                 class="btn btn-outline-dark" href="{{ path('app_login') }}">Вход</a>
                     </div>
                 {% endif %}
             </nav>
+            {% if app.request.getRequestUri() == path('homepage') %}
+                <div class="underheader-catalog">
+                    <div class="underheader-catalog-button">
+                        <span>Каталог</span>
+                        <div class="underheader-catalog-button__arrow"></div>
+                    </div>
+                    <div class="underheader-catalog__menu">
+                        <div class="underheader-catalog__menu-item js-show-brands-modal">
+                            Поиск по марке/модели
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </header>
         <div class="container">
             {% block body %}{% endblock %}
         </div>
-
-    {% block base_javascripts %}
-        <script>
-            document.addEventListener('keydown', function (e) {
-                const queryInput = document.getElementById('search_form_query_string_mini')
-                if (e.key === 'Enter' && queryInput === document.activeElement) {
-                    e.preventDefault()
-                    document.getElementById('search-form-mini').submit()
-                }
-            })
-        </script>
-    {% endblock %}
 
     {% block fakit %}
         <script src="https://kit.fontawesome.com/2fbf3fbf33.js" crossorigin="anonymous"></script>

@@ -12,10 +12,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use Exception;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ProductCrudController extends AbstractCrudController
 {
@@ -52,7 +52,7 @@ class ProductCrudController extends AbstractCrudController
             });
     }
 
-    public function importCsv(AdminContext $context, CsvProductImporter $csvImporter, BrandRepository $brandRep): RedirectResponse|Response
+    public function importCsv(AdminContext $context, CsvProductImporter $csvImporter, BrandRepository $brandRep, UrlGeneratorInterface $urlGenerator): RedirectResponse|Response
     {
         $importForm = $this->createForm(ImportProductsFormType::class);
         $importForm->handleRequest($context->getRequest());
@@ -66,7 +66,19 @@ class ProductCrudController extends AbstractCrudController
                 ]);
             }
             try {
-                $csvImporter->importProducts($file, $brandRep);
+                $invalidLines = $csvImporter->importProducts($file, $brandRep);
+                if (!empty($invalidLines)) {
+                    $invalidLinesFilePath = $this->getParameter('kernel.project_dir') . '/var/invalid_lines.json';
+
+                    $fileStream = fopen($invalidLinesFilePath, 'wb');
+                    fwrite($fileStream, json_encode($invalidLines, JSON_PRETTY_PRINT));
+                    fclose($fileStream);
+
+                    $downloadUrl = $urlGenerator->generate('download_invalid_import_lines_file', [], UrlGeneratorInterface::ABSOLUTE_URL);
+                    $this->addFlash('warning',
+                        'В таблице есть невалидные строки. Чтобы загрузить файл с информацией о них, нажмите '.
+                        '<a href="'.$downloadUrl.'">здесь</a>');
+                }
             }
             catch (Exception $ex) {
                 $this->addFlash('danger', $ex->getMessage());

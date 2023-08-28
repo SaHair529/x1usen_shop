@@ -56,6 +56,9 @@ class Order
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $email = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $delivery_type = null;
+
     #[Pure]
     public function __construct()
     {
@@ -275,6 +278,18 @@ class Order
     public function setEmail(?string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getDeliveryType(): ?int
+    {
+        return $this->delivery_type;
+    }
+
+    public function setDeliveryType(?int $delivery_type): self
+    {
+        $this->delivery_type = $delivery_type;
 
         return $this;
     }

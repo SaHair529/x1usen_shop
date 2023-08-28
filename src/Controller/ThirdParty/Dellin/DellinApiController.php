@@ -33,8 +33,8 @@ class DellinApiController extends AbstractController
         $cargoWeight = 0;
         $cargoTotalWeight = 0;
         $cargoTotalVolume = 0;
-        $derivalWorktimeStart = '12:00'; # todo
-        $derivalWorktimeEnd = '21:00'; # todo
+        $derivalWorktimeStart = '10:00';
+        $derivalWorktimeEnd = '21:00';
         $arrivalWorktimeStart = '16:00'; # todo
         $arrivalWorktimeEnd = '16:30'; # todo
 

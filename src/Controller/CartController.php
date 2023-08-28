@@ -74,7 +74,10 @@ class CartController extends AbstractController
             }
             if ($email !== null)
                 $emailSender->sendEmailByIGG($email);
-            $this->addFlash('success', 'Заказ успешно оформлен');
+
+            return $this->redirectToRoute('order_page', [
+                'id' => $order->getId()
+            ]);
         }
         elseif ($orderForm->isSubmitted() && count($cartItemsIds) <= 0) {
             $this->addFlash('danger', 'Выберите товар в корзине (поставьте галочку слева от товара)');

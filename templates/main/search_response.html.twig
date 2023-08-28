@@ -2,7 +2,7 @@
 {% block body %}
 
     <div id="search-response">
-        {% include 'pieces/details-tree.html.twig' with {'detail_groups': detail_groups, 'vehicle': vehicle} %}
+        {% include 'pieces/details-tree.html.twig' with {'detail_groups': detail_groups, 'vehicle': vehicle, 'query_str': query_str} %}
         <div id="details-window">
             <div class="details404">
                 <p class="details404icon">

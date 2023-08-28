@@ -22,6 +22,7 @@ export default class Renderer {
             const model_A = document.createElement('a')
 
             model_A.textContent = models[i]
+            model_P.className = 'brands-wrapper__model-item'
             model_A.setAttribute('href', Routes.MainController.search+'?vehicle_model='+models[i])
 
             model_P.appendChild(model_A)
@@ -52,13 +53,24 @@ export default class Renderer {
 
         for (let i = 0; i < brands.length; i++) {
             const brand_P = document.createElement('p')
-            const brand_A = document.createElement('a')
+            const brand_IMG = document.createElement('img')
 
+            const brand_A = document.createElement('a')
             brand_A.textContent = brands[i]['brand']
             brand_A.setAttribute('href', Routes.DetailsController.detail_brand_models+brands[i]['brand'])
             brand_A.className = 'js-show-models-modal'
-
+            brand_P.className = 'brands-wrapper__item'
+            brand_P.appendChild(brand_IMG)
             brand_P.appendChild(brand_A)
+
+            brand_IMG.setAttribute('src', `images/car_marks_icons/${brands[i]['brand'].toLowerCase()}.png`)
+            brand_IMG.setAttribute('href', Routes.DetailsController.detail_brand_models+brands[i]['brand'])
+            brand_IMG.className = 'js-show-models-modal'
+
+            brand_IMG.onerror = function () {
+                brand_IMG.style.display = 'none'
+            }
+
             brandsWrapper.appendChild(brand_P)
         }
         brandsModal.appendChild(brandsWrapper)
@@ -71,5 +83,9 @@ export default class Renderer {
         const loader = DOMElementsCreator.createLoader()
         detailsWindow.innerHTML = ''
         detailsWindow.appendChild(loader)
+    }
+
+    static updateTableProductCardData(cartItemCard, data) {
+        cartItemCard.querySelector('.cart-item-card__amount').textContent = data['quantity']
     }
 }

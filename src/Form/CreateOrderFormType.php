@@ -18,8 +18,15 @@ class CreateOrderFormType extends AbstractType
         $dataMapping = new DataMapping();
         $waysToGet = array_flip($dataMapping->getData('order_ways_to_get'));
         $paymentTypes = array_flip($dataMapping->getData('order_payment_types'));
+        $deliveryTypes = array_flip($dataMapping->getData('order_delivery_types'));
 
         $builder
+            ->add('delivery_type', ChoiceType::class, [
+                'expanded' => true,
+                'multiple' => false,
+                'choices' => $deliveryTypes,
+                'data' => array_keys(array_flip($deliveryTypes))[0]
+            ])
             ->add('way_to_get', ChoiceType::class, [
                 'expanded' => true,
                 'multiple' => false,

@@ -36,7 +36,7 @@ export default class CartController {
             }
             else {
                 const productCard = e.target.classList.contains('product-card') ? e.target : e.target.closest('.product-card')
-                if (productCard !== null) {
+                if (productCard !== null && !productCard.classList.contains('table-product-card')) {
                     let productInfo = JSON.parse(productCard.dataset.product)
                     productInfo.route = productCard.dataset.productRoute
                     CartController.showProductModal(productInfo)
@@ -156,10 +156,13 @@ export default class CartController {
                     })
                 }
                 else if (e.target.classList.contains(AttributesNaming.cartItemCard.delButton.class)) {
-                    const cartItemId = e.target.closest('.'+AttributesNaming.cartItemCard.class).dataset.cartItemId
-                    CartController.deleteCartItem(cartItemId).then(resp => {
-                        ResponseHandler.handleCartItemCardRemoveCartItemResponse(resp, cartItemCard)
-                    })
+                    const deleteConfirm = window.confirm('Вы уверены, что хотите убрать товар из корзины?')
+                    if (deleteConfirm) {
+                        const cartItemId = e.target.closest('.'+AttributesNaming.cartItemCard.class).dataset.cartItemId
+                        CartController.deleteCartItem(cartItemId).then(resp => {
+                            ResponseHandler.handleCartItemCardRemoveCartItemResponse(resp, cartItemCard)
+                        })
+                    }
                 }
             })
         }

@@ -56,9 +56,20 @@ export default class Renderer {
         increaseBtn.classList.add('disabled')
     }
 
+    static disableCartItemCardDecreaseButton(cartItemCard) {
+        const decreaseBtn = cartItemCard.querySelector('.js-decrease-cart-item')
+        decreaseBtn.classList.add('disabled')
+    }
+
     static enableCartItemCardIncreaseButton(cartItemCard) {
         const increaseBtn = cartItemCard.querySelector('.'+AttributesNaming.cartItemCard.increaseBtn.class)
         increaseBtn.classList.remove('disabled')
+    }
+
+    static enableCartItemCardDecreaseButton(cartItemCard) {
+        const decreaseBtn = cartItemCard.querySelector('.'+AttributesNaming.cartItemCard.decreaseBtn.class)
+        if (decreaseBtn.classList.contains('disabled'))
+            decreaseBtn.classList.remove('disabled')
     }
 
     static enableIncreaseButton() {

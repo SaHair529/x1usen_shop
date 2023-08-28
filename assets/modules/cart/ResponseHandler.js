@@ -176,10 +176,4 @@ export default class ResponseHandler {
             }
         })
     }
-
-    static handleShowProductFullInfoModal(responsePromise) {
-        responsePromise.text().then(productInfoTemplate => {
-            Renderer.showProductFullInfoModal(productInfoTemplate)
-        })
-    }
 }

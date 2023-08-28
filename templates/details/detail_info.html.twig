@@ -1,9 +1,17 @@
 <div class="detail-full-info" data-detail-id="{{ product.id }}">
-    <h4 class="detail-full-info__name">{{ product.name }}</h4>
+    <h5 class="detail-full-info__name" style="font-weight: 300">{{ product.name }}</h5>
     <div class="detail-full-info__content">
         <div class="detail-full-info__left">
             <div class="detail-full-info__img-wrapper">
                 <img src="{{ product.imageLink }}" alt="{{ product.name }}" class="img-thumbnail detail-full-info__img">
+            </div>
+            <div class="detail-full-info__gallery">
+                {% set productImageLinks = product.additionalImagesLinks|replace({' ': ''})|split(',') %}
+                {% for imageLink in productImageLinks %}
+                    <div class="detail-full-info__gallery-item js-put-to-image-wrapper">
+                        <img src="{{ imageLink }}">
+                    </div>
+                {% endfor %}
             </div>
         </div>
         <div class="detail-full-info__right">
@@ -23,6 +31,19 @@
                 <p class="detail-full-info__price info-row">
                     <span style="color: red !important;">Цена</span>
                     <span>{{ product.price }} ₽</span>
+                </p>
+                <br>
+                <p class="info-row">
+                    <span>Длина</span>
+                    <span>{{ product.length }}</span>
+                </p>
+                <p class="info-row">
+                    <span>Ширина</span>
+                    <span>{{ product.width }}</span>
+                </p>
+                <p class="info-row">
+                    <span>Высота</span>
+                    <span>{{ product.weight }}</span>
                 </p>
             </div>
         </div>

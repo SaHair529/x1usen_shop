@@ -68,7 +68,7 @@ class MainController extends AbstractController
 
     private function searchByVehicleModel(string $vehicleModel)
     {
-        $products = $this->productRep->findBy(['auto_model' => $vehicleModel]);
+        $products = $this->productRep->findBy(['auto_model' => $vehicleModel], ['name' => 'ASC']);
         if (empty($products)) {
             $this->addFlash('danger', 'Ничего не найдено');
             return $this->render('main/index.html.twig', [
@@ -82,9 +82,23 @@ class MainController extends AbstractController
                 $productCategories[] = $product->getCategory();
         }
 
+        $user = $this->getUser();
+        $cartItemsArray = [];
+        if ($user) {
+            $cartItems = $user->getCart()->getItems();
+            foreach ($cartItems->getIterator() as $item) {
+                foreach ($products as $product) {
+                    if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
+                        $cartItemsArray[$product->getId()] = $item;
+                    }
+                }
+            }
+        }
+
         return $this->render('main/vehicle_model_search_response.html.twig', [
             'products' => $products,
-            'product_categories' => $productCategories
+            'product_categories' => $productCategories,
+            'cart_items' => $cartItemsArray
         ]);
     }
 
@@ -118,11 +132,31 @@ class MainController extends AbstractController
         $mainDetails = $this->productRep->findBy(['article_number' => $queryStr]);
         $replacementDetails = $this->productRep->findBy(['article_number' => $replacementsOems]);
 
+        $user = $this->getUser();
+        $cartItemsArray = [];
+        if ($user) {
+            $cartItems = $user->getCart()->getItems();
+            foreach ($cartItems->getIterator() as $item) {
+                foreach ($mainDetails as $product) {
+                    if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
+                        $cartItemsArray[$product->getId()] = $item;
+                    }
+                }
+
+                foreach ($replacementDetails as $product) {
+                    if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
+                        $cartItemsArray[$product->getId()] = $item;
+                    }
+                }
+            }
+        }
+
         return $this->render('main/oem_search_response.html.twig', [
-                'main_details' => $mainDetails,
-                'replacements' => $replacementDetails,
-                'query_str' => $queryStr
-]);
+            'main_details' => $mainDetails,
+            'replacements' => $replacementDetails,
+            'query_str' => $queryStr,
+            'cart_items' => $cartItemsArray
+        ]);
 
 //        $this->addFlash('danger', 'Ничего не найдено');
 //        return $this->render('main/index.html.twig', [

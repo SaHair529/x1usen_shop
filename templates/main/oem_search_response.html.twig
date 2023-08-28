@@ -4,6 +4,7 @@
     <div id="oem-search-response" class="pt-3">
         <div class="oem-table">
             <div class="oem-table__header">
+                <div class="oem-table__header-cell brand"><strong>Фото</strong></div>
                 <div class="oem-table__header-cell brand"><strong>Бренд</strong></div>
                 <div class="oem-table__header-cell article"><strong>Артикул</strong></div>
                 <div class="oem-table__header-cell name"><strong>Наименование</strong></div>
@@ -15,7 +16,7 @@
             {% if main_details|length > 0 %}
                 {% for main_detail in main_details %}
                     <hr>
-                    {% include 'pieces/table_product_card.html.twig' with { 'product': main_detail } %}
+                    {% include 'pieces/table_product_card.html.twig' with { 'product': main_detail, 'cart_items': cart_items } %}
                 {% endfor %}
             {% else %}
                 <p class="text-muted mt-5">Деталей нет в наличии</p>
@@ -25,7 +26,7 @@
                 <h4 class="mt-5">Аналоги</h4>
                 {% for replacement in replacements %}
                         <hr>
-                        {% include 'pieces/table_product_card.html.twig' with { 'product': replacement } %}
+                        {% include 'pieces/table_product_card.html.twig' with { 'product': replacement, 'cart_items': cart_items } %}
                 {% endfor %}
             {% else %}
                 <p class="text-muted mt-5">Аналогов нет в наличии</p>

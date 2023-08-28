@@ -2,7 +2,7 @@
     <div class="root">
         <div class="head">
             <div class="icon"><div class="arrow"></div></div>
-            <p class="title">{{ vehicle.brand~' '~vehicle.name }}</p>
+            <p class="title">{{ vehicle.brand~' '~vehicle.name~' '~query_str }}</p>
         </div>
         <div class="children">
             {% import _self as macros %}

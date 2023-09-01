@@ -59,6 +59,9 @@ class Order
     #[ORM\Column(nullable: true)]
     private ?int $delivery_type = null;
 
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $alfabank_order_id = null;
+
     #[Pure]
     public function __construct()
     {
@@ -290,6 +293,18 @@ class Order
     public function setDeliveryType(?int $delivery_type): self
     {
         $this->delivery_type = $delivery_type;
+
+        return $this;
+    }
+
+    public function getAlfabankOrderId(): ?string
+    {
+        return $this->alfabank_order_id;
+    }
+
+    public function setAlfabankOrderId(?string $alfabank_order_id): self
+    {
+        $this->alfabank_order_id = $alfabank_order_id;
 
         return $this;
     }

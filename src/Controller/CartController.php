@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\ThirdParty\Alfabank\AlfabankApi;
 use App\Service\ThirdParty\Google\EmailSender;
 use App\ControllerHelper\CartController\ResponseCreator;
 use App\Entity\Cart;
@@ -22,6 +23,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/cart')]
@@ -32,7 +34,7 @@ class CartController extends AbstractController
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping, EmailSender $emailSender): Response
+    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping, EmailSender $emailSender, UrlGeneratorInterface $urlGenerator, AlfabankApi $alfabankApi): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -58,12 +60,17 @@ class CartController extends AbstractController
                 $order->setAddress($address);
 
             $orderStatuses = $dataMapping->getData('order_statuses');
-            $order->setStatus(array_key_first($orderStatuses));
+            if ($order->getPaymentType() === 1)
+                $order->setStatus(1);
+            else
+                $order->setStatus(array_key_first($orderStatuses));
             $order->setCustomer($user);
             # Добавление товаров из корзины
             $cartItems = $cartItemRep->findBy(['id' => $cartItemsIds]);
+            $orderTotalPrice = 0;
             foreach ($cartItems as $cartItem) {
                 $order->addItem($cartItem);
+                $orderTotalPrice += $cartItem->getProduct()->getPrice();
             }
             $orderRep->save($order, true);
 
@@ -74,6 +81,20 @@ class CartController extends AbstractController
             }
             if ($email !== null)
                 $emailSender->sendEmailByIGG($email);
+
+            if ($order->getPaymentType() === 1) { # Если тип оплаты - карточкой через сайт
+                $costInCopecks = $orderTotalPrice*1000;
+                $orderPageUrl = $urlGenerator->generate('order_page', ['id' => $order->getId()]);
+
+                $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $orderPageUrl, $orderPageUrl); # todo изменить failUrl
+                $alfabankResponseData = $alfabankResponse->toArray(false);
+
+                $order->setAlfabankOrderId($alfabankResponseData['orderId']);
+
+                $orderRep->save($order, true);
+
+                return $this->redirect($alfabankResponseData['formUrl']);
+            }
 
             return $this->redirectToRoute('order_page', [
                 'id' => $order->getId()

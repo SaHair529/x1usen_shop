@@ -271,7 +271,12 @@ header {
   .order-form__buttons {
     transition: all 5ms;
     &.under-loader {
-
+    }
+    .calculate-btn-tip {
+      font-size: 25px;
+      font-weight: bold;
+      color: red;
+      cursor: help;
     }
   }
 }

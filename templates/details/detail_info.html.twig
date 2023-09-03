@@ -8,9 +8,11 @@
             <div class="detail-full-info__gallery">
                 {% set productImageLinks = product.additionalImagesLinks|replace({' ': ''})|split(',') %}
                 {% for imageLink in productImageLinks %}
-                    <div class="detail-full-info__gallery-item js-put-to-image-wrapper">
-                        <img src="{{ imageLink }}">
-                    </div>
+                    {% if imageLink != '' %}
+                        <div class="detail-full-info__gallery-item js-put-to-image-wrapper">
+                            <img src="{{ imageLink }}">
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
@@ -43,6 +45,10 @@
                 </p>
                 <p class="info-row">
                     <span>Высота</span>
+                    <span>{{ product.height }}</span>
+                </p>
+                <p class="info-row">
+                    <span>Вес</span>
                     <span>{{ product.weight }}</span>
                 </p>
             </div>

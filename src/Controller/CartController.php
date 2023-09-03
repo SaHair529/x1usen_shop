@@ -90,6 +90,7 @@ class CartController extends AbstractController
                 $alfabankResponseData = $alfabankResponse->toArray(false);
 
                 $order->setAlfabankOrderId($alfabankResponseData['orderId']);
+                $order->setAlfabankPaymentUrl($alfabankResponseData['formUrl']);
 
                 $orderRep->save($order, true);
 

@@ -6,6 +6,8 @@ use App\Entity\CartItem;
 use App\Entity\User;
 use App\Service\DataMapping;
 use App\Service\ThirdParty\Dellin\DellinApi;
+use DateInterval;
+use DateTime;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,8 +27,9 @@ class DellinApiController extends AbstractController
 
         $user = /** @var User $user */ $this->getUser();
         $cartItems = $user->getCart()->getItems();
+        $tomorrowDate = (new DateTime())->add(new DateInterval('P1D'));
 
-        $produceDate = '2023-08-30'; # todo
+        $produceDate = $tomorrowDate->format('Y-m-d');
         $cargoMaxLength = 0;
         $cargoMaxWidth = 0;
         $cargoMaxHeight = 0;
@@ -35,8 +38,8 @@ class DellinApiController extends AbstractController
         $cargoTotalVolume = 0;
         $derivalWorktimeStart = '10:00';
         $derivalWorktimeEnd = '21:00';
-        $arrivalWorktimeStart = '16:00'; # todo
-        $arrivalWorktimeEnd = '16:30'; # todo
+        $arrivalWorktimeStart = '10:00'; # todo
+        $arrivalWorktimeEnd = '21:00'; # todo
 
         /** @var CartItem $cartItem */
         foreach ($cartItems as $cartItem) {

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\ThirdParty\Alfabank\AlfabankApi;
+use App\Service\ThirdParty\Dellin\DellinApi;
 use App\Service\ThirdParty\Google\EmailSender;
 use App\ControllerHelper\CartController\ResponseCreator;
 use App\Entity\Cart;
@@ -34,7 +35,7 @@ class CartController extends AbstractController
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping, EmailSender $emailSender, UrlGeneratorInterface $urlGenerator, AlfabankApi $alfabankApi): Response
+    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping, EmailSender $emailSender, UrlGeneratorInterface $urlGenerator, AlfabankApi $alfabankApi, DellinApi $dellinApi): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -51,6 +52,7 @@ class CartController extends AbstractController
             $order->setClientFullname($orderForm->get('client_fullname')->getData());
             $order->setPhoneNumber($orderForm->get('phone_number')->getData());
             $order->setPaymentType($orderForm->get('payment_type')->getData());
+            $order->setWayToGet($orderForm->get('way_to_get')->getData());
 
             if (($email = $orderForm->get('email')->getData()) !== null)
                 $order->setEmail($email);
@@ -96,6 +98,37 @@ class CartController extends AbstractController
 
                 return $this->redirect($alfabankResponseData['formUrl']);
             }
+
+            # Отправка заказа в деловые линии, если доставка по РФ
+            if ($order->getWayToGet() === 3) {
+                $isProductsIndicatedDimensions = true;
+
+                foreach ($cartItems as $item) {
+                    if (!$item->getProduct()->getLength() || !$item->getProduct()->getWidth() || !$item->getProduct()->getHeight()) {
+                        $isProductsIndicatedDimensions = false;
+                        break;
+                    }
+                }
+
+                if ($isProductsIndicatedDimensions) {
+                    # Отправка запроса на заказ в ТК "Деловые линии"
+                    $derivalAddress = $dataMapping->getData('companyStockAddress');
+                    $companyOwnerFullname = $dataMapping->getData('companyOwnerFullname');
+                    $companyContactPhone = $dataMapping->getData('companyContactPhone');
+                    $companyINN = $dataMapping->getData('companyINN');
+
+                    $dellinApi->requestConsolidatedCargoTransportation(
+                        $derivalAddress, $order->getAddress(),
+                        $companyOwnerFullname, $companyINN, $companyContactPhone,
+                        $order->getPhoneNumber(), $order->getClientFullname()
+                    );
+                }
+                else {
+                    # Установка статуса "Требуется заказ вручную" для заказа
+                    $order->setStatus(7);
+                }
+            }
+            #_____________________________________________________
 
             return $this->redirectToRoute('order_page', [
                 'id' => $order->getId()

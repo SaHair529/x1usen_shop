@@ -59,6 +59,9 @@ class DataMapping
     ];
 
     private string $companyStockAddress = 'Санкт-Петербург, ул Уральская, д 4';
+    private string $companyINN = '000000000000'; # todo
+    private string $companyOwnerFullname = 'Ибрагимов Ибрагим Нурмагомедович';
+    private string $companyContactPhone = '+79999999999';
 
     public function getData($dataContainer): array|string
     {

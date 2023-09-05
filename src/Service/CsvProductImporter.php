@@ -32,6 +32,8 @@ class CsvProductImporter
      */
     public function importProducts(UploadedFile $file, BrandRepository $brandRep): array
     {
+        $this->resetProductsTotalBalance();
+
         $csvLines = explode(PHP_EOL, $file->getContent());
         $fullCsv = [];
         foreach ($csvLines as $line) {
@@ -59,8 +61,7 @@ class CsvProductImporter
                 continue;
             }
 
-            $product = $this->productRepo->findOneBy(['article_number' => trim($line[$columnNums['article_number']])]);
-            $product = $this->prepareProductEntityByCsvRow($line, $columnNums, $product);
+            $product = $this->prepareProductEntityByCsvRow($line, $columnNums);
             $this->productRepo->save($product, $key === array_key_last($fullCsv));
         }
 
@@ -115,16 +116,15 @@ class CsvProductImporter
         return $validationData;
     }
 
-    private function prepareProductEntityByCsvRow($line, $columnNums, ?Product $product): Product
+    private function prepareProductEntityByCsvRow($line, $columnNums): Product
     {
-        if ($product === null)
-            $product = new Product();
+        $product = new Product();
 
         $product->setBrand(trim($line[$columnNums['brand']]));
         $product->setName(trim($line[$columnNums['name']]));
         $product->setArticleNumber(trim($line[$columnNums['article_number']]));
         $product->setPrice((float) str_replace(',', '', $line[$columnNums['price']]));
-        $product->setTotalBalance( (float) trim($line[$columnNums['total_balance']]) + $product->getTotalBalance() );
+        $product->setTotalBalance( (float) trim($line[$columnNums['total_balance']]) );
         $product->setImageLink(trim($line[$columnNums['image_link']]));
         if (isset($columnNums['auto_brand']))
             $product->setAutoBrand(trim($line[$columnNums['auto_brand']]));
@@ -163,5 +163,14 @@ class CsvProductImporter
         }
 
         return $columnNums;
+    }
+
+    private function resetProductsTotalBalance()
+    {
+        $allProducts = $this->productRepo->findAll();
+
+        foreach ($allProducts as $index => $product) {
+            $this->productRepo->remove($product, $index === count($allProducts) - 1);
+        }
     }
 }

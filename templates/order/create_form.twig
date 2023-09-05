@@ -46,6 +46,8 @@
     <div class="order-form__buttons">
         <button type="submit" class="btn btn-dark">Оформить заказ</button>
         <button type="button" class="btn btn-success js-calculate-shipping-cost">Расчитать примерную стоимость доставки</button>
+        &nbsp;&nbsp;&nbsp;
+        <span class="calculate-btn-tip" title="Оплата доставки по РФ проводится по получению товара">?</span>
     </div>
     {{ form_end(order_form) }}
 </div>
@@ -164,10 +166,12 @@
 
     function showCalculateButton() {
         document.querySelector('.js-calculate-shipping-cost').classList.remove('hidden')
+        document.querySelector('.calculate-btn-tip').classList.remove('hidden')
     }
 
     function hideCalculateButton() {
         document.querySelector('.js-calculate-shipping-cost').classList.add('hidden')
+        document.querySelector('.calculate-btn-tip').classList.add('hidden')
     }
 
 </script>

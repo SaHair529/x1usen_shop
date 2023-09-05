@@ -59,6 +59,12 @@ class Order
     #[ORM\Column(nullable: true)]
     private ?int $delivery_type = null;
 
+    #[ORM\Column(length: 30, nullable: true)]
+    private ?string $alfabank_order_id = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $alfabank_payment_url = null;
+
     #[Pure]
     public function __construct()
     {
@@ -290,6 +296,30 @@ class Order
     public function setDeliveryType(?int $delivery_type): self
     {
         $this->delivery_type = $delivery_type;
+
+        return $this;
+    }
+
+    public function getAlfabankOrderId(): ?string
+    {
+        return $this->alfabank_order_id;
+    }
+
+    public function setAlfabankOrderId(?string $alfabank_order_id): self
+    {
+        $this->alfabank_order_id = $alfabank_order_id;
+
+        return $this;
+    }
+
+    public function getAlfabankPaymentUrl(): ?string
+    {
+        return $this->alfabank_payment_url;
+    }
+
+    public function setAlfabankPaymentUrl(?string $alfabank_payment_url): self
+    {
+        $this->alfabank_payment_url = $alfabank_payment_url;
 
         return $this;
     }

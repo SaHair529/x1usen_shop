@@ -6,6 +6,8 @@ use App\Entity\CartItem;
 use App\Entity\User;
 use App\Service\DataMapping;
 use App\Service\ThirdParty\Dellin\DellinApi;
+use DateInterval;
+use DateTime;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 #[Route('/thirdparty/dellin')]
 class DellinApiController extends AbstractController
@@ -25,62 +28,16 @@ class DellinApiController extends AbstractController
 
         $user = /** @var User $user */ $this->getUser();
         $cartItems = $user->getCart()->getItems();
-
-        $produceDate = '2023-08-30'; # todo
-        $cargoMaxLength = 0;
-        $cargoMaxWidth = 0;
-        $cargoMaxHeight = 0;
-        $cargoWeight = 0;
-        $cargoTotalWeight = 0;
-        $cargoTotalVolume = 0;
-        $derivalWorktimeStart = '10:00';
-        $derivalWorktimeEnd = '21:00';
-        $arrivalWorktimeStart = '16:00'; # todo
-        $arrivalWorktimeEnd = '16:30'; # todo
-
-        /** @var CartItem $cartItem */
-        foreach ($cartItems as $cartItem) {
-            if (str_contains($requestData['checkedCartItemsIds'], $cartItem->getId())) {
-                if ($cargoMaxLength < $productLength = $cartItem->getProduct()->getLength())
-                    $cargoMaxLength = $productLength;
-                if ($cargoMaxWidth < $productWidth = $cartItem->getProduct()->getWidth())
-                    $cargoMaxWidth = $productWidth;
-                if ($cargoMaxHeight < $productHeight = $cartItem->getProduct()->getHeight())
-                    $cargoMaxHeight = $productHeight;
-                if ($cargoWeight < $productWeight = $cartItem->getProduct()->getWeight())
-                    $cargoWeight = $productWeight;
-                $cargoTotalWeight += $cartItem->getProduct()->getWeight();
-                $cargoTotalVolume +=
-                    $cartItem->getProduct()->getLength() *
-                    $cartItem->getProduct()->getWidth() *
-                    $cartItem->getProduct()->getHeight();
-            }
-        }
-
         $response = new JsonResponse();
 
         try {
-            $dellinResponse = $dellinApi->requestCostAndDeliveryTimeCalculator(
-                $produceDate,
-                $dataMapping->getData('companyStockAddress'),
-                "{$requestData['city']}, {$requestData['address']}",
-                $cargoMaxLength,
-                $cargoMaxWidth,
-                $cargoMaxHeight,
-                $cargoWeight,
-                $cargoTotalWeight,
-                $cargoTotalVolume,
-                $derivalWorktimeStart,
-                $derivalWorktimeEnd,
-                $arrivalWorktimeStart,
-                $arrivalWorktimeEnd
-            );
+            $dellinResponse = $dellinApi->requestCostAndDeliveryTimeCalculator($cartItems, $dataMapping->getData('companyStockAddress'), $requestData);
             $response->setData($dellinResponse->toArray());
         }
-        catch (Exception $e) {
+        catch (Exception | TransportExceptionInterface $e) {
             if ($e->getResponse()->getStatusCode() === 400) {
                 $response->setData([
-                    'error_message_for_client' => 'Введите корректный адрес'
+                    'error_message_for_client' => 'Не удалось провести расчёты, пожалуйста обратитесь к менеджеру'
                 ]);
                 $response->setStatusCode(Response::HTTP_BAD_REQUEST);
             }

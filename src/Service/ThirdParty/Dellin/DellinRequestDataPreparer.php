@@ -2,32 +2,34 @@
 
 namespace App\Service\ThirdParty\Dellin;
 
+use DateInterval;
+use DateTime;
+use JetBrains\PhpStorm\ArrayShape;
+
 class DellinRequestDataPreparer
 {
-    public function prepareConsolidatedCargoTransportationData(
+    #[ArrayShape(['appkey' => "mixed", 'sessionID' => "string", 'inOrder' => "false", 'delivery' => "array", 'cargo' => "array", 'members' => "array", 'payment' => "string[]"])]
+    public function prepareConsolidatedCargoTransportationRequestData(
         string $sessionId,
-        string $deliveryProduceDate,
-        string $derivalAddress,
-        string $arrivalAddress,
-        string $cargoMaxLength,
-        string $cargoMaxWidth,
-        string $cargoMaxHeight,
-        string $cargoWeight,
-        string $cargoTotalWeight,
-        string $cargoTotalVolume,
-        string $requesterUID,
-        string $senderFullname,
-        string $senderINN,
-        string $senderContactPersonName,
-        string $senderContactPersonPhone,
-        string $receiverPhone,
-        string $receiverName,
-        string $derivalWorktimeStart,
-        string $derivalWorktimeEnd,
-        string $arrivalWorktimeStart,
-        string $arrivalWorktimeEnd
+        string $derivalAddress, string $arrivalAddress,
+        string $companyOwnerFullname, string $companyINN, string $companyContactPhone,
+        string $receiverPhone, string $receiverName
     ): array
     {
+        $tomorrowDate = (new DateTime())->add(new DateInterval('P1D'));
+
+        $deliveryProduceDate = $tomorrowDate->format('Y-m-d');
+        $cargoMaxLength = 0;
+        $cargoMaxWidth = 0;
+        $cargoMaxHeight = 0;
+        $cargoWeight = 0;
+        $cargoTotalWeight = 0;
+        $cargoTotalVolume = 0;
+        $derivalWorktimeStart = '10:00';
+        $derivalWorktimeEnd = '21:00';
+        $arrivalWorktimeStart = '10:00'; # todo
+        $arrivalWorktimeEnd = '21:00'; # todo
+
         return [
             'appkey' => $_ENV['DELLIN_APP_KEY'],
             'sessionID' => $sessionId,
@@ -71,22 +73,22 @@ class DellinRequestDataPreparer
             'members' => [
                 'requester' => [
                     'role' => 'sender',
-                    'uid' => $requesterUID # todo ?
+                    'uid' => '00000000-0000-0000-0000-000000000000' # todo ?
                 ],
                 'sender' => [
                     'counteragent' => [
                         'form' => '0xaa9042fea4fa169d4d021c6941f2090f', # todo ?
-                        'name' => $senderFullname,
-                        'inn' => $senderINN
+                        'name' => $companyOwnerFullname,
+                        'inn' => $companyINN
                     ],
                     'contactPersons' => [
                         [
-                            'name' => $senderContactPersonName
+                            'name' => $companyOwnerFullname
                         ]
                     ],
                     'phoneNumbers' => [
                         [
-                            'number' => $senderContactPersonPhone
+                            'number' => $companyContactPhone
                         ]
                     ]
                 ],
@@ -106,23 +108,48 @@ class DellinRequestDataPreparer
         ];
     }
 
-    public function prepareCostAndDeliveryTimeCalculatorData(
-        string $sessionId,
-        string $produceDate,
-        string $derivalAddress,
-        string $arrivalAddress,
-        string $cargoMaxLength,
-        string $cargoMaxWidth,
-        string $cargoMaxHeight,
-        string $cargoWeight,
-        string $cargoTotalWeight,
-        string $cargoTotalVolume,
-        string $derivalWorktimeStart,
-        string $derivalWorktimeEnd,
-        string $arrivalWorktimeStart,
-        string $arrivalWorktimeEnd
-    ): array
+    /**
+     * @param string $sessionId
+     * @param $cartItems
+     * @param string $derivalAddress
+     * @param array $requestData
+     * @return array
+     */
+    #[ArrayShape(['appkey' => "mixed", 'sessionID' => "string", 'delivery' => "array", 'cargo' => "array"])]
+    public function prepareCostAndDeliveryTimeCalculatorData(string $sessionId, $cartItems, string $derivalAddress, array $requestData): array
     {
+        $tomorrowDate = (new DateTime())->add(new DateInterval('P1D'));
+
+        $produceDate = $tomorrowDate->format('Y-m-d');
+        $cargoMaxLength = 0;
+        $cargoMaxWidth = 0;
+        $cargoMaxHeight = 0;
+        $cargoWeight = 0;
+        $cargoTotalWeight = 0;
+        $cargoTotalVolume = 0;
+        $derivalWorktimeStart = '10:00';
+        $derivalWorktimeEnd = '21:00';
+        $arrivalWorktimeStart = '10:00'; # todo
+        $arrivalWorktimeEnd = '21:00'; # todo
+
+        foreach ($cartItems as $cartItem) {
+            if (str_contains($requestData['checkedCartItemsIds'], $cartItem->getId())) {
+                if ($cargoMaxLength < $productLength = $cartItem->getProduct()->getLength())
+                    $cargoMaxLength = $productLength;
+                if ($cargoMaxWidth < $productWidth = $cartItem->getProduct()->getWidth())
+                    $cargoMaxWidth = $productWidth;
+                if ($cargoMaxHeight < $productHeight = $cartItem->getProduct()->getHeight())
+                    $cargoMaxHeight = $productHeight;
+                if ($cargoWeight < $productWeight = $cartItem->getProduct()->getWeight())
+                    $cargoWeight = $productWeight;
+                $cargoTotalWeight += $cartItem->getProduct()->getWeight();
+                $cargoTotalVolume +=
+                    $cartItem->getProduct()->getLength() *
+                    $cartItem->getProduct()->getWidth() *
+                    $cartItem->getProduct()->getHeight();
+            }
+        }
+
         return [
             'appkey' => $_ENV['DELLIN_APP_KEY'],
             'sessionID' => $sessionId,
@@ -144,7 +171,7 @@ class DellinRequestDataPreparer
                 'arrival' => [
                     'variant' => 'address',
                     'address' => [
-                        'search' => $arrivalAddress
+                        'search' => "{$requestData['city']}, {$requestData['address']}"
                     ],
                     'time' => [
                         'worktimeStart' => $arrivalWorktimeStart,

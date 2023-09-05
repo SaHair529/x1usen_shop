@@ -31,51 +31,17 @@ class DellinApi
      * https://dev.dellin.ru/api/ordering/ltl-request/#_header3
      */
     public function requestConsolidatedCargoTransportation(
-        string $deliveryProduceDate,
-        string $derivalAddress,
-        string $arrivalAddress,
-        string $cargoMaxLength,
-        string $cargoMaxWidth,
-        string $cargoMaxHeight,
-        string $cargoWeight,
-        string $cargoTotalWeight,
-        string $cargoTotalVolume,
-        string $requesterUID,
-        string $senderFullname,
-        string $senderINN,
-        string $senderContactPersonName,
-        string $senderContactPersonPhone,
-        string $receiverPhone,
-        string $receiverName,
-        string $derivalWorktimeStart,
-        string $derivalWorktimeEnd,
-        string $arrivalWorktimeStart,
-        string $arrivalWorktimeEnd
+        string $derivalAddress, string $arrivalAddress,
+        string $companyOwnerFullname, string $companyINN, string $companyContactPhone,
+        string $receiverPhone, string $receiverName
     )
     {
         $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/request.json",
-            $this->dataPreparer->prepareConsolidatedCargoTransportationData(
+            $this->dataPreparer->prepareConsolidatedCargoTransportationRequestData(
                 $this->sessionId,
-                $deliveryProduceDate,
-                $derivalAddress,
-                $arrivalAddress,
-                $cargoMaxLength,
-                $cargoMaxWidth,
-                $cargoMaxHeight,
-                $cargoWeight,
-                $cargoTotalWeight,
-                $cargoTotalVolume,
-                $requesterUID,
-                $senderFullname,
-                $senderINN,
-                $senderContactPersonName,
-                $senderContactPersonPhone,
-                $receiverPhone,
-                $receiverName,
-                $derivalWorktimeStart,
-                $derivalWorktimeEnd,
-                $arrivalWorktimeStart,
-                $arrivalWorktimeEnd
+                $derivalAddress, $arrivalAddress,
+                $companyOwnerFullname, $companyINN, $companyContactPhone,
+                $receiverPhone, $receiverName
             )
         );
     }
@@ -85,38 +51,9 @@ class DellinApi
      * https://dev.dellin.ru/api/calculation/calculator/#_header14
      * @throws TransportExceptionInterface
      */
-    public function requestCostAndDeliveryTimeCalculator(
-        string $produceDate,
-        string $derivalAddress,
-        string $arrivalAddress,
-        string $cargoMaxLength,
-        string $cargoMaxWidth,
-        string $cargoMaxHeight,
-        string $cargoWeight,
-        string $cargoTotalWeight,
-        string $cargoTotalVolume,
-        string $derivalWorktimeStart,
-        string $derivalWorktimeEnd,
-        string $arrivalWorktimeStart,
-        string $arrivalWorktimeEnd
-    ): ResponseInterface
+    public function requestCostAndDeliveryTimeCalculator($cartItems, string $derivalAddress, array $requestData): ResponseInterface
     {
-        $requestData = $this->dataPreparer->prepareCostAndDeliveryTimeCalculatorData(
-            $this->sessionId,
-            $produceDate,
-            $derivalAddress,
-            $arrivalAddress,
-            $cargoMaxLength,
-            $cargoMaxWidth,
-            $cargoMaxHeight,
-            $cargoWeight,
-            $cargoTotalWeight,
-            $cargoTotalVolume,
-            $derivalWorktimeStart,
-            $derivalWorktimeEnd,
-            $arrivalWorktimeStart,
-            $arrivalWorktimeEnd
-        );
+        $requestData = $this->dataPreparer->prepareCostAndDeliveryTimeCalculatorData($this->sessionId, $cartItems, $derivalAddress, $requestData);
 
         return $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/calculator.json", [
             'json' => $requestData

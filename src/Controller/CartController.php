@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Service\ThirdParty\Alfabank\AlfabankApi;
+use App\Service\ThirdParty\Dellin\DellinApi;
 use App\Service\ThirdParty\Google\EmailSender;
 use App\ControllerHelper\CartController\ResponseCreator;
 use App\Entity\Cart;
@@ -22,6 +24,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/cart')]
@@ -32,7 +35,7 @@ class CartController extends AbstractController
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping, EmailSender $emailSender): Response
+    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping, EmailSender $emailSender, UrlGeneratorInterface $urlGenerator, AlfabankApi $alfabankApi, DellinApi $dellinApi): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -49,6 +52,7 @@ class CartController extends AbstractController
             $order->setClientFullname($orderForm->get('client_fullname')->getData());
             $order->setPhoneNumber($orderForm->get('phone_number')->getData());
             $order->setPaymentType($orderForm->get('payment_type')->getData());
+            $order->setWayToGet($orderForm->get('way_to_get')->getData());
 
             if (($email = $orderForm->get('email')->getData()) !== null)
                 $order->setEmail($email);
@@ -58,12 +62,17 @@ class CartController extends AbstractController
                 $order->setAddress($address);
 
             $orderStatuses = $dataMapping->getData('order_statuses');
-            $order->setStatus(array_key_first($orderStatuses));
+            if ($order->getPaymentType() === 1)
+                $order->setStatus(1);
+            else
+                $order->setStatus(array_key_first($orderStatuses));
             $order->setCustomer($user);
             # Добавление товаров из корзины
             $cartItems = $cartItemRep->findBy(['id' => $cartItemsIds]);
+            $orderTotalPrice = 0;
             foreach ($cartItems as $cartItem) {
                 $order->addItem($cartItem);
+                $orderTotalPrice += $cartItem->getProduct()->getPrice();
             }
             $orderRep->save($order, true);
 
@@ -74,6 +83,52 @@ class CartController extends AbstractController
             }
             if ($email !== null)
                 $emailSender->sendEmailByIGG($email);
+
+//            if ($order->getPaymentType() === 1) { # Если тип оплаты - карточкой через сайт # todo uncomment
+//                $costInCopecks = $orderTotalPrice*1000;
+//                $orderPageUrl = $urlGenerator->generate('order_page', ['id' => $order->getId()]);
+//
+//                $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $orderPageUrl, $orderPageUrl); # todo изменить failUrl
+//                $alfabankResponseData = $alfabankResponse->toArray(false);
+//
+//                $order->setAlfabankOrderId($alfabankResponseData['orderId']);
+//                $order->setAlfabankPaymentUrl($alfabankResponseData['formUrl']);
+//
+//                $orderRep->save($order, true);
+//
+//                return $this->redirect($alfabankResponseData['formUrl']);
+//            }
+
+            # Отправка заказа в деловые линии, если доставка по РФ
+            if ($order->getWayToGet() === 3) {
+                $isProductsIndicatedDimensions = true;
+
+                foreach ($cartItems as $item) {
+                    if (!$item->getProduct()->getLength() || !$item->getProduct()->getWidth() || !$item->getProduct()->getHeight()) {
+                        $isProductsIndicatedDimensions = false;
+                        break;
+                    }
+                }
+
+                if ($isProductsIndicatedDimensions) {
+                    # Отправка запроса на заказ в ТК "Деловые линии"
+                    $derivalAddress = $dataMapping->getData('companyStockAddress');
+                    $companyOwnerFullname = $dataMapping->getData('companyOwnerFullname');
+                    $companyContactPhone = $dataMapping->getData('companyContactPhone');
+                    $companyINN = $dataMapping->getData('companyINN');
+
+                    $dellinApi->requestConsolidatedCargoTransportation(
+                        $derivalAddress, $order->getAddress(),
+                        $companyOwnerFullname, $companyINN, $companyContactPhone,
+                        $order->getPhoneNumber(), $order->getClientFullname()
+                    );
+                }
+                else {
+                    # Установка статуса "Требуется заказ вручную" для заказа
+                    $order->setStatus(7);
+                }
+            }
+            #_____________________________________________________
 
             return $this->redirectToRoute('order_page', [
                 'id' => $order->getId()

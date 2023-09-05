@@ -85,38 +85,9 @@ class DellinApi
      * https://dev.dellin.ru/api/calculation/calculator/#_header14
      * @throws TransportExceptionInterface
      */
-    public function requestCostAndDeliveryTimeCalculator(
-        string $produceDate,
-        string $derivalAddress,
-        string $arrivalAddress,
-        string $cargoMaxLength,
-        string $cargoMaxWidth,
-        string $cargoMaxHeight,
-        string $cargoWeight,
-        string $cargoTotalWeight,
-        string $cargoTotalVolume,
-        string $derivalWorktimeStart,
-        string $derivalWorktimeEnd,
-        string $arrivalWorktimeStart,
-        string $arrivalWorktimeEnd
-    ): ResponseInterface
+    public function requestCostAndDeliveryTimeCalculator($cartItems, string $derivalAddress, array $requestData): ResponseInterface
     {
-        $requestData = $this->dataPreparer->prepareCostAndDeliveryTimeCalculatorData(
-            $this->sessionId,
-            $produceDate,
-            $derivalAddress,
-            $arrivalAddress,
-            $cargoMaxLength,
-            $cargoMaxWidth,
-            $cargoMaxHeight,
-            $cargoWeight,
-            $cargoTotalWeight,
-            $cargoTotalVolume,
-            $derivalWorktimeStart,
-            $derivalWorktimeEnd,
-            $arrivalWorktimeStart,
-            $arrivalWorktimeEnd
-        );
+        $requestData = $this->dataPreparer->prepareCostAndDeliveryTimeCalculatorData($this->sessionId, $cartItems, $derivalAddress, $requestData);
 
         return $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/calculator.json", [
             'json' => $requestData

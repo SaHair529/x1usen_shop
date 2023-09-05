@@ -2,6 +2,11 @@
 
 namespace App\Service\ThirdParty\Dellin;
 
+use App\Entity\CartItem;
+use DateInterval;
+use DateTime;
+use JetBrains\PhpStorm\ArrayShape;
+
 class DellinRequestDataPreparer
 {
     public function prepareConsolidatedCargoTransportationData(
@@ -106,23 +111,48 @@ class DellinRequestDataPreparer
         ];
     }
 
-    public function prepareCostAndDeliveryTimeCalculatorData(
-        string $sessionId,
-        string $produceDate,
-        string $derivalAddress,
-        string $arrivalAddress,
-        string $cargoMaxLength,
-        string $cargoMaxWidth,
-        string $cargoMaxHeight,
-        string $cargoWeight,
-        string $cargoTotalWeight,
-        string $cargoTotalVolume,
-        string $derivalWorktimeStart,
-        string $derivalWorktimeEnd,
-        string $arrivalWorktimeStart,
-        string $arrivalWorktimeEnd
-    ): array
+    /**
+     * @param string $sessionId
+     * @param $cartItems
+     * @param string $derivalAddress
+     * @param array $requestData
+     * @return array
+     */
+    #[ArrayShape(['appkey' => "mixed", 'sessionID' => "string", 'delivery' => "array", 'cargo' => "array"])]
+    public function prepareCostAndDeliveryTimeCalculatorData(string $sessionId, $cartItems, string $derivalAddress, array $requestData): array
     {
+        $tomorrowDate = (new DateTime())->add(new DateInterval('P1D'));
+
+        $produceDate = $tomorrowDate->format('Y-m-d');
+        $cargoMaxLength = 0;
+        $cargoMaxWidth = 0;
+        $cargoMaxHeight = 0;
+        $cargoWeight = 0;
+        $cargoTotalWeight = 0;
+        $cargoTotalVolume = 0;
+        $derivalWorktimeStart = '10:00';
+        $derivalWorktimeEnd = '21:00';
+        $arrivalWorktimeStart = '10:00'; # todo
+        $arrivalWorktimeEnd = '21:00'; # todo
+
+        foreach ($cartItems as $cartItem) {
+            if (str_contains($requestData['checkedCartItemsIds'], $cartItem->getId())) {
+                if ($cargoMaxLength < $productLength = $cartItem->getProduct()->getLength())
+                    $cargoMaxLength = $productLength;
+                if ($cargoMaxWidth < $productWidth = $cartItem->getProduct()->getWidth())
+                    $cargoMaxWidth = $productWidth;
+                if ($cargoMaxHeight < $productHeight = $cartItem->getProduct()->getHeight())
+                    $cargoMaxHeight = $productHeight;
+                if ($cargoWeight < $productWeight = $cartItem->getProduct()->getWeight())
+                    $cargoWeight = $productWeight;
+                $cargoTotalWeight += $cartItem->getProduct()->getWeight();
+                $cargoTotalVolume +=
+                    $cartItem->getProduct()->getLength() *
+                    $cartItem->getProduct()->getWidth() *
+                    $cartItem->getProduct()->getHeight();
+            }
+        }
+
         return [
             'appkey' => $_ENV['DELLIN_APP_KEY'],
             'sessionID' => $sessionId,
@@ -144,7 +174,7 @@ class DellinRequestDataPreparer
                 'arrival' => [
                     'variant' => 'address',
                     'address' => [
-                        'search' => $arrivalAddress
+                        'search' => "{$requestData['city']}, {$requestData['address']}"
                     ],
                     'time' => [
                         'worktimeStart' => $arrivalWorktimeStart,

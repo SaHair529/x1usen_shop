@@ -126,6 +126,7 @@ class CartController extends AbstractController
                 else {
                     # Установка статуса "Требуется заказ вручную" для заказа
                     $order->setStatus(7);
+                    $orderRep->save($order, true);
                 }
             }
             #_____________________________________________________

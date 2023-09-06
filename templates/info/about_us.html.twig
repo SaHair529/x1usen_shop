@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} О нас {% endblock %}
+
+{% block body %}
+
+    <h4 style="margin-bottom: 2rem">ООО "АЙ-ДЖИ-ДЖИ ГРУПП"</h4>
+
+    <div class="org-info-table" style="margin-bottom: 3rem">
+        <div class="org-info-table__row">
+            <div class="org-info-table__field">ИНН</div>
+            <div class="org-info-table__value">{{ company_inn }}</div>
+        </div>
+        <div class="org-info-table__row">
+            <div class="org-info-table__field">КПП</div>
+            <div class="org-info-table__value">{{ company_kpp }}</div>
+        </div>
+        <div class="org-info-table__row">
+            <div class="org-info-table__field">ОГРН</div>
+            <div class="org-info-table__value">{{ company_ogrn }}</div>
+        </div>
+        <br>
+        <div class="org-info-table__row">
+            <div class="org-info-table__field">Расчётный счёт</div>
+            <div class="org-info-table__value">{{ company_checking_account }}</div>
+        </div>
+        <div class="org-info-table__row">
+            <div class="org-info-table__field">Банк</div>
+            <div class="org-info-table__value">{{ company_bank }}</div>
+        </div>
+        <div class="org-info-table__row">
+            <div class="org-info-table__field">БИК</div>
+            <div class="org-info-table__value">{{ company_bik }}</div>
+        </div>
+        <div class="org-info-table__row">
+            <div class="org-info-table__field">Корпоративный счёт</div>
+            <div class="org-info-table__value">{{ company_corporation_account }}</div>
+        </div>
+        <br>
+        <div class="org-info-table__row">
+            <div class="org-info-table__field">Юридический адрес</div>
+            <div class="org-info-table__value">{{ company_juridical_address }}</div>
+        </div>
+        <div class="org-info-table__row">
+            <div class="org-info-table__field">Контактный телефон</div>
+            <div class="org-info-table__value">{{ company_contact_phone }}</div>
+        </div>
+        <div class="org-info-table__row">
+            <div class="org-info-table__field">Генеральный директор</div>
+            <div class="org-info-table__value">{{ company_owner_fullname }}</div>
+        </div>
+    </div>
+
+{% endblock %}

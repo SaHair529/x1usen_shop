@@ -1105,3 +1105,28 @@ header {
     width: 50%;
   }
 }
+
+.org-info-table {
+  line-height: 2;
+  &__row {
+    display: flex;
+  }
+  &__field {
+    font-weight: bold;
+    color: grey;
+    min-width: 350px;
+  }
+  &__value {
+    color: grey;
+  }
+}
+
+.big-text {
+  line-height: 1.8;
+  max-width: 1000px;
+}
+
+.guarantees_info {
+  p {
+  }
+}

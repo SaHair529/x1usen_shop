@@ -30,3 +30,7 @@ services:
     App\Service\ThirdParty\Dellin\DellinApi:
         arguments:
             $cacheAdapter: '@cache.app'
+
+    App\Security\AccessDeniedHandler:
+        arguments: [ '@router' ]
+

@@ -21,7 +21,6 @@ class DashboardController extends AbstractDashboardController
     #[IsGranted(new Expression("user.getUsername() == 'username'"))]
     public function index(): Response
     {
-//        return parent::index();
         $routeBuilder = $this->container->get(AdminUrlGenerator::class);
         $productsCrudUrl = $routeBuilder->setController(ProductCrudController::class)->generateUrl();
 

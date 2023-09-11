@@ -54,8 +54,8 @@ class DataMapping
     ];
 
     private array $import_table_title_columns = [
-        'brand', 'name', 'article_number', 'price', 'total_balance',
-        'image_link', 'width', 'length', 'height'
+        'name', 'article_number', 'price', 'total_balance',
+        'image_link' /*'width', 'length', 'height', 'brand'*/
     ];
 
     private string $companyINN = '7810902553';

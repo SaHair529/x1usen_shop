@@ -61,7 +61,20 @@ class CsvProductImporter
                 continue;
             }
 
-            $product = $this->prepareProductEntityByCsvRow($line, $columnNums);
+            $productSearchAttributes = [
+                'article_number' => trim($line[$columnNums['article_number']]),
+                'name' => trim($line[$columnNums['name']]),
+            ];
+            if (isset($columnNums['used'])) {
+                if ($line[$columnNums['used']] === 'новая')
+                    $productSearchAttributes['used'] = 1;
+                else
+                    $productSearchAttributes['used'] = 0;
+            }
+
+            $product = $this->productRepo->findOneBy($productSearchAttributes);
+
+            $product = $this->prepareProductEntityByCsvRow($line, $columnNums, $product);
             $this->productRepo->save($product, $key === array_key_last($fullCsv));
         }
 
@@ -116,9 +129,10 @@ class CsvProductImporter
         return $validationData;
     }
 
-    private function prepareProductEntityByCsvRow($line, $columnNums): Product
+    private function prepareProductEntityByCsvRow($line, $columnNums, ?Product $product): Product
     {
-        $product = new Product();
+        if ($product === null)
+            $product = new Product();
 
         $product->setBrand(trim($line[$columnNums['brand']]));
         $product->setName(trim($line[$columnNums['name']]));
@@ -170,7 +184,8 @@ class CsvProductImporter
         $allProducts = $this->productRepo->findAll();
 
         foreach ($allProducts as $index => $product) {
-            $this->productRepo->remove($product, $index === count($allProducts) - 1);
+            $product->setTotalBalance(0);
+            $this->productRepo->save($product, $index === count($allProducts) - 1);
         }
     }
 }

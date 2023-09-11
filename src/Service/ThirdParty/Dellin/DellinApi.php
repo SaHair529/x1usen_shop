@@ -4,7 +4,7 @@ namespace App\Service\ThirdParty\Dellin;
 
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
-use Symfony\Component\Cache\Adapter\TraceableAdapter;
+use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -19,9 +19,9 @@ class DellinApi
     private DellinRequestDataPreparer $dataPreparer;
 
     #[NoReturn]
-    public function __construct(TraceableAdapter $cacheAdapter) {
+    public function __construct(MemcachedAdapter $cacheAdapter) {
         $this->client = HttpClient::create();
-        $this->memcached = $cacheAdapter->getPool();
+        $this->memcached = $cacheAdapter;
         $this->setSessionId();
         $this->dataPreparer = new DellinRequestDataPreparer();
     }

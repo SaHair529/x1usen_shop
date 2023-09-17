@@ -4,6 +4,7 @@ import DOMElementsCreator from "./DOMElementsCreator";
 import Routes from "../Routes";
 import BaseRenderer from "../BaseRenderer";
 import Renderer from "./Renderer";
+import Inputmask from "inputmask/lib/inputmask";
 
 export default class CartController {
     static init() {
@@ -13,6 +14,7 @@ export default class CartController {
         this.imagesModalPressHandle()
         this.unitCardPressHandle()
         this.orderFormButtonsPressHandle()
+        this.addPhoneInputMask()
     }
 
     // button handles------------------------
@@ -197,7 +199,15 @@ export default class CartController {
     }
     // ______________________________________
 
-    // button handles actions--------
+    // ----------actions--------
+
+    static addPhoneInputMask() {
+        const phoneInput = document.getElementById('create_order_form_phone_number')
+        if (!phoneInput)
+            return
+
+        Inputmask({mask: '+7 (999)-999-99-99'}).mask(phoneInput)
+    }
 
     static calculateShippingCost() {
         const requestData = {}

@@ -2,6 +2,8 @@
 
 namespace App\Service\ThirdParty\Dellin;
 
+use App\Entity\CartItem;
+use App\Service\TextFormatter;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
@@ -29,21 +31,34 @@ class DellinApi
     /**
      * Запрос на перевозку сборных грузов
      * https://dev.dellin.ru/api/ordering/ltl-request/#_header3
+     * @param string $derivalAddress
+     * @param string $arrivalAddress
+     * @param string $companyOwnerFullname
+     * @param string $companyINN
+     * @param string $companyContactPhone
+     * @param string $receiverPhone
+     * @param string $receiverName
+     * @param CartItem[] $cartItems
+     * @throws TransportExceptionInterface
      */
     public function requestConsolidatedCargoTransportation(
         string $derivalAddress, string $arrivalAddress,
         string $companyOwnerFullname, string $companyINN, string $companyContactPhone,
-        string $receiverPhone, string $receiverName
+        string $receiverPhone, string $receiverName,
+        array $cartItems
     )
     {
-        $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/request.json",
-            $this->dataPreparer->prepareConsolidatedCargoTransportationRequestData(
-                $this->sessionId,
-                $derivalAddress, $arrivalAddress,
-                $companyOwnerFullname, $companyINN, $companyContactPhone,
-                $receiverPhone, $receiverName
-            )
+        $requestData = $this->dataPreparer->prepareConsolidatedCargoTransportationRequestData(
+            $this->sessionId,
+            $derivalAddress, $arrivalAddress,
+            $companyOwnerFullname, $companyINN, TextFormatter::reformatPhoneForDellinRequest($companyContactPhone),
+            TextFormatter::reformatPhoneForDellinRequest($receiverPhone), $receiverName,
+            $cartItems
         );
+
+        $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/request.json", [
+            'json' => $requestData
+        ]);
     }
 
     /**

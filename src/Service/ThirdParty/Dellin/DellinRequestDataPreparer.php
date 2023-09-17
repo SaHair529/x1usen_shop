@@ -2,18 +2,32 @@
 
 namespace App\Service\ThirdParty\Dellin;
 
+use App\Entity\CartItem;
 use DateInterval;
 use DateTime;
 use JetBrains\PhpStorm\ArrayShape;
 
 class DellinRequestDataPreparer
 {
+    /**
+     * @param string $sessionId
+     * @param string $derivalAddress
+     * @param string $arrivalAddress
+     * @param string $companyOwnerFullname
+     * @param string $companyINN
+     * @param string $companyContactPhone
+     * @param string $receiverPhone
+     * @param string $receiverName
+     * @param CartItem[] $cartItems
+     * @return array
+     */
     #[ArrayShape(['appkey' => "mixed", 'sessionID' => "string", 'inOrder' => "false", 'delivery' => "array", 'cargo' => "array", 'members' => "array", 'payment' => "string[]"])]
     public function prepareConsolidatedCargoTransportationRequestData(
         string $sessionId,
         string $derivalAddress, string $arrivalAddress,
         string $companyOwnerFullname, string $companyINN, string $companyContactPhone,
-        string $receiverPhone, string $receiverName
+        string $receiverPhone, string $receiverName,
+        array $cartItems
     ): array
     {
         $tomorrowDate = (new DateTime())->add(new DateInterval('P1D'));
@@ -29,6 +43,22 @@ class DellinRequestDataPreparer
         $derivalWorktimeEnd = '21:00';
         $arrivalWorktimeStart = '10:00'; # todo
         $arrivalWorktimeEnd = '21:00'; # todo
+
+        foreach ($cartItems as $cartItem) {
+            if ($cargoMaxLength < $productLength = $cartItem->getProduct()->getLength())
+                $cargoMaxLength = $productLength;
+            if ($cargoMaxWidth < $productWidth = $cartItem->getProduct()->getWidth())
+                $cargoMaxWidth = $productWidth;
+            if ($cargoMaxHeight < $productHeight = $cartItem->getProduct()->getHeight())
+                $cargoMaxHeight = $productHeight;
+            if ($cargoWeight < $productWeight = $cartItem->getProduct()->getWeight())
+                $cargoWeight = $productWeight;
+            $cargoTotalWeight += $cartItem->getProduct()->getWeight();
+            $cargoTotalVolume +=
+                $cartItem->getProduct()->getLength() *
+                $cartItem->getProduct()->getWidth() *
+                $cartItem->getProduct()->getHeight();
+        }
 
         return [
             'appkey' => $_ENV['DELLIN_APP_KEY'],
@@ -102,7 +132,7 @@ class DellinRequestDataPreparer
                 ]
             ],
             'payment' => [
-                'type' => 'noncash',
+                'type' => 'cash',
                 'primaryPayer' => 'receiver'
             ]
         ];

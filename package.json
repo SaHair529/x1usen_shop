@@ -12,8 +12,6 @@
         "node-sass": "^8.0.0",
         "regenerator-runtime": "^0.13.9",
         "sass-loader": "^13.2.0",
-        "ts-loader": "^9.4.2",
-        "typescript": "^5.0.4",
         "webpack": "^5.74.0",
         "webpack-cli": "^4.10.0",
         "webpack-notifier": "^1.15.0"
@@ -27,6 +25,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "inputmask": "^5.0.8",
         "twig": "^1.16.0"
     }
 }

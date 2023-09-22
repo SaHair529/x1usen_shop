@@ -52,14 +52,14 @@ class CsvProductImporter
 
         $autoBrands = [];
         foreach (array_filter($fullCsv) as $key => $line) {
-            if (isset($columnNums['auto_brand']) && !in_array($autoBrand = trim($line[$columnNums['auto_brand']]), $autoBrands) && !empty($autoBrand))
-                $autoBrands[] = $autoBrand;
-
             $lineInvalidCells = $this->validateLine($line, $key+1, $columnNums);
             if (!empty($lineInvalidCells)) {
                 $invalidLines[$key + 1] = $lineInvalidCells;
                 continue;
             }
+
+            if (isset($columnNums['auto_brand']) && !in_array($autoBrand = trim($line[$columnNums['auto_brand']]), $autoBrands) && !empty($autoBrand))
+                $autoBrands[] = $autoBrand;
 
             $productSearchAttributes = [
                 'article_number' => trim($line[$columnNums['article_number']]),
@@ -117,6 +117,10 @@ class CsvProductImporter
     private function validateLine(array $line, int $lineNum, array $columnNums): array
     {
         $validationData = [];
+
+        if (count($line) !== count($columnNums))
+            return ['The line length does`nt match with header length'];
+
         foreach ($this->requiredColumns as $requiredCol) {
             if (!isset($columnNums[$requiredCol]) || empty($line[$columnNums[$requiredCol]])) {
                 $validationData[] = $requiredCol;

@@ -5,7 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Product;
 use App\Form\ImportProductsFormType;
 use App\Repository\BrandRepository;
-use App\Service\CsvProductImporter;
+use App\Service\ProductImporter;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -52,21 +52,25 @@ class ProductCrudController extends AbstractCrudController
             });
     }
 
-    public function importCsv(AdminContext $context, CsvProductImporter $csvImporter, BrandRepository $brandRep, UrlGeneratorInterface $urlGenerator): RedirectResponse|Response
+    public function importCsv(AdminContext $context, ProductImporter $productImporter, BrandRepository $brandRep, UrlGeneratorInterface $urlGenerator): RedirectResponse|Response
     {
         $importForm = $this->createForm(ImportProductsFormType::class);
         $importForm->handleRequest($context->getRequest());
         if ($importForm->isSubmitted()) {
             $formData = $importForm->getData();
             /** @var UploadedFile $file */ $file = $formData['csv_file'];
-            if ($file->getMimeType() !== 'text/csv') {
+            $fileExstension = $file->getClientOriginalExtension();
+            if ($fileExstension !== 'csv' && $fileExstension !== 'xls' && $fileExstension !== 'xlsx') {
                 $this->addFlash('danger', 'Неверный формат файла');
                 return $this->render('admin/product/import_csv.html.twig', [
                     'form' => $importForm
                 ]);
             }
             try {
-                $invalidLines = $csvImporter->importProducts($file, $brandRep);
+                if ($fileExstension === 'csv')
+                    $invalidLines = $productImporter->importProductsByCsv($file, $brandRep);
+                else
+                    $invalidLines = $productImporter->importProductsByXls($file, $brandRep);
                 if (!empty($invalidLines)) {
                     $invalidLinesFilePath = $this->getParameter('kernel.project_dir') . '/var/invalid_lines.json';
 

@@ -55,7 +55,7 @@ class EmailSender
                 file_put_contents($accessTokenFilepath, json_encode($accessToken));
             }
             else {
-                $authUrl = 'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?response_type=code&access_type=offline&client_id=435398559701-9blpn76kukvrd6jhhj6vhdf3r0qg61um.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fthirdparty%2Fgmail%2Foauth%2Fauth&state&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.send&approval_prompt=auto&service=lso&o2v=2&flowName=GeneralOAuthFlow';
+                $authUrl = 'https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?response_type=code&access_type=offline&client_id=435398559701-9blpn76kukvrd6jhhj6vhdf3r0qg61um.apps.googleusercontent.com&redirect_uri='.$_ENV['GMAIL_REDIRECT_URI'].'&state&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.send&approval_prompt=auto&service=lso&o2v=2&flowName=GeneralOAuthFlow';
                 header('Location: '.$authUrl);
                 die;
             }

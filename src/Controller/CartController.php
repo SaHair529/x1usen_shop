@@ -84,20 +84,21 @@ class CartController extends AbstractController
             if ($email !== null)
                 $emailSender->sendEmailByIGG($email);
 
-//            if ($order->getPaymentType() === 1) { # Если тип оплаты - карточкой через сайт # todo uncomment
-//                $costInCopecks = $orderTotalPrice*1000;
-//                $orderPageUrl = $urlGenerator->generate('order_page', ['id' => $order->getId()]);
-//
-//                $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $orderPageUrl, $orderPageUrl); # todo изменить failUrl
-//                $alfabankResponseData = $alfabankResponse->toArray(false);
-//
-//                $order->setAlfabankOrderId($alfabankResponseData['orderId']);
-//                $order->setAlfabankPaymentUrl($alfabankResponseData['formUrl']);
-//
-//                $orderRep->save($order, true);
-//
-//                return $this->redirect($alfabankResponseData['formUrl']);
-//            }
+            if ($order->getPaymentType() === 1) { # Если тип оплаты - карточкой через сайт
+                $costInCopecks = $orderTotalPrice*1000;
+                $orderPageUrl = $urlGenerator->generate('order_page', ['id' => $order->getId()]);
+
+                $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $orderPageUrl, $orderPageUrl); # todo изменить failUrl
+                $alfabankResponseData = $alfabankResponse->toArray(false);
+                dd($alfabankResponseData);
+
+                $order->setAlfabankOrderId($alfabankResponseData['orderId']);
+                $order->setAlfabankPaymentUrl($alfabankResponseData['formUrl']);
+
+                $orderRep->save($order, true);
+
+                return $this->redirect($alfabankResponseData['formUrl']);
+            }
 
             # Отправка заказа в деловые линии, если доставка по РФ
             if ($order->getWayToGet() === 3) {

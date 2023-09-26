@@ -30,8 +30,6 @@ class AlfabankApi
     public function registerOrder(float $costInCopecks, string $returnUrl, string $failUrl): ResponseInterface
     {
         $requestData = [
-            'userName'  => $_ENV['ALFABANK_USERNAME'],
-            'password'  => $_ENV['ALFABANK_PASSWORD'],
             'token'     => $_ENV['ALFABANK_TOKEN'],
             'amount'    => $costInCopecks,
             'returnUrl' => $returnUrl,
@@ -39,7 +37,7 @@ class AlfabankApi
         ];
 
         return $this->httpClient->request('POST', self::REGISTER_ORDER_URL, [
-            'json' => $requestData
+            'body' => $requestData
         ]);
     }
 }

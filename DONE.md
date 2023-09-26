@@ -1,0 +1,1 @@
+Добавил новый файл config/secrets/dellin_terminals.json с данными о терминалах Деловых линий.

@@ -59,7 +59,7 @@ class Order
     #[ORM\Column(nullable: true)]
     private ?int $delivery_type = null;
 
-    #[ORM\Column(length: 30, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $alfabank_order_id = null;
 
     #[ORM\Column(length: 255, nullable: true)]

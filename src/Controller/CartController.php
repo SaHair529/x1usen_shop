@@ -85,12 +85,15 @@ class CartController extends AbstractController
                 $emailSender->sendEmailByIGG($email);
 
             if ($order->getPaymentType() === 1) { # Если тип оплаты - карточкой через сайт
-                $costInCopecks = $orderTotalPrice*1000;
-                $orderPageUrl = $urlGenerator->generate('order_page', ['id' => $order->getId()]);
+                $host = Request::createFromGlobals();
+                $domain = $host->getScheme().'://'.$host->getHost().':'.$host->getPort();
 
-                $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $orderPageUrl, $orderPageUrl); # todo изменить failUrl
+                $costInCopecks = $orderTotalPrice*100;
+                $successPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $order->getId(), 'payment_result' => 'success']);
+                $failedPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $order->getId(), 'payment_result' => 'fail']);
+
+                $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $successPaymentUrl, $failedPaymentUrl, $order->getId());
                 $alfabankResponseData = $alfabankResponse->toArray(false);
-                dd($alfabankResponseData);
 
                 $order->setAlfabankOrderId($alfabankResponseData['orderId']);
                 $order->setAlfabankPaymentUrl($alfabankResponseData['formUrl']);

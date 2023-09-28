@@ -41,6 +41,14 @@ class OrderController extends AbstractController
         $user = $this->getUser();
         $order = $orderRep->findOneBy(['id' => $id, 'customer' => $user->getId()]);
 
+        $paymentResult = $req->query->get('payment_result');
+        if ($paymentResult === 'success')
+            $this->addFlash('success', 'Оплата прошла успешно');
+        elseif($paymentResult === 'fail') {
+            $this->addFlash('danger', 'Платеж отклонен');
+            $order->setStatus(8); # 8 - Платеж отклонен
+        }
+
         if (is_null($order))
             return $this->redirectToRoute('homepage');
 

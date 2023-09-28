@@ -15,7 +15,7 @@
 {% endfor %}
 
 {% block body %}
-
+    {{ include('@EasyAdmin/flash_messages.html.twig') }}
     <h5>Итоговая сумма: {{ total_price }}<span class="small">₽</span></h5>
     <br>
 

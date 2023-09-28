@@ -27,13 +27,14 @@ class AlfabankApi
      * @return ResponseInterface    - Помимо всего прочего, возвращает url страницы оплаты созданного заказа
      * @throws TransportExceptionInterface
      */
-    public function registerOrder(float $costInCopecks, string $returnUrl, string $failUrl): ResponseInterface
+    public function registerOrder(float $costInCopecks, string $returnUrl, string $failUrl, int $orderNumber): ResponseInterface
     {
         $requestData = [
-            'token'     => $_ENV['ALFABANK_TOKEN'],
-            'amount'    => $costInCopecks,
-            'returnUrl' => $returnUrl,
-            'failUrl'   => $failUrl
+            'token'         => $_ENV['ALFABANK_TOKEN'],
+            'amount'        => $costInCopecks,
+            'returnUrl'     => $returnUrl,
+            'failUrl'       => $failUrl,
+            'orderNumber'   => $orderNumber
         ];
 
         return $this->httpClient->request('POST', self::REGISTER_ORDER_URL, [

@@ -154,7 +154,9 @@ class CartController extends AbstractController
 
         return $this->render('cart/index.html.twig', [
             'cart_items' => $cartItems,
-            'order_form' => $orderForm
+            'order_form' => $orderForm,
+            'YANDEX_GEOCODER_API_KEY' => $_ENV['YANDEX_GEOCODER_API_KEY'],
+            'YANDEX_SUGGEST_API_KEY' => $_ENV['YANDEX_SUGGEST_API_KEY']
         ]);
     }
 

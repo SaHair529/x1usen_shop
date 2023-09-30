@@ -15,6 +15,7 @@ export default class CartController {
         this.unitCardPressHandle()
         this.orderFormButtonsPressHandle()
         this.addPhoneInputMask()
+        this.putYandexSuggestOnAddressInput()
     }
 
     // button handles------------------------
@@ -207,6 +208,18 @@ export default class CartController {
             return
 
         Inputmask({mask: '+7 (999)-999-99-99'}).mask(phoneInput)
+    }
+
+    static putYandexSuggestOnAddressInput() {
+        /* global ymaps */
+        const ADDRESS_INPUT_ID = 'create_order_form_address'
+        const $addressInput = document.getElementById(ADDRESS_INPUT_ID)
+        if (!$addressInput)
+            return
+
+        ymaps.ready(() => {
+            const suggest = new ymaps.SuggestView(ADDRESS_INPUT_ID)
+        })
     }
 
     static calculateShippingCost() {

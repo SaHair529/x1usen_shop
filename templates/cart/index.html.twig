@@ -23,6 +23,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const createOrderForm = document.querySelector('form[name="create_order_form"]')
+            if (!createOrderForm)
+                return
+
             createOrderForm.addEventListener('submit', function (e) {
                 const cartItemsCheckboxes = document.getElementById('cart-items').querySelectorAll('input[type="checkbox"]')
                 let checkedCartItemsIds = ''

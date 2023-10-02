@@ -65,6 +65,9 @@ class Order
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $alfabank_payment_url = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address_geocoords = null;
+
     #[Pure]
     public function __construct()
     {
@@ -320,6 +323,18 @@ class Order
     public function setAlfabankPaymentUrl(?string $alfabank_payment_url): self
     {
         $this->alfabank_payment_url = $alfabank_payment_url;
+
+        return $this;
+    }
+
+    public function getAddressGeocoords(): ?string
+    {
+        return $this->address_geocoords;
+    }
+
+    public function setAddressGeocoords(?string $address_geocoords): self
+    {
+        $this->address_geocoords = $address_geocoords;
 
         return $this;
     }

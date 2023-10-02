@@ -228,24 +228,24 @@ export default class CartController {
                 if (e.target.value.length === 0)
                     return
 
+                // Очистка инпута с адресом, если адрес некорректный. Получение координат, если корректный
                 setTimeout(() => {
                     isAddressExact(e.target.value)
                         .then(isAddressExactResponse => {
                             if(!isAddressExactResponse)
                                 clearAddressInput()
+                            isAddressCorrect(e.target.value)
+                                .then(isAddressCorrectResponse => {
+                                    if (!isAddressCorrectResponse) {
+                                        clearAddressInput()
+                                        return
+                                    }
+                                    getAddressCoords(e.target.value)
+                                        .then(coordsObj => putAddressCoordsIntoCoordsInput(coordsObj))
+                                })
                         })
                 }, 250)
             })
-
-            // ymaps.suggest('Мыт').then(items => { // todo Запрос адресов
-            //     console.log('items', items)
-            // })
-
-            // ymaps.geocode('Республика Дагестан, Махачкала, проспект Имама Шамиля, 34А').then(res => { // todo Запрос координат по адресу
-            //     const geoObjCoords = res.geoObjects.get(0).geometry.getCoordinates()
-            //     const geoObjLatitude = geoObjCoords[0]
-            //     const geoObjLongitude = geoObjCoords[1]
-            // })
 
             /**
              * Проверка точности адреса
@@ -257,14 +257,41 @@ export default class CartController {
                     const geoObj = res.geoObjects.get(0)
                     if (!geoObj)
                         return false
-                    if (geoObj.properties.get('metaDataProperty.GeocoderMetaData.precision') !== 'exact')
-                        return false
-
-                    return true
+                    return geoObj.properties.get('metaDataProperty.GeocoderMetaData.precision') === 'exact';
+                })
+            }
+            /**
+             * Проверка корректности адреса путём сравнения с получаемыми корректными адресами из yandex
+             * @param address
+             * @returns {Promise}
+             */
+            function isAddressCorrect(address) {
+                return ymaps.suggest(address).then(foundGeoObjects => {
+                    for (let foundGeoObj of foundGeoObjects)
+                        if (address === foundGeoObj.value)
+                            return true
+                    return false
                 })
             }
             function clearAddressInput() {
                 document.getElementById(ADDRESS_INPUT_ID).value = ''
+            }
+            /**
+             * Получение широты и долготы параметра address
+             * @returns {Promise}
+             */
+            function getAddressCoords(address) {
+                return ymaps.geocode(address).then(res => {
+                    const geoObjCoords = res.geoObjects.get(0).geometry.getCoordinates()
+                    return {
+                        latitude: geoObjCoords[0],
+                        longitude: geoObjCoords[1]
+                    }
+                })
+            }
+            function putAddressCoordsIntoCoordsInput(coordsObj) {
+                document.getElementById('create_order_form_addressGeocoords')
+                    .value = `${coordsObj.latitude}:${coordsObj.longitude}`
             }
         })
     }

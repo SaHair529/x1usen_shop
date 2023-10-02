@@ -53,6 +53,7 @@ class CartController extends AbstractController
             $order->setPhoneNumber($orderForm->get('phone_number')->getData());
             $order->setPaymentType($orderForm->get('payment_type')->getData());
             $order->setWayToGet($orderForm->get('way_to_get')->getData());
+            $order->setAddressGeocoords($orderForm->get('addressGeocoords')->getData());
 
             if (($email = $orderForm->get('email')->getData()) !== null)
                 $order->setEmail($email);

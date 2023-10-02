@@ -219,6 +219,53 @@ export default class CartController {
 
         ymaps.ready(() => {
             const suggest = new ymaps.SuggestView(ADDRESS_INPUT_ID)
+
+            /**
+             * Получение координат по введённому адресу, если он точный.
+             * Очистка инпута адреса, если он неточный
+             */
+            $addressInput.addEventListener('blur', e => {
+                if (e.target.value.length === 0)
+                    return
+
+                setTimeout(() => {
+                    isAddressExact(e.target.value)
+                        .then(isAddressExactResponse => {
+                            if(!isAddressExactResponse)
+                                clearAddressInput()
+                        })
+                }, 250)
+            })
+
+            // ymaps.suggest('Мыт').then(items => { // todo Запрос адресов
+            //     console.log('items', items)
+            // })
+
+            // ymaps.geocode('Республика Дагестан, Махачкала, проспект Имама Шамиля, 34А').then(res => { // todo Запрос координат по адресу
+            //     const geoObjCoords = res.geoObjects.get(0).geometry.getCoordinates()
+            //     const geoObjLatitude = geoObjCoords[0]
+            //     const geoObjLongitude = geoObjCoords[1]
+            // })
+
+            /**
+             * Проверка точности адреса
+             * Нужно для того, чтобы при неточном адресе инпут адреса очищался
+             * @returns {Promise}
+             */
+            function isAddressExact(address) {
+                return ymaps.geocode(address).then(res => {
+                    const geoObj = res.geoObjects.get(0)
+                    if (!geoObj)
+                        return false
+                    if (geoObj.properties.get('metaDataProperty.GeocoderMetaData.precision') !== 'exact')
+                        return false
+
+                    return true
+                })
+            }
+            function clearAddressInput() {
+                document.getElementById(ADDRESS_INPUT_ID).value = ''
+            }
         })
     }
 

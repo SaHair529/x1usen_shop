@@ -67,7 +67,8 @@ class CreateOrderFormType extends AbstractType
             ->add('address', TextType::class, [
                 'attr' => [
                     'placeholder' => 'Адрес',
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'autocomplete' => 'off'
                 ],
                 'label' => false
             ])

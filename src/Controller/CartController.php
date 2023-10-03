@@ -107,7 +107,7 @@ class CartController extends AbstractController
                         $derivalAddress, $order->getCity().', '.$order->getAddress(),
                         $companyOwnerFullname, $companyINN, $companyContactPhone,
                         $order->getPhoneNumber(), $order->getClientFullname(),
-                        $cartItems
+                        $cartItems, $order->getAddressGeocoords(), $order->getDeliveryType()
                     );
                 }
                 else {

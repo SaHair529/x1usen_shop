@@ -5,10 +5,16 @@ namespace App\Service\ThirdParty\Dellin;
 use App\Entity\CartItem;
 use DateInterval;
 use DateTime;
+use Exception;
 use JetBrains\PhpStorm\ArrayShape;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class DellinRequestDataPreparer
 {
+    public function __construct(private KernelInterface $kernel)
+    {
+    }
+
     /**
      * @param string $sessionId
      * @param string $derivalAddress
@@ -19,7 +25,10 @@ class DellinRequestDataPreparer
      * @param string $receiverPhone
      * @param string $receiverName
      * @param CartItem[] $cartItems
+     * @param string $arrivalAddressCoords
+     * @param string $deliveryType (По умолчанию - До терминала)
      * @return array
+     * @throws Exception
      */
     #[ArrayShape(['appkey' => "mixed", 'sessionID' => "string", 'inOrder' => "false", 'delivery' => "array", 'cargo' => "array", 'members' => "array", 'payment' => "string[]"])]
     public function prepareConsolidatedCargoTransportationRequestData(
@@ -27,7 +36,7 @@ class DellinRequestDataPreparer
         string $derivalAddress, string $arrivalAddress,
         string $companyOwnerFullname, string $companyINN, string $companyContactPhone,
         string $receiverPhone, string $receiverName,
-        array $cartItems
+        array  $cartItems, string $arrivalAddressCoords, int $deliveryType = 2
     ): array
     {
         $tomorrowDate = (new DateTime())->add(new DateInterval('P1D'));
@@ -60,7 +69,7 @@ class DellinRequestDataPreparer
                 $cartItem->getProduct()->getHeight();
         }
 
-        return [
+        $result = [
             'appkey' => $_ENV['DELLIN_APP_KEY'],
             'sessionID' => $sessionId,
             'inOrder' => false, # todo поменять на true после тестов
@@ -80,10 +89,6 @@ class DellinRequestDataPreparer
                     ]
                 ],
                 'arrival' => [
-                    'variant' => 'address',
-                    'address' => [
-                        'search' => $arrivalAddress
-                    ],
                     'time' => [
                         'worktimeStart' => $arrivalWorktimeStart,
                         'worktimeEnd' => $arrivalWorktimeEnd
@@ -136,6 +141,17 @@ class DellinRequestDataPreparer
                 'primaryPayer' => 'receiver'
             ]
         ];
+
+        if ($deliveryType === 1) { # Если способ доставки "По адресу"
+            $result['delivery']['arrival']['variant'] = 'address';
+            $result['delivery']['arrival']['address']['search'] = $arrivalAddress;
+        }
+        else { # Если способ доставки "До терминала"
+            $result['delivery']['arrival']['variant'] = 'terminal';
+            $result['delivery']['arrival']['terminalID'] = $this->detectClosestTerminalByAddressCoords($arrivalAddressCoords);
+        }
+
+        return $result;
     }
 
     /**
@@ -220,5 +236,62 @@ class DellinRequestDataPreparer
                 'freightUID' => '0x982400215e7024d411e1e844ef594aad'
             ]
         ];
+    }
+
+    /**
+     * Определение близжайшего терминала к указанным в $coords широте и долготе
+     * @param string $coords 'широта:долгота'
+     * @throws Exception
+     */
+    public function detectClosestTerminalByAddressCoords(string $coords): int
+    {
+        $terminalsFilePath = $this->kernel->getProjectDir().'/config/secrets/dellin_terminals.json';
+        if (!file_exists($terminalsFilePath))
+            throw new Exception("File not found: $terminalsFilePath");
+
+        [$targetLatitude, $targetLongitude] = explode(':', $coords);
+        $terminals = json_decode(file_get_contents($terminalsFilePath), true)['city'];
+
+        if (empty($terminals))
+            throw new Exception("There is not data about Dellin Terminals");
+
+        $minDistance = PHP_FLOAT_MAX;
+        $closestTerminal = $terminals[0];
+
+        foreach ($terminals as $terminal) {
+            # todo Добавить сравнение с городом, если не совпадает, пропускаем терминал
+            $distance = $this->haversine($targetLatitude, $targetLongitude, $terminal['latitude'], $terminal['longitude']);
+            if ($minDistance > $distance) {
+                $minDistance = $distance;
+                $closestTerminal = $terminal;
+            }
+        }
+
+        return $closestTerminal['id'];
+    }
+
+    /**
+     * Определение расстояния между двумя координатами по формуле Гаверсинуса
+     * {@see https://en.wikipedia.org/wiki/Haversine_formula}
+     * @param float|int $lat1
+     * @param float|int $lon1
+     * @param float|int $lat2
+     * @param float|int $lon2
+     * @return float|int
+     */
+    function haversine(float|int $lat1, float|int $lon1, float|int $lat2, float|int $lon2) {
+        $lat1 = deg2rad($lat1);
+        $lon1 = deg2rad($lon1);
+        $lat2 = deg2rad($lat2);
+        $lon2 = deg2rad($lon2);
+
+        $dlat = $lat2 - $lat1;
+        $dlon = $lon2 - $lon1;
+
+        $a = sin($dlat/2) * sin($dlat/2) + cos($lat1) * cos($lat2) * sin($dlon/2) * sin($dlon/2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        $radius = 6371; // Средний радиус Земли в километрах
+        return $radius * $c;
     }
 }

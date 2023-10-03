@@ -85,25 +85,6 @@ class CartController extends AbstractController
             if ($email !== null)
                 $emailSender->sendEmailByIGG($email);
 
-            if ($order->getPaymentType() === 1) { # Если тип оплаты - карточкой через сайт
-                $host = Request::createFromGlobals();
-                $domain = $host->getScheme().'://'.$host->getHost().':'.$host->getPort();
-
-                $costInCopecks = $orderTotalPrice*100;
-                $successPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $order->getId(), 'payment_result' => 'success']);
-                $failedPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $order->getId(), 'payment_result' => 'fail']);
-
-                $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $successPaymentUrl, $failedPaymentUrl, $order->getId());
-                $alfabankResponseData = $alfabankResponse->toArray(false);
-
-                $order->setAlfabankOrderId($alfabankResponseData['orderId']);
-                $order->setAlfabankPaymentUrl($alfabankResponseData['formUrl']);
-
-                $orderRep->save($order, true);
-
-                return $this->redirect($alfabankResponseData['formUrl']);
-            }
-
             # Отправка заказа в деловые линии, если доставка по РФ
             if ($order->getWayToGet() === 3) {
                 $isProductsIndicatedDimensions = true;
@@ -136,6 +117,25 @@ class CartController extends AbstractController
                 }
             }
             #_____________________________________________________
+
+            if ($order->getPaymentType() === 1) { # Если тип оплаты - карточкой через сайт
+                $host = Request::createFromGlobals();
+                $domain = $host->getScheme().'://'.$host->getHost().':'.$host->getPort();
+
+                $costInCopecks = $orderTotalPrice*100;
+                $successPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $order->getId(), 'payment_result' => 'success']);
+                $failedPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $order->getId(), 'payment_result' => 'fail']);
+
+                $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $successPaymentUrl, $failedPaymentUrl, $order->getId());
+                $alfabankResponseData = $alfabankResponse->toArray(false);
+
+                $order->setAlfabankOrderId($alfabankResponseData['orderId']);
+                $order->setAlfabankPaymentUrl($alfabankResponseData['formUrl']);
+
+                $orderRep->save($order, true);
+
+                return $this->redirect($alfabankResponseData['formUrl']);
+            }
 
             return $this->redirectToRoute('order_page', [
                 'id' => $order->getId()

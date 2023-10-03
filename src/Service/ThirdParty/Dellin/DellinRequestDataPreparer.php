@@ -250,20 +250,22 @@ class DellinRequestDataPreparer
             throw new Exception("File not found: $terminalsFilePath");
 
         [$targetLatitude, $targetLongitude] = explode(':', $coords);
-        $terminals = json_decode(file_get_contents($terminalsFilePath), true)['city'];
+        $cities = json_decode(file_get_contents($terminalsFilePath), true)['city'];
 
-        if (empty($terminals))
-            throw new Exception("There is not data about Dellin Terminals");
+        if (empty($cities))
+            throw new Exception("There is not data about Dellin Terminals or file with that data is broken or not exists");
 
         $minDistance = PHP_FLOAT_MAX;
-        $closestTerminal = $terminals[0];
+        $closestTerminal = $cities['terminals']['terminal'][0];
 
-        foreach ($terminals as $terminal) {
+        foreach ($cities as $city) {
             # todo Добавить сравнение с городом, если не совпадает, пропускаем терминал
-            $distance = $this->haversine($targetLatitude, $targetLongitude, $terminal['latitude'], $terminal['longitude']);
-            if ($minDistance > $distance) {
-                $minDistance = $distance;
-                $closestTerminal = $terminal;
+            foreach ($city['terminals']['terminal'] as $terminal) {
+                $distance = $this->haversine($targetLatitude, $targetLongitude, $terminal['latitude'], $terminal['longitude']);
+                if ($minDistance > $distance) {
+                    $minDistance = $distance;
+                    $closestTerminal = $terminal;
+                }
             }
         }
 
@@ -279,7 +281,8 @@ class DellinRequestDataPreparer
      * @param float|int $lon2
      * @return float|int
      */
-    function haversine(float|int $lat1, float|int $lon1, float|int $lat2, float|int $lon2) {
+    function haversine(float|int $lat1, float|int $lon1, float|int $lat2, float|int $lon2): float|int
+    {
         $lat1 = deg2rad($lat1);
         $lon1 = deg2rad($lon1);
         $lat2 = deg2rad($lat2);

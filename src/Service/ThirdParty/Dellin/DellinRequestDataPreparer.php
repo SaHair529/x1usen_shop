@@ -256,7 +256,7 @@ class DellinRequestDataPreparer
             throw new Exception("There is not data about Dellin Terminals or file with that data is broken or not exists");
 
         $minDistance = PHP_FLOAT_MAX;
-        $closestTerminal = $cities['terminals']['terminal'][0];
+        $closestTerminalId = $cities[0]['terminals']['terminal'][0]['id'];
 
         foreach ($cities as $city) {
             # todo Добавить сравнение с городом, если не совпадает, пропускаем терминал
@@ -264,12 +264,12 @@ class DellinRequestDataPreparer
                 $distance = $this->haversine($targetLatitude, $targetLongitude, $terminal['latitude'], $terminal['longitude']);
                 if ($minDistance > $distance) {
                     $minDistance = $distance;
-                    $closestTerminal = $terminal;
+                    $closestTerminalId = $terminal['id'];
                 }
             }
         }
 
-        return $closestTerminal['id'];
+        return $closestTerminalId;
     }
 
     /**

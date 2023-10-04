@@ -58,7 +58,6 @@ class DellinApi
             TextFormatter::reformatPhoneForDellinRequest($receiverPhone), $receiverName,
             $cartItems, $arrivalAddressCoords, $deliveryType
         );
-        dd(json_encode($requestData, JSON_UNESCAPED_UNICODE)); # todo remove
 
         $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/request.json", [
             'json' => $requestData

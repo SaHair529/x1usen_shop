@@ -54,6 +54,8 @@
 </div>
 
 <script>
+    const ADDRESS_INPUT_ID = 'create_order_form_address'
+
     document.querySelector('.way_to_get').addEventListener('change', function (e) {
         if (e.target.getAttribute('id') === 'create_order_form_way_to_get_0') {
             hideCityInput()
@@ -68,6 +70,7 @@
             hideOfflinePaymentType()
             hideDeliveryType()
             showAddressInput()
+            setSaintPetersburgAsDefaultCityForAddressInputSuggests()
         }
         else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_2') {
             showAddressInput()
@@ -75,6 +78,7 @@
             showCityInput()
             showDeliveryType()
             hideOfflinePaymentType()
+            setCityFromInputAsDefaultCityForAddressInputSuggests()
         }
     })
 
@@ -173,6 +177,26 @@
     function hideCalculateButton() {
         document.querySelector('.js-calculate-shipping-cost').classList.add('hidden')
         document.querySelector('.calculate-btn-tip').classList.add('hidden')
+    }
+
+    function setSaintPetersburgAsDefaultCityForAddressInputSuggests() {
+        let suggest = new ymaps.SuggestView(ADDRESS_INPUT_ID, {
+            provider: {
+                suggest: (function (req, options) {
+                    return ymaps.suggest('Санкт-Петербург, '+req)
+                })
+            }
+        })
+    }
+
+    function setCityFromInputAsDefaultCityForAddressInputSuggests() {
+        let suggest = new ymaps.SuggestView(ADDRESS_INPUT_ID, {
+            provider: {
+                suggest: (function (req, options) {
+                    return ymaps.suggest(document.getElementById('create_order_form_city').value+', '+req)
+                })
+            }
+        })
     }
 
 </script>

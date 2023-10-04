@@ -218,7 +218,13 @@ export default class CartController {
             return
 
         ymaps.ready(() => {
-            const suggest = new ymaps.SuggestView(ADDRESS_INPUT_ID)
+            let suggest = new ymaps.SuggestView(ADDRESS_INPUT_ID, {
+                provider: {
+                    suggest: (function (req, options) {
+                        return ymaps.suggest('Санкт-Петербург, '+req)
+                    })
+                }
+            })
 
             /**
              * Получение координат по введённому адресу, если он точный.

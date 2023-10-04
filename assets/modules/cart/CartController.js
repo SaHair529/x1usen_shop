@@ -15,6 +15,7 @@ export default class CartController {
         this.unitCardPressHandle()
         this.orderFormButtonsPressHandle()
         this.addPhoneInputMask()
+        this.putYandexSuggestOnAddressInput()
     }
 
     // button handles------------------------
@@ -207,6 +208,92 @@ export default class CartController {
             return
 
         Inputmask({mask: '+7 (999)-999-99-99'}).mask(phoneInput)
+    }
+
+    static putYandexSuggestOnAddressInput() {
+        /* global ymaps */
+        const ADDRESS_INPUT_ID = 'create_order_form_address'
+        const $addressInput = document.getElementById(ADDRESS_INPUT_ID)
+        if (!$addressInput)
+            return
+
+        ymaps.ready(() => {
+            const suggest = new ymaps.SuggestView(ADDRESS_INPUT_ID)
+
+            /**
+             * Получение координат по введённому адресу, если он точный.
+             * Очистка инпута адреса, если он неточный
+             */
+            $addressInput.addEventListener('blur', e => {
+                if (e.target.value.length === 0)
+                    return
+
+                // Очистка инпута с адресом, если адрес некорректный. Получение координат, если корректный
+                setTimeout(() => {
+                    isAddressExact(e.target.value)
+                        .then(isAddressExactResponse => {
+                            if(!isAddressExactResponse)
+                                clearAddressInput()
+                            isAddressCorrect(e.target.value)
+                                .then(isAddressCorrectResponse => {
+                                    if (!isAddressCorrectResponse) {
+                                        clearAddressInput()
+                                        return
+                                    }
+                                    getAddressCoords(e.target.value)
+                                        .then(coordsObj => putAddressCoordsIntoCoordsInput(coordsObj))
+                                })
+                        })
+                }, 250)
+            })
+
+            /**
+             * Проверка точности адреса
+             * Нужно для того, чтобы при неточном адресе инпут адреса очищался
+             * @returns {Promise}
+             */
+            function isAddressExact(address) {
+                return ymaps.geocode(address).then(res => {
+                    const geoObj = res.geoObjects.get(0)
+                    if (!geoObj)
+                        return false
+                    return geoObj.properties.get('metaDataProperty.GeocoderMetaData.precision') === 'exact';
+                })
+            }
+            /**
+             * Проверка корректности адреса путём сравнения с получаемыми корректными адресами из yandex
+             * @param address
+             * @returns {Promise}
+             */
+            function isAddressCorrect(address) {
+                return ymaps.suggest(address).then(foundGeoObjects => {
+                    for (let foundGeoObj of foundGeoObjects)
+                        if (address === foundGeoObj.value)
+                            return true
+                    return false
+                })
+            }
+            function clearAddressInput() {
+                document.getElementById(ADDRESS_INPUT_ID).value = ''
+            }
+            /**
+             * Получение широты и долготы параметра address
+             * @returns {Promise}
+             */
+            function getAddressCoords(address) {
+                return ymaps.geocode(address).then(res => {
+                    const geoObjCoords = res.geoObjects.get(0).geometry.getCoordinates()
+                    return {
+                        latitude: geoObjCoords[0],
+                        longitude: geoObjCoords[1]
+                    }
+                })
+            }
+            function putAddressCoordsIntoCoordsInput(coordsObj) {
+                document.getElementById('create_order_form_addressGeocoords')
+                    .value = `${coordsObj.latitude}:${coordsObj.longitude}`
+            }
+        })
     }
 
     static calculateShippingCost() {

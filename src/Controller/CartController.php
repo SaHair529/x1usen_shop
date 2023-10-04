@@ -53,6 +53,7 @@ class CartController extends AbstractController
             $order->setPhoneNumber($orderForm->get('phone_number')->getData());
             $order->setPaymentType($orderForm->get('payment_type')->getData());
             $order->setWayToGet($orderForm->get('way_to_get')->getData());
+            $order->setAddressGeocoords($orderForm->get('addressGeocoords')->getData());
 
             if (($email = $orderForm->get('email')->getData()) !== null)
                 $order->setEmail($email);
@@ -84,25 +85,6 @@ class CartController extends AbstractController
             if ($email !== null)
                 $emailSender->sendEmailByIGG($email);
 
-            if ($order->getPaymentType() === 1) { # Если тип оплаты - карточкой через сайт
-                $host = Request::createFromGlobals();
-                $domain = $host->getScheme().'://'.$host->getHost().':'.$host->getPort();
-
-                $costInCopecks = $orderTotalPrice*100;
-                $successPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $order->getId(), 'payment_result' => 'success']);
-                $failedPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $order->getId(), 'payment_result' => 'fail']);
-
-                $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $successPaymentUrl, $failedPaymentUrl, $order->getId());
-                $alfabankResponseData = $alfabankResponse->toArray(false);
-
-                $order->setAlfabankOrderId($alfabankResponseData['orderId']);
-                $order->setAlfabankPaymentUrl($alfabankResponseData['formUrl']);
-
-                $orderRep->save($order, true);
-
-                return $this->redirect($alfabankResponseData['formUrl']);
-            }
-
             # Отправка заказа в деловые линии, если доставка по РФ
             if ($order->getWayToGet() === 3) {
                 $isProductsIndicatedDimensions = true;
@@ -125,7 +107,7 @@ class CartController extends AbstractController
                         $derivalAddress, $order->getCity().', '.$order->getAddress(),
                         $companyOwnerFullname, $companyINN, $companyContactPhone,
                         $order->getPhoneNumber(), $order->getClientFullname(),
-                        $cartItems
+                        $cartItems, $order->getAddressGeocoords(), $order->getDeliveryType()
                     );
                 }
                 else {
@@ -135,6 +117,25 @@ class CartController extends AbstractController
                 }
             }
             #_____________________________________________________
+
+            if ($order->getPaymentType() === 1) { # Если тип оплаты - карточкой через сайт
+                $host = Request::createFromGlobals();
+                $domain = $host->getScheme().'://'.$host->getHost().':'.$host->getPort();
+
+                $costInCopecks = $orderTotalPrice*100;
+                $successPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $order->getId(), 'payment_result' => 'success']);
+                $failedPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $order->getId(), 'payment_result' => 'fail']);
+
+                $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $successPaymentUrl, $failedPaymentUrl, $order->getId());
+                $alfabankResponseData = $alfabankResponse->toArray(false);
+
+                $order->setAlfabankOrderId($alfabankResponseData['orderId']);
+                $order->setAlfabankPaymentUrl($alfabankResponseData['formUrl']);
+
+                $orderRep->save($order, true);
+
+                return $this->redirect($alfabankResponseData['formUrl']);
+            }
 
             return $this->redirectToRoute('order_page', [
                 'id' => $order->getId()
@@ -154,7 +155,9 @@ class CartController extends AbstractController
 
         return $this->render('cart/index.html.twig', [
             'cart_items' => $cartItems,
-            'order_form' => $orderForm
+            'order_form' => $orderForm,
+            'YANDEX_GEOCODER_API_KEY' => $_ENV['YANDEX_GEOCODER_API_KEY'],
+            'YANDEX_SUGGEST_API_KEY' => $_ENV['YANDEX_SUGGEST_API_KEY']
         ]);
     }
 

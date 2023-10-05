@@ -31,7 +31,7 @@ class DellinTerminal
     #[ORM\Column(length: 30)]
     private ?string $longitude = null;
 
-    #[ORM\Column(length: 30)]
+    #[ORM\Column(length: 30, nullable: true)]
     private ?string $phone = null;
 
     #[ORM\Column(length: 255)]

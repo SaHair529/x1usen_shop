@@ -104,10 +104,9 @@ class CartController extends AbstractController
                     $companyINN = $dataMapping->getData('companyINN');
 
                     $dellinApi->requestConsolidatedCargoTransportation(
-                        $derivalAddress, $order->getCity().', '.$order->getAddress(),
+                        $derivalAddress,
                         $companyOwnerFullname, $companyINN, $companyContactPhone,
-                        $order->getPhoneNumber(), $order->getClientFullname(),
-                        $cartItems, $order->getAddressGeocoords(), $order->getDeliveryType()
+                        $cartItems, $order
                     );
                 }
                 else {

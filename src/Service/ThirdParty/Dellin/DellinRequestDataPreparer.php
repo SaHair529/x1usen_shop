@@ -3,6 +3,7 @@
 namespace App\Service\ThirdParty\Dellin;
 
 use App\Entity\CartItem;
+use App\Repository\DellinTerminalRepository;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -11,13 +12,14 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class DellinRequestDataPreparer
 {
-    public function __construct(private KernelInterface $kernel)
+    public function __construct(private KernelInterface $kernel, private DellinTerminalRepository $terminalRep)
     {
     }
 
     /**
      * @param string $sessionId
      * @param string $derivalAddress
+     * @param string $city
      * @param string $arrivalAddress
      * @param string $companyOwnerFullname
      * @param string $companyINN
@@ -26,14 +28,14 @@ class DellinRequestDataPreparer
      * @param string $receiverName
      * @param CartItem[] $cartItems
      * @param string $arrivalAddressCoords
-     * @param string $deliveryType (По умолчанию - До терминала)
+     * @param int $deliveryType (По умолчанию - До терминала)
      * @return array
      * @throws Exception
      */
     #[ArrayShape(['appkey' => "mixed", 'sessionID' => "string", 'inOrder' => "false", 'delivery' => "array", 'cargo' => "array", 'members' => "array", 'payment' => "string[]"])]
     public function prepareConsolidatedCargoTransportationRequestData(
         string $sessionId,
-        string $derivalAddress, string $arrivalAddress,
+        string $derivalAddress, string $city, string $arrivalAddress,
         string $companyOwnerFullname, string $companyINN, string $companyContactPhone,
         string $receiverPhone, string $receiverName,
         array  $cartItems, string $arrivalAddressCoords, int $deliveryType = 2
@@ -148,7 +150,7 @@ class DellinRequestDataPreparer
         }
         else { # Если способ доставки "До терминала"
             $result['delivery']['arrival']['variant'] = 'terminal';
-            $result['delivery']['arrival']['terminalID'] = $this->detectClosestTerminalByAddressCoords($arrivalAddressCoords);
+            $result['delivery']['arrival']['terminalID'] = $this->detectClosestTerminalByAddressCoords($arrivalAddressCoords, $city);
         }
 
         return $result;
@@ -243,29 +245,18 @@ class DellinRequestDataPreparer
      * @param string $coords 'широта:долгота'
      * @throws Exception
      */
-    public function detectClosestTerminalByAddressCoords(string $coords): int
+    public function detectClosestTerminalByAddressCoords(string $coords, string $city): int
     {
-        $terminalsFilePath = $this->kernel->getProjectDir().'/config/secrets/dellin_terminals.json';
-        if (!file_exists($terminalsFilePath))
-            throw new Exception("File not found: $terminalsFilePath");
-
-        [$targetLatitude, $targetLongitude] = explode(':', $coords);
-        $cities = json_decode(file_get_contents($terminalsFilePath), true)['city'];
-
-        if (empty($cities))
-            throw new Exception("There is not data about Dellin Terminals or file with that data is broken or not exists");
-
+        $cityTerminals = $this->terminalRep->findBy(['city' => $city]);
         $minDistance = PHP_FLOAT_MAX;
-        $closestTerminalId = $cities[0]['terminals']['terminal'][0]['id'];
+        $closestTerminalId = $cityTerminals[0]->getTerminalId();
+        [$targetLatitude, $targetLongitude] = explode(':', $coords);
 
-        foreach ($cities as $city) {
-            # todo Добавить сравнение с городом, если не совпадает, пропускаем терминал
-            foreach ($city['terminals']['terminal'] as $terminal) {
-                $distance = $this->haversine($targetLatitude, $targetLongitude, $terminal['latitude'], $terminal['longitude']);
-                if ($minDistance > $distance) {
-                    $minDistance = $distance;
-                    $closestTerminalId = $terminal['id'];
-                }
+        foreach ($cityTerminals as $terminal) {
+            $distance = $this->haversine($targetLatitude, $targetLongitude, $terminal->getLatitude(), $terminal->getLongitude());
+            if ($minDistance > $distance) {
+                $minDistance = $distance;
+                $closestTerminalId = $terminal->getTerminalId();
             }
         }
 

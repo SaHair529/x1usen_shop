@@ -1,2 +1,1 @@
-1)Изменить метода DellinRequestDataPreparer::detectClosestTerminalByAddressCoords, чтобы он брал инфу о терминалах из БД вместо json файла
 2)Дописать UpdateDellinTerminalsCommand, чтобы он делал запрос в АПИ деловых линий для получения инфы о терминалах.

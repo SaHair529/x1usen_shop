@@ -3,6 +3,8 @@
 namespace App\Service\ThirdParty\Dellin;
 
 use App\Entity\CartItem;
+use App\Entity\Order;
+use App\Repository\DellinTerminalRepository;
 use App\Service\TextFormatter;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
@@ -22,11 +24,11 @@ class DellinApi
     private DellinRequestDataPreparer $dataPreparer;
 
     #[NoReturn]
-    public function __construct(MemcachedAdapter $cacheAdapter, KernelInterface $kernel) {
+    public function __construct(MemcachedAdapter $cacheAdapter, KernelInterface $kernel, DellinTerminalRepository $terminalRep) {
         $this->client = HttpClient::create();
         $this->memcached = $cacheAdapter;
         $this->setSessionId();
-        $this->dataPreparer = new DellinRequestDataPreparer($kernel);
+        $this->dataPreparer = new DellinRequestDataPreparer($kernel, $terminalRep);
     }
 
     /**
@@ -45,18 +47,17 @@ class DellinApi
      * @throws TransportExceptionInterface
      */
     public function requestConsolidatedCargoTransportation(
-        string $derivalAddress, string $arrivalAddress,
+        string $derivalAddress,
         string $companyOwnerFullname, string $companyINN, string $companyContactPhone,
-        string $receiverPhone, string $receiverName,
-        array $cartItems, string $arrivalAddressCoords, int $deliveryType
+        array $cartItems, Order $order
     )
     {
         $requestData = $this->dataPreparer->prepareConsolidatedCargoTransportationRequestData(
             $this->sessionId,
-            $derivalAddress, $arrivalAddress,
+            $derivalAddress, $order->getCity(), $order->getCity().', '.$order->getAddress(),
             $companyOwnerFullname, $companyINN, TextFormatter::reformatPhoneForDellinRequest($companyContactPhone),
-            TextFormatter::reformatPhoneForDellinRequest($receiverPhone), $receiverName,
-            $cartItems, $arrivalAddressCoords, $deliveryType
+            TextFormatter::reformatPhoneForDellinRequest($order->getPhoneNumber()), $order->getClientFullname(),
+            $cartItems, $order->getAddressGeocoords(), $order->getDeliveryType()
         );
 
         $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/request.json", [

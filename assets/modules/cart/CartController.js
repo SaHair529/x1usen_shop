@@ -210,6 +210,10 @@ export default class CartController {
 
     static addSubmitFormQuestion() {
         const createOrderForm = document.querySelector('form[name="create_order_form"]')
+
+        if (!createOrderForm)
+            return
+
         createOrderForm.querySelector('button[type="submit"]')
             .addEventListener('click', e => {
                 const requiredFields = createOrderForm.querySelectorAll('input[type="text"][required]')

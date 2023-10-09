@@ -96,6 +96,15 @@ header {
     cursor: pointer;
     margin-right: 1rem;
     position: relative;
+    .counter {
+      position: absolute;
+      background-color: blue;
+      color: #fff;
+      font-size: 10px;
+      text-align: center;
+      width: 100%;
+      border-radius: 5px;
+    }
     &__menu {
       display: none;
       position: absolute;

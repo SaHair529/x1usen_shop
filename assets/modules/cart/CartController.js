@@ -155,9 +155,19 @@ export default class CartController {
                 else if (e.target.classList.contains(AttributesNaming.cartItemCard.decreaseBtn.class) &&
                         !e.target.classList.contains('disabled'))
                 {
-                    CartController.decreaseCartItemQuantity(productId).then(resp => {
-                        ResponseHandler.handleCartItemCardDecreaseCartItemQuantityResponse(resp, cartItemCard)
-                    })
+                    const cartItemsAmount = e.target.nextElementSibling.textContent
+
+                    if (parseInt(cartItemsAmount) === 1) {
+                        const deleteUserConfirm = confirm('Вы уверены, что хотите убрать товар из корзины?')
+                        if (deleteUserConfirm)
+                            CartController.decreaseCartItemQuantity(productId).then(resp => {
+                                ResponseHandler.handleCartItemCardDecreaseCartItemQuantityResponse(resp, cartItemCard)
+                            })
+                    }
+                    else
+                        CartController.decreaseCartItemQuantity(productId).then(resp => {
+                            ResponseHandler.handleCartItemCardDecreaseCartItemQuantityResponse(resp, cartItemCard)
+                        })
                 }
                 else if (e.target.classList.contains(AttributesNaming.cartItemCard.delButton.class)) {
                     const deleteConfirm = window.confirm('Вы уверены, что хотите убрать товар из корзины?')
@@ -186,7 +196,6 @@ export default class CartController {
     }
 
     static orderFormButtonsPressHandle() {
-        console.log('orderFormButtonsPressHandle')
         const orderForm = document.getElementsByName('create_order_form')[0]
         if (!orderForm)
             return
@@ -197,7 +206,6 @@ export default class CartController {
             }
         })
 
-        console.log('orderForm')
     }
 
     static addSubmitFormQuestion() {

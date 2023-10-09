@@ -16,6 +16,7 @@ export default class CartController {
         this.orderFormButtonsPressHandle()
         this.addPhoneInputMask()
         this.putYandexSuggestOnAddressInput()
+        this.addSubmitFormQuestion()
     }
 
     // button handles------------------------
@@ -197,6 +198,28 @@ export default class CartController {
         })
 
         console.log('orderForm')
+    }
+
+    static addSubmitFormQuestion() {
+        const createOrderForm = document.querySelector('form[name="create_order_form"]')
+        createOrderForm.querySelector('button[type="submit"]')
+            .addEventListener('click', e => {
+                const requiredFields = createOrderForm.querySelectorAll('input[type="text"][required]')
+                let hasEmptyRequiredFields = false
+                for (let i = 0; i < requiredFields.length; i++) {
+                    if (!requiredFields[i].value) {
+                        hasEmptyRequiredFields = true
+                        break
+                    }
+                }
+
+                if (!hasEmptyRequiredFields) {
+                    e.preventDefault()
+                    const userResponse = confirm('Вы уверены, что хотите оформить заказ?')
+                    if (userResponse === true)
+                        createOrderForm.submit()
+                }
+            })
     }
     // ______________________________________
 

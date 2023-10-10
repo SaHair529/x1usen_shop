@@ -58,6 +58,9 @@ export default class HTMLAttributesNaming {
         },
         delButton: {
             class: 'js-delete-cart-item'
+        },
+        showDetails: {
+            class: 'js-show-details'
         }
     }
 

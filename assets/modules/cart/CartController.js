@@ -4,6 +4,7 @@ import DOMElementsCreator from "./DOMElementsCreator";
 import Routes from "../Routes";
 import BaseRenderer from "../BaseRenderer";
 import Renderer from "./Renderer";
+import MainController from "../main/MainController";
 import Inputmask from "inputmask/lib/inputmask";
 
 export default class CartController {
@@ -177,6 +178,9 @@ export default class CartController {
                             ResponseHandler.handleCartItemCardRemoveCartItemResponse(resp, cartItemCard)
                         })
                     }
+                }
+                else if (e.target.classList.contains(AttributesNaming.cartItemCard.showDetails.class)) {
+                    MainController.showProductFullInfoModal(e.target.dataset.cartItemId)
                 }
             })
         }

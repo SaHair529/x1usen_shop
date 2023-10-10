@@ -232,8 +232,17 @@ export default class CartController {
                 if (!hasEmptyRequiredFields) {
                     e.preventDefault()
                     const userResponse = confirm('Вы уверены, что хотите оформить заказ?')
-                    if (userResponse === true)
+                    if (userResponse === true) {
+                        const cartItemsCheckboxes = document.getElementById('cart-items').querySelectorAll('input[type="checkbox"]')
+                        let checkedCartItemsIds = ''
+                        for (let i = 0; i < cartItemsCheckboxes.length; i++) {
+                            if(cartItemsCheckboxes[i].checked) {
+                                checkedCartItemsIds += ' '+cartItemsCheckboxes[i].getAttribute('value')
+                            }
+                        }
+                        document.getElementById('cart_items_ids').setAttribute('value', checkedCartItemsIds)
                         createOrderForm.submit()
+                    }
                 }
             })
     }
@@ -257,9 +266,9 @@ export default class CartController {
             return
 
         ymaps.ready(() => {
-            let suggest = new ymaps.SuggestView(ADDRESS_INPUT_ID, {
+            new ymaps.SuggestView(ADDRESS_INPUT_ID, {
                 provider: {
-                    suggest: (function (req, options) {
+                    suggest: (function (req) {
                         return ymaps.suggest('Санкт-Петербург, '+req)
                     })
                 }

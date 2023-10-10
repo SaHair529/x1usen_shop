@@ -68,6 +68,9 @@ class Order
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address_geocoords = null;
 
+    #[ORM\Column]
+    private ?int $payment_status = null;
+
     #[Pure]
     public function __construct()
     {
@@ -335,6 +338,18 @@ class Order
     public function setAddressGeocoords(?string $address_geocoords): self
     {
         $this->address_geocoords = $address_geocoords;
+
+        return $this;
+    }
+
+    public function getPaymentStatus(): ?int
+    {
+        return $this->payment_status;
+    }
+
+    public function setPaymentStatus(int $payment_status): self
+    {
+        $this->payment_status = $payment_status;
 
         return $this;
     }

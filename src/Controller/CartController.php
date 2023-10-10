@@ -54,6 +54,7 @@ class CartController extends AbstractController
             $order->setPaymentType($orderForm->get('payment_type')->getData());
             $order->setWayToGet($orderForm->get('way_to_get')->getData());
             $order->setAddressGeocoords($orderForm->get('addressGeocoords')->getData());
+            $order->setPaymentStatus(0); /** @link DataMapping::$order_payment_statuses */
 
             if (($email = $orderForm->get('email')->getData()) !== null)
                 $order->setEmail($email);

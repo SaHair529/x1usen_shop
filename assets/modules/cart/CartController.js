@@ -7,6 +7,8 @@ import Renderer from "./Renderer";
 import MainController from "../main/MainController";
 import Inputmask from "inputmask/lib/inputmask";
 
+const ADDRESS_INPUT_ID = 'create_order_form_address'
+
 export default class CartController {
     static init() {
         this.productCardPressHandle()
@@ -18,10 +20,48 @@ export default class CartController {
         this.addPhoneInputMask()
         this.putYandexSuggestOnAddressInput()
         this.addSubmitFormQuestion()
+        this.wayToGetInputChangeHandle()
+        this.ymapsReadyHandle()
     }
 
     // button handles------------------------
     // обработка всех нажатий в карточке продукта
+    static ymapsReadyHandle() {
+        ymaps.ready(function () {
+            document.querySelectorAll('#way_to_get_inputs > input').forEach(wayToGetInput => {
+                if (wayToGetInput.checked) {
+                    if (wayToGetInput.getAttribute('id') === 'create_order_form_way_to_get_1') {
+                        CartController.swapFormState('spbdelivery-state-item')
+                        CartController.setSaintPetersburgAsDefaultCityForAddressInputSuggests()
+                    }
+                    else if (wayToGetInput.getAttribute('id') === 'create_order_form_way_to_get_2') {
+                        CartController.swapFormState('rfdelivery-state-item')
+                        CartController.setCityFromInputAsDefaultCityForAddressInputSuggests()
+                    }
+                }
+            })
+        })
+    }
+
+    static wayToGetInputChangeHandle() {
+        const wayToGetInput = document.querySelector('.way_to_get')
+        if (!wayToGetInput)
+            return
+
+        wayToGetInput.addEventListener('change', e => {
+            if (e.target.getAttribute('id') === 'create_order_form_way_to_get_0')
+                CartController.swapFormState('pickup-state-item')
+            else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_1') {
+                CartController.swapFormState('spbdelivery-state-item')
+                CartController.setSaintPetersburgAsDefaultCityForAddressInputSuggests()
+            }
+            else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_2') {
+                CartController.swapFormState('rfdelivery-state-item')
+                CartController.setCityFromInputAsDefaultCityForAddressInputSuggests()
+            }
+        })
+    }
+
     static productCardPressHandle() {
         document.querySelector('body').addEventListener('click', function (e) {
             const productCard = CartController.findParentElementByClass(e.target, 'product-card')
@@ -250,6 +290,59 @@ export default class CartController {
 
     // ----------actions--------
 
+    /** Переход формы на состояние, соответствующее классу указанному в параметре stateClass */
+    static swapFormState(stateClass) {
+        const waytogetStateItems = document.getElementsByClassName('waytoget-state-item')
+        for (let i = 0; i < waytogetStateItems.length; i++) {
+            const stateItem = waytogetStateItems[i]
+            if (!stateItem.classList.contains(stateClass))
+                removeStateItemFromState(stateItem)
+            else
+                showStateItemInState(stateItem)
+        }
+
+        function removeStateItemFromState(stateItem) {
+            if (!stateItem.classList.contains('hidden'))
+                stateItem.classList.add('hidden')
+
+            if (stateItem.tagName === 'INPUT' && stateItem.hasAttribute('required'))
+                stateItem.removeAttribute('required')
+        }
+
+        function showStateItemInState(stateItem) {
+            stateItem.classList.remove('hidden')
+
+            if (stateItem.tagName === 'INPUT' && !stateItem.hasAttribute('required'))
+                stateItem.setAttribute('required', 'required')
+        }
+    }
+
+    static setSaintPetersburgAsDefaultCityForAddressInputSuggests() {
+        document.querySelectorAll('ymaps')
+            .forEach(oldSuggestView => oldSuggestView.remove())
+
+        new ymaps.SuggestView(ADDRESS_INPUT_ID, {
+            provider: {
+                suggest: (function (req, options) {
+                    return ymaps.suggest('Санкт-Петербург, '+req)
+                })
+            }
+        })
+    }
+
+    static setCityFromInputAsDefaultCityForAddressInputSuggests() {
+        document.querySelectorAll('ymaps')
+            .forEach(oldSuggestView => oldSuggestView.remove())
+
+        new ymaps.SuggestView(ADDRESS_INPUT_ID, {
+            provider: {
+                suggest: (function (req, options) {
+                    return ymaps.suggest(document.getElementById('create_order_form_city').value+', '+req)
+                })
+            }
+        })
+    }
+
     static addPhoneInputMask() {
         const phoneInput = document.getElementById('create_order_form_phone_number')
         if (!phoneInput)
@@ -266,14 +359,6 @@ export default class CartController {
             return
 
         ymaps.ready(() => {
-            new ymaps.SuggestView(ADDRESS_INPUT_ID, {
-                provider: {
-                    suggest: (function (req) {
-                        return ymaps.suggest('Санкт-Петербург, '+req)
-                    })
-                }
-            })
-
             /**
              * Получение координат по введённому адресу, если он точный.
              * Очистка инпута адреса, если он неточный

@@ -27,6 +27,10 @@ export default class CartController {
     // button handles------------------------
     // обработка всех нажатий в карточке продукта
     static ymapsReadyHandle() {
+        /* global ymaps */
+        if (typeof ymaps === 'undefined')
+            return
+
         ymaps.ready(function () {
             document.querySelectorAll('#way_to_get_inputs > input').forEach(wayToGetInput => {
                 if (wayToGetInput.checked) {
@@ -355,7 +359,7 @@ export default class CartController {
         /* global ymaps */
         const ADDRESS_INPUT_ID = 'create_order_form_address'
         const $addressInput = document.getElementById(ADDRESS_INPUT_ID)
-        if (!$addressInput)
+        if (!$addressInput || typeof ymaps === 'undefined')
             return
 
         ymaps.ready(() => {

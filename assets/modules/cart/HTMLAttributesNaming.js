@@ -295,7 +295,7 @@ export default class HTMLAttributesNaming {
             {
                 tagName: 'form',
                 class: 'custom-calculation-modal-window__form',
-                attributes: [ { action: '#' } ], // todo Изменить action
+                attributes: [ { id: 'calculate-form' } ],
                 children: [
                     {
                         tagName: 'div',
@@ -308,7 +308,8 @@ export default class HTMLAttributesNaming {
                                     name: 'cargo_length',
                                     type: 'number',
                                     step: '0.01',
-                                    placeholder: 'Длина, см'
+                                    placeholder: 'Длина, см',
+                                    required: 'required'
                                 }]
                             },
                             {
@@ -318,7 +319,8 @@ export default class HTMLAttributesNaming {
                                     name: 'cargo_width',
                                     type: 'number',
                                     step: '0.01',
-                                    placeholder: 'Ширина, см'
+                                    placeholder: 'Ширина, см',
+                                    required: 'required'
                                 }]
                             }
                         ]
@@ -334,7 +336,8 @@ export default class HTMLAttributesNaming {
                                     name: 'cargo_height',
                                     type: 'number',
                                     step: '0.01',
-                                    placeholder: 'Длина, см'
+                                    placeholder: 'Высота, см',
+                                    required: 'required'
                                 }]
                             },
                             {
@@ -344,16 +347,44 @@ export default class HTMLAttributesNaming {
                                     name: 'cargo_weight',
                                     type: 'number',
                                     step: '0.01',
-                                    placeholder: 'Ширина, см'
+                                    placeholder: 'Вес, кг',
+                                    required: 'required'
                                 }]
                             }
                         ]
                     },
                     {
+                        tagName: 'div',
+                        class: 'input-group',
+                        children: [
+                            {
+                                tagName: 'input',
+                                class: 'form-control',
+                                attributes: [{
+                                    name: 'derival_city',
+                                    type: 'text',
+                                    placeholder: 'Город отправления',
+                                    required: 'required'
+                                }]
+                            },
+                            {
+                                tagName: 'input',
+                                class: 'form-control',
+                                attributes: [{
+                                    name: 'arrival_city',
+                                    type: 'text',
+                                    placeholder: 'Город получения',
+                                    required: 'required'
+                                }]
+                            }
+                        ]
+                    },
+                    { tagName: 'br' },
+                    {
                         tagName: 'button',
-                        class: 'btn btn-outline-primary',
-                        text: 'Расчитать стоимость',
-                        attributes: [ { type: 'submit' } ]
+                        class: 'btn btn-outline-primary js-submit-calculate-form',
+                        attributes: [ { type: 'submit' } ],
+                        text: 'Расчитать стоимость'
                     }
                 ]
             }

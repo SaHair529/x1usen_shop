@@ -11,6 +11,16 @@ export default class Renderer {
         detailsWindow.innerHTML = unitCards
     }
 
+    static setButtonToLoadingState($button) {
+        const $loader = document.createElement('span')
+        $loader.className = 'spinner-border spinner-border-sm'
+        $loader.setAttribute('role', 'status')
+        $loader.setAttribute('aria-hidden', 'true')
+
+        $button.classList.add('disabled')
+        $button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&ensp;'+$button.textContent
+    }
+
     static renderModelsModal(models) {
         const modelsModal = document.querySelector('.js-delete-modal')
         const modelsWrapper = document.createElement('div')

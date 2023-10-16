@@ -4,6 +4,7 @@ import DOMElementsCreator from "./DOMElementsCreator";
 import Routes from "../Routes";
 import BaseRenderer from "../BaseRenderer";
 import Renderer from "./Renderer";
+import MainRenderer from "../main/Renderer";
 import MainController from "../main/MainController";
 import Inputmask from "inputmask/lib/inputmask";
 
@@ -17,6 +18,7 @@ export default class CartController {
         this.imagesModalPressHandle()
         this.unitCardPressHandle()
         this.orderFormButtonsPressHandle()
+        this.calculationModalHandle()
         this.addPhoneInputMask()
         this.putYandexSuggestOnAddressInput()
         this.addSubmitFormQuestion()
@@ -24,8 +26,21 @@ export default class CartController {
         this.ymapsReadyHandle()
     }
 
-    // button handles------------------------
-    // обработка всех нажатий в карточке продукта
+    // Handles------------------------
+    static calculationModalHandle() {
+        document.addEventListener('click', e => {
+            if (e.target.classList.contains('js-submit-calculate-form')) {
+                const $calculateForm = document.getElementById('calculate-form')
+                if ($calculateForm.checkValidity()) {
+                    e.preventDefault()
+
+                    MainRenderer.setButtonToLoadingState(e.target)
+                    CartController.submitCalculateForm($calculateForm)
+                }
+            }
+        })
+    }
+
     static ymapsReadyHandle() {
         /* global ymaps */
         if (typeof ymaps === 'undefined')
@@ -296,6 +311,28 @@ export default class CartController {
     // ______________________________________
 
     // ----------actions--------
+
+    static submitCalculateForm(calculateForm) {
+        const requestData = getFormData(calculateForm)
+
+        fetch(Routes.DellinApiController.dellin_custom_calculate, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+
+        function getFormData(form) {
+            const result = {}
+
+            form.querySelectorAll('input').forEach((input) => {
+                result[input.name] = input.value
+            })
+
+            return result
+        }
+    }
 
     /** Переход формы на состояние, соответствующее классу указанному в параметре stateClass */
     static swapFormState(stateClass) {

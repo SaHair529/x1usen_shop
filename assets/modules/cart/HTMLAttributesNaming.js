@@ -284,4 +284,79 @@ export default class HTMLAttributesNaming {
             }
         ]
     }
+
+    static calculationModalWindow_forCreator = {
+        tagName: 'div',
+        class: 'custom-calculation-modal-window',
+        children: [
+            { tagName: 'h4', text: 'Расчет стоимости доставки вручную' },
+            { tagName: 'p', class: 'custom-calculation-modal-window__subtitle', text: 'Заполните поля формы и нажмите на "Расчитать стоимость"' },
+            { tagName: 'hr' },
+            {
+                tagName: 'form',
+                class: 'custom-calculation-modal-window__form',
+                attributes: [ { action: '#' } ], // todo Изменить action
+                children: [
+                    {
+                        tagName: 'div',
+                        class: 'input-group',
+                        children: [
+                            {
+                                tagName: 'input',
+                                class: 'form-control',
+                                attributes: [{
+                                    name: 'cargo_length',
+                                    type: 'number',
+                                    step: '0.01',
+                                    placeholder: 'Длина, см'
+                                }]
+                            },
+                            {
+                                tagName: 'input',
+                                class: 'form-control',
+                                attributes: [{
+                                    name: 'cargo_width',
+                                    type: 'number',
+                                    step: '0.01',
+                                    placeholder: 'Ширина, см'
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        tagName: 'div',
+                        class: 'input-group',
+                        children: [
+                            {
+                                tagName: 'input',
+                                class: 'form-control',
+                                attributes: [{
+                                    name: 'cargo_height',
+                                    type: 'number',
+                                    step: '0.01',
+                                    placeholder: 'Длина, см'
+                                }]
+                            },
+                            {
+                                tagName: 'input',
+                                class: 'form-control',
+                                attributes: [{
+                                    name: 'cargo_weight',
+                                    type: 'number',
+                                    step: '0.01',
+                                    placeholder: 'Ширина, см'
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        tagName: 'button',
+                        class: 'btn btn-outline-primary',
+                        text: 'Расчитать стоимость',
+                        attributes: [ { type: 'submit' } ]
+                    }
+                ]
+            }
+        ]
+    }
 }

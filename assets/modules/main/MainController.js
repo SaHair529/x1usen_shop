@@ -38,6 +38,8 @@ export default class MainController {
     }
 
     static productFullInfoModalPressHandle() {
+        if (!document.querySelector('.js-put-to-image-wrapper'))
+            return
         document.addEventListener('click', function (e) {
             if (e.target.classList.contains('js-put-to-image-wrapper') || e.target.parentElement.classList.contains('js-put-to-image-wrapper')) {
                 const clickedGalleryItem = e.target.classList.contains('js-put-to-image-wrapper') ? e.target : e.target.parentElement

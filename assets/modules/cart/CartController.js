@@ -252,6 +252,9 @@ export default class CartController {
             if (e.target.classList.contains('js-calculate-shipping-cost')) {
                 CartController.calculateShippingCost()
             }
+            else if (e.target.classList.contains('js-show-calculation-modal')) {
+                CartController.showCalculationModal()
+            }
         })
 
     }
@@ -530,6 +533,10 @@ export default class CartController {
         fetch(`/cart/get_product_cart_item?product_id=${productInfo['id']}`).then(resp => {
             ResponseHandler.handleShowProductModalResponse(resp, productInfo)
         })
+    }
+
+    static showCalculationModal() {
+        Renderer.renderCalculationModal()
     }
 
     static showUnitAvailableDetails(unitPartsOems) {

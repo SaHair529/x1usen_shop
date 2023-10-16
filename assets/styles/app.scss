@@ -642,6 +642,16 @@ header {
   img {
     max-width: 50%;
   }
+
+  .custom-calculation-modal-window {
+    background: #fff;
+    padding: 1rem 2rem;
+    border-radius: 7px;
+
+    &__subtitle {
+      color: grey;
+    }
+  }
 }
 
 .unit-nodes-window {

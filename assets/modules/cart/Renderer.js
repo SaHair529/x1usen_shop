@@ -5,6 +5,15 @@ import MainDOMElementsCreator from "../main/DOMElementsCreator";
 import BaseElementsCreator from "../BaseElementsCreator";
 
 export default class Renderer {
+    static renderCalculationModal() {
+        const modal = DOMElementsCreator.createModal()
+        const calculationModalWindow = DOMElementsCreator.createDOMElementByObject(AttributesNaming.calculationModalWindow_forCreator)
+
+        modal.append(calculationModalWindow)
+
+        document.querySelector('body').append(modal)
+    }
+
     static shakeElement(element) {
         element.classList.add('shake')
         setTimeout(() => {

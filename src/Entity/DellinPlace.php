@@ -19,22 +19,22 @@ class DellinPlace
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 60)]
+    #[ORM\Column(length: 255)]
     private ?string $code = null;
 
-    #[ORM\Column(length: 60)]
+    #[ORM\Column(length: 255)]
     private ?string $search_string = null;
 
-    #[ORM\Column(length: 40)]
+    #[ORM\Column(length: 255)]
     private ?string $region = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 255)]
     private ?string $region_code = null;
 
-    #[ORM\Column(length: 40)]
+    #[ORM\Column(length: 255)]
     private ?string $zone_name = null;
 
-    #[ORM\Column(length: 30)]
+    #[ORM\Column(length: 255)]
     private ?string $zone_code = null;
 
     public function getId(): ?int

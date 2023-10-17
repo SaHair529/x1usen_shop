@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
  * Команда по добавлению новых терминалов, если таковые появились посредством отправки запроса по апи в "Деловые Линии"
  */
 #[AsCommand(
-    name: 'app:update-dellin-terminals',
+    name: 'app:dellin:update-terminals',
     description: 'Adding new dellin terminals every month if there are new ones',
 )]
 class UpdateDellinTerminalsCommand extends Command

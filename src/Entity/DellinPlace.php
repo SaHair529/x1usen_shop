@@ -28,7 +28,7 @@ class DellinPlace
     #[ORM\Column(length: 40)]
     private ?string $region = null;
 
-    #[ORM\Column(length: 15)]
+    #[ORM\Column(length: 50)]
     private ?string $region_code = null;
 
     #[ORM\Column(length: 40)]

@@ -26,7 +26,7 @@ class DellinPlace
     private ?string $search_string = null;
 
     #[ORM\Column(length: 40)]
-    private ?string $кregion = null;
+    private ?string $region = null;
 
     #[ORM\Column(length: 15)]
     private ?string $region_code = null;
@@ -90,14 +90,14 @@ class DellinPlace
         return $this;
     }
 
-    public function getкregion(): ?string
+    public function getRegion(): ?string
     {
-        return $this->кregion;
+        return $this->region;
     }
 
-    public function setкregion(string $кregion): self
+    public function setRegion(string $region): self
     {
-        $this->кregion = $кregion;
+        $this->region = $region;
 
         return $this;
     }

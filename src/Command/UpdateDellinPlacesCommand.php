@@ -32,6 +32,7 @@ class UpdateDellinPlacesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        # todo Получать файл с населенными пунктами из апи Деловых линий
         $io = new SymfonyStyle($input, $output);
 
         $io->text('Beginning to save places on database...');

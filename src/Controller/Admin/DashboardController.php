@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Notification;
 use App\Entity\Order;
 use App\Entity\Product;
+use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -73,6 +74,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Товары', 'fas fa-gears', Product::class);
         yield MenuItem::linkToCrud('Контроль заказов', 'fas fa-solid fa-exclamation', Order::class);
         yield MenuItem::linkToCrud('Оповещения', 'fas fa-solid fa-bell', Notification::class);
+        yield MenuItem::linkToCrud('Котроль клиентов', 'fas fa-solid fa-user', User::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }

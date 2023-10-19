@@ -380,6 +380,7 @@ export default class HTMLAttributesNaming {
                         ]
                     },
                     { tagName: 'br' },
+                    { tagName: 'div', class: 'custom-calculation-modal-window__response-wrapper' },
                     {
                         tagName: 'button',
                         class: 'btn btn-outline-primary js-submit-calculate-form',
@@ -388,6 +389,36 @@ export default class HTMLAttributesNaming {
                     }
                 ]
             }
+        ]
+    }
+
+    static userCalculationResponseTable_forCreator = {
+        tagName: 'table',
+        class: 'table table-bordered table-primary table-sm small',
+        children: [
+            {
+                tagName: 'thead',
+                children: [
+                    {
+                        tagName: 'tr',
+                        children: [
+                            {tagName: 'th', attributes: [{scope: 'col'}], text: 'Компания'},
+                            {tagName: 'th', attributes: [{scope: 'col'}], text: 'Срок'},
+                            {tagName: 'th', attributes: [{scope: 'col'}], text: 'Цена перевозки (₽)'},
+                        ]
+                    }
+                ]
+            },
+            {tagName: 'tbody'}
+        ]
+    }
+
+    static userCalculationResponseTableRow_forCreator = {
+        tagName: 'tr',
+        children: [
+            {tagName: 'td', class: 'company'},
+            {tagName: 'td', class: 'days'},
+            {tagName: 'td', class: 'price'}
         ]
     }
 }

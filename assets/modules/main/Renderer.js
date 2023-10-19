@@ -12,13 +12,13 @@ export default class Renderer {
     }
 
     static setButtonToLoadingState($button) {
-        const $loader = document.createElement('span')
-        $loader.className = 'spinner-border spinner-border-sm'
-        $loader.setAttribute('role', 'status')
-        $loader.setAttribute('aria-hidden', 'true')
-
         $button.classList.add('disabled')
-        $button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&ensp;'+$button.textContent
+        $button.innerHTML = '<span style="margin-right: 7px" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'+$button.textContent
+    }
+
+    static offButtonLoadingState($button) {
+        $button.classList.remove('disabled')
+        $button.querySelector('span.spinner-border').remove()
     }
 
     static renderModelsModal(models) {

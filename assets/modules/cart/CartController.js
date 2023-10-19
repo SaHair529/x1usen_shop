@@ -321,6 +321,8 @@ export default class CartController {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(requestData)
+        }).then(resp => {
+            ResponseHandler.handleUserCalculateResponse(resp)
         })
 
         function getFormData(form) {
@@ -367,7 +369,7 @@ export default class CartController {
 
         new ymaps.SuggestView(ADDRESS_INPUT_ID, {
             provider: {
-                suggest: (function (req, options) {
+                suggest: (function (req) {
                     return ymaps.suggest('Санкт-Петербург, '+req)
                 })
             }
@@ -380,7 +382,7 @@ export default class CartController {
 
         new ymaps.SuggestView(ADDRESS_INPUT_ID, {
             provider: {
-                suggest: (function (req, options) {
+                suggest: (function (req) {
                     return ymaps.suggest(document.getElementById('create_order_form_city').value+', '+req)
                 })
             }

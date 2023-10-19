@@ -147,4 +147,26 @@ export default class Renderer {
         modal.innerHTML = infoTemplate
         document.querySelector('body').append(modal)
     }
+
+    static renderUserCalculationResponseTable(calculateData) {
+        const currentDate = new Date()
+        const deliveryDate = new Date(calculateData['data']['orderDates']['giveoutFromOspReceiver'])
+        const neededCalculateData = {
+            company: 'Деловые Линии',
+            deliveryDaysAmount: Math.floor((deliveryDate - currentDate) / (1000 * 60 * 60 * 24))+' дн.',
+            price: calculateData.data.price
+        }
+
+        const calculationResponseWrapper = document.querySelector('.custom-calculation-modal-window__response-wrapper')
+        const userCalculationResponseTable = DOMElementsCreator.createDOMElementByObject(AttributesNaming.userCalculationResponseTable_forCreator)
+        const userCalculationResponseTableRow = DOMElementsCreator.createDOMElementByObject(AttributesNaming.userCalculationResponseTableRow_forCreator)
+
+        userCalculationResponseTableRow.querySelector('.company').textContent = neededCalculateData.company
+        userCalculationResponseTableRow.querySelector('.days').textContent = neededCalculateData.deliveryDaysAmount
+        userCalculationResponseTableRow.querySelector('.price').textContent = neededCalculateData.price
+
+        userCalculationResponseTable.querySelector('tbody').append(userCalculationResponseTableRow)
+        calculationResponseWrapper.innerHTML = ''
+        calculationResponseWrapper.append(userCalculationResponseTable)
+    }
 }

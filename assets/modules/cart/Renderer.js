@@ -5,6 +5,16 @@ import MainDOMElementsCreator from "../main/DOMElementsCreator";
 import BaseElementsCreator from "../BaseElementsCreator";
 
 export default class Renderer {
+    static renderAlertOnUserCalculationResponseWrapper() {
+        const $userCalculationResponseWrapper = document.querySelector('.custom-calculation-modal-window__response-wrapper')
+
+        const alertText = 'Не удалось провести расчеты. Возможно, вы ввели неверный город'
+        const $alert = MainDOMElementsCreator.createAlert('danger', alertText)
+
+        $userCalculationResponseWrapper.innerHTML = ''
+        $userCalculationResponseWrapper.append($alert)
+    }
+
     static renderCalculationModal() {
         const modal = DOMElementsCreator.createModal()
         const calculationModalWindow = DOMElementsCreator.createDOMElementByObject(AttributesNaming.calculationModalWindow_forCreator)

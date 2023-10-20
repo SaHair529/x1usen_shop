@@ -15,4 +15,28 @@ export default class DOMElementsCreator {
 
         return loader
     }
+
+    /**
+     * Создание бутстраповской таблички alert для отображения каких-либо сообщений клиенту
+     * @param alertSubclass отвечает за класс алерта, от которого будет зависеть цвет алерта
+     * @param alertText
+     */
+    static createAlert(alertSubclass, alertText) {
+        const $alert = document.createElement('div')
+        const $closeAlertBtn = document.createElement('button')
+
+        $alert.className = `alert alert-${alertSubclass} alert-dismissible fade show`
+        $closeAlertBtn.className = 'btn-close'
+
+        $alert.setAttribute('role', 'alert')
+        $closeAlertBtn.setAttribute('aria-label', 'Close')
+        $closeAlertBtn.setAttribute('type', 'button')
+
+        $closeAlertBtn.dataset.bsDismiss = 'alert'
+
+        $alert.textContent = `${alertText}`
+        $alert.append($closeAlertBtn)
+
+        return $alert
+    }
 }

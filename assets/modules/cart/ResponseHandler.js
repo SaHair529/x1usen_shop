@@ -180,13 +180,16 @@ export default class ResponseHandler {
 
     static handleUserCalculateResponse(resp) {
         resp.json().then(calculateData => {
+            const $submitBtn = document.querySelector('.js-submit-calculate-form')
             switch (resp.status) {
                 case 200:
                     Renderer.renderUserCalculationResponseTable(calculateData)
-                    const $submitBtn = document.querySelector('.js-submit-calculate-form')
                     MainRenderer.offButtonLoadingState($submitBtn)
                     break
-                // todo Добавить обработчик статуса 400
+                case 400:
+                    Renderer.renderAlertOnUserCalculationResponseWrapper()
+                    MainRenderer.offButtonLoadingState($submitBtn)
+                    break
             }
         })
     }

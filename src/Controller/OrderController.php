@@ -21,6 +21,8 @@ class OrderController extends AbstractController
 {
     private array $statuses;
     private array $waysToGet;
+    private array $paymentTypes;
+    private array $paymentStatuses;
 
     #[Pure]
     public function __construct(DataMapping $dataMapping)
@@ -28,6 +30,7 @@ class OrderController extends AbstractController
         $this->statuses = $dataMapping->getData('order_statuses');
         $this->waysToGet = $dataMapping->getData('order_ways_to_get');
         $this->paymentTypes = $dataMapping->getData('order_payment_types');
+        $this->paymentStatuses = $dataMapping->getData('order_payment_statuses');
     }
 
     #[Route('/item/{id}', name: 'order_page')]
@@ -42,11 +45,13 @@ class OrderController extends AbstractController
         $order = $orderRep->findOneBy(['id' => $id, 'customer' => $user->getId()]);
 
         $paymentResult = $req->query->get('payment_result');
-        if ($paymentResult === 'success')
+        if ($paymentResult === 'success') {
+            $order->setPaymentStatus(1); /** @link DataMapping::$order_payment_statuses */
             $this->addFlash('success', 'Оплата прошла успешно');
+        }
         elseif($paymentResult === 'fail') {
+            $order->setPaymentStatus(-1); /** @link DataMapping::$order_payment_statuses */
             $this->addFlash('danger', 'Платеж отклонен');
-            $order->setStatus(8); # 8 - Платеж отклонен
         }
 
         if (is_null($order))
@@ -68,6 +73,7 @@ class OrderController extends AbstractController
             'statuses' => $this->statuses,
             'ways_to_get' => $this->waysToGet,
             'payment_types' => $this->paymentTypes,
+            'payment_statuses' => $this->paymentStatuses,
             'comment_form' => $commentForm
         ]);
     }

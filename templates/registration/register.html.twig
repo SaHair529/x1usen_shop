@@ -6,10 +6,6 @@
     <div class="login-form-container">
         {{ form_start(registrationForm) }}
         <h4 class="mb-3 font-weight-normal">Регистрация</h4>
-        <div class="client-type-links">
-            <a href="#" class="btn btn-lg disabled">Физ. лицо</a>
-            <a href="{{ path('app_register_legal_entity') }}" class="btn btn-lg btn-dark">Юр. лицо</a>
-        </div>
         {{ form_row(registrationForm.name, {'placeholder': 'Имя'}) }}
         {{ form_row(registrationForm.username) }}
         {{ form_row(registrationForm.plainPassword) }}

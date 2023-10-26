@@ -16,6 +16,7 @@ export default class Routes {
     }
 
     static DellinApiController = {
-        dellin_calculate_cost_and_delivery_time: '/thirdparty/dellin/calculate_cost_and_delivery_time'
+        dellin_calculate_cost_and_delivery_time: '/thirdparty/dellin/calculate_cost_and_delivery_time',
+        dellin_custom_calculate: '/thirdparty/dellin/ajax/custom_calculate'
     }
 }

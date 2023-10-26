@@ -4,7 +4,11 @@ import DOMElementsCreator from "./DOMElementsCreator";
 import Routes from "../Routes";
 import BaseRenderer from "../BaseRenderer";
 import Renderer from "./Renderer";
+import MainRenderer from "../main/Renderer";
+import MainController from "../main/MainController";
 import Inputmask from "inputmask/lib/inputmask";
+
+const ADDRESS_INPUT_ID = 'create_order_form_address'
 
 export default class CartController {
     static init() {
@@ -14,12 +18,69 @@ export default class CartController {
         this.imagesModalPressHandle()
         this.unitCardPressHandle()
         this.orderFormButtonsPressHandle()
+        this.calculationModalHandle()
         this.addPhoneInputMask()
         this.putYandexSuggestOnAddressInput()
+        this.addSubmitFormQuestion()
+        this.wayToGetInputChangeHandle()
+        this.ymapsReadyHandle()
     }
 
-    // button handles------------------------
-    // обработка всех нажатий в карточке продукта
+    // Handles------------------------
+    static calculationModalHandle() {
+        document.addEventListener('click', e => {
+            if (e.target.classList.contains('js-submit-calculate-form')) {
+                const $calculateForm = document.getElementById('calculate-form')
+                if ($calculateForm.checkValidity()) {
+                    e.preventDefault()
+
+                    MainRenderer.setButtonToLoadingState(e.target)
+                    CartController.submitCalculateForm($calculateForm)
+                }
+            }
+        })
+    }
+
+    static ymapsReadyHandle() {
+        /* global ymaps */
+        if (typeof ymaps === 'undefined')
+            return
+
+        ymaps.ready(function () {
+            document.querySelectorAll('#way_to_get_inputs > input').forEach(wayToGetInput => {
+                if (wayToGetInput.checked) {
+                    if (wayToGetInput.getAttribute('id') === 'create_order_form_way_to_get_1') {
+                        CartController.swapFormState('spbdelivery-state-item')
+                        CartController.setSaintPetersburgAsDefaultCityForAddressInputSuggests()
+                    }
+                    else if (wayToGetInput.getAttribute('id') === 'create_order_form_way_to_get_2') {
+                        CartController.swapFormState('rfdelivery-state-item')
+                        CartController.setCityFromInputAsDefaultCityForAddressInputSuggests()
+                    }
+                }
+            })
+        })
+    }
+
+    static wayToGetInputChangeHandle() {
+        const wayToGetInput = document.querySelector('.way_to_get')
+        if (!wayToGetInput)
+            return
+
+        wayToGetInput.addEventListener('change', e => {
+            if (e.target.getAttribute('id') === 'create_order_form_way_to_get_0')
+                CartController.swapFormState('pickup-state-item')
+            else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_1') {
+                CartController.swapFormState('spbdelivery-state-item')
+                CartController.setSaintPetersburgAsDefaultCityForAddressInputSuggests()
+            }
+            else if (e.target.getAttribute('id') === 'create_order_form_way_to_get_2') {
+                CartController.swapFormState('rfdelivery-state-item')
+                CartController.setCityFromInputAsDefaultCityForAddressInputSuggests()
+            }
+        })
+    }
+
     static productCardPressHandle() {
         document.querySelector('body').addEventListener('click', function (e) {
             const productCard = CartController.findParentElementByClass(e.target, 'product-card')
@@ -154,9 +215,19 @@ export default class CartController {
                 else if (e.target.classList.contains(AttributesNaming.cartItemCard.decreaseBtn.class) &&
                         !e.target.classList.contains('disabled'))
                 {
-                    CartController.decreaseCartItemQuantity(productId).then(resp => {
-                        ResponseHandler.handleCartItemCardDecreaseCartItemQuantityResponse(resp, cartItemCard)
-                    })
+                    const cartItemsAmount = e.target.nextElementSibling.textContent
+
+                    if (parseInt(cartItemsAmount) === 1) {
+                        const deleteUserConfirm = confirm('Вы уверены, что хотите убрать товар из корзины?')
+                        if (deleteUserConfirm)
+                            CartController.decreaseCartItemQuantity(productId).then(resp => {
+                                ResponseHandler.handleCartItemCardDecreaseCartItemQuantityResponse(resp, cartItemCard)
+                            })
+                    }
+                    else
+                        CartController.decreaseCartItemQuantity(productId).then(resp => {
+                            ResponseHandler.handleCartItemCardDecreaseCartItemQuantityResponse(resp, cartItemCard)
+                        })
                 }
                 else if (e.target.classList.contains(AttributesNaming.cartItemCard.delButton.class)) {
                     const deleteConfirm = window.confirm('Вы уверены, что хотите убрать товар из корзины?')
@@ -166,6 +237,9 @@ export default class CartController {
                             ResponseHandler.handleCartItemCardRemoveCartItemResponse(resp, cartItemCard)
                         })
                     }
+                }
+                else if (e.target.classList.contains(AttributesNaming.cartItemCard.showDetails.class)) {
+                    MainController.showProductFullInfoModal(e.target.dataset.cartItemId)
                 }
             })
         }
@@ -185,7 +259,6 @@ export default class CartController {
     }
 
     static orderFormButtonsPressHandle() {
-        console.log('orderFormButtonsPressHandle')
         const orderForm = document.getElementsByName('create_order_form')[0]
         if (!orderForm)
             return
@@ -194,13 +267,127 @@ export default class CartController {
             if (e.target.classList.contains('js-calculate-shipping-cost')) {
                 CartController.calculateShippingCost()
             }
+            else if (e.target.classList.contains('js-show-calculation-modal')) {
+                CartController.showCalculationModal()
+            }
         })
 
-        console.log('orderForm')
+    }
+
+    static addSubmitFormQuestion() {
+        const createOrderForm = document.querySelector('form[name="create_order_form"]')
+
+        if (!createOrderForm)
+            return
+
+        createOrderForm.querySelector('button[type="submit"]')
+            .addEventListener('click', e => {
+                const requiredFields = createOrderForm.querySelectorAll('input[type="text"][required]')
+                let hasEmptyRequiredFields = false
+                for (let i = 0; i < requiredFields.length; i++) {
+                    if (!requiredFields[i].value) {
+                        hasEmptyRequiredFields = true
+                        break
+                    }
+                }
+
+                if (!hasEmptyRequiredFields) {
+                    e.preventDefault()
+                    const userResponse = confirm('Вы уверены, что хотите оформить заказ?')
+                    if (userResponse === true) {
+                        const cartItemsCheckboxes = document.getElementById('cart-items').querySelectorAll('input[type="checkbox"]')
+                        let checkedCartItemsIds = ''
+                        for (let i = 0; i < cartItemsCheckboxes.length; i++) {
+                            if(cartItemsCheckboxes[i].checked) {
+                                checkedCartItemsIds += ' '+cartItemsCheckboxes[i].getAttribute('value')
+                            }
+                        }
+                        document.getElementById('cart_items_ids').setAttribute('value', checkedCartItemsIds)
+                        createOrderForm.submit()
+                    }
+                }
+            })
     }
     // ______________________________________
 
     // ----------actions--------
+
+    static submitCalculateForm(calculateForm) {
+        const requestData = getFormData(calculateForm)
+
+        fetch(Routes.DellinApiController.dellin_custom_calculate, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        }).then(resp => {
+            ResponseHandler.handleUserCalculateResponse(resp)
+        })
+
+        function getFormData(form) {
+            const result = {}
+
+            form.querySelectorAll('input').forEach((input) => {
+                result[input.name] = input.value
+            })
+
+            return result
+        }
+    }
+
+    /** Переход формы на состояние, соответствующее классу указанному в параметре stateClass */
+    static swapFormState(stateClass) {
+        const waytogetStateItems = document.getElementsByClassName('waytoget-state-item')
+        for (let i = 0; i < waytogetStateItems.length; i++) {
+            const stateItem = waytogetStateItems[i]
+            if (!stateItem.classList.contains(stateClass))
+                removeStateItemFromState(stateItem)
+            else
+                showStateItemInState(stateItem)
+        }
+
+        function removeStateItemFromState(stateItem) {
+            if (!stateItem.classList.contains('hidden'))
+                stateItem.classList.add('hidden')
+
+            if (stateItem.tagName === 'INPUT' && stateItem.hasAttribute('required'))
+                stateItem.removeAttribute('required')
+        }
+
+        function showStateItemInState(stateItem) {
+            stateItem.classList.remove('hidden')
+
+            if (stateItem.tagName === 'INPUT' && !stateItem.hasAttribute('required'))
+                stateItem.setAttribute('required', 'required')
+        }
+    }
+
+    static setSaintPetersburgAsDefaultCityForAddressInputSuggests() {
+        document.querySelectorAll('ymaps')
+            .forEach(oldSuggestView => oldSuggestView.remove())
+
+        new ymaps.SuggestView(ADDRESS_INPUT_ID, {
+            provider: {
+                suggest: (function (req) {
+                    return ymaps.suggest('Санкт-Петербург, '+req)
+                })
+            }
+        })
+    }
+
+    static setCityFromInputAsDefaultCityForAddressInputSuggests() {
+        document.querySelectorAll('ymaps')
+            .forEach(oldSuggestView => oldSuggestView.remove())
+
+        new ymaps.SuggestView(ADDRESS_INPUT_ID, {
+            provider: {
+                suggest: (function (req) {
+                    return ymaps.suggest(document.getElementById('create_order_form_city').value+', '+req)
+                })
+            }
+        })
+    }
 
     static addPhoneInputMask() {
         const phoneInput = document.getElementById('create_order_form_phone_number')
@@ -214,18 +401,10 @@ export default class CartController {
         /* global ymaps */
         const ADDRESS_INPUT_ID = 'create_order_form_address'
         const $addressInput = document.getElementById(ADDRESS_INPUT_ID)
-        if (!$addressInput)
+        if (!$addressInput || typeof ymaps === 'undefined')
             return
 
         ymaps.ready(() => {
-            let suggest = new ymaps.SuggestView(ADDRESS_INPUT_ID, {
-                provider: {
-                    suggest: (function (req, options) {
-                        return ymaps.suggest('Санкт-Петербург, '+req)
-                    })
-                }
-            })
-
             /**
              * Получение координат по введённому адресу, если он точный.
              * Очистка инпута адреса, если он неточный
@@ -393,6 +572,10 @@ export default class CartController {
         fetch(`/cart/get_product_cart_item?product_id=${productInfo['id']}`).then(resp => {
             ResponseHandler.handleShowProductModalResponse(resp, productInfo)
         })
+    }
+
+    static showCalculationModal() {
+        Renderer.renderCalculationModal()
     }
 
     static showUnitAvailableDetails(unitPartsOems) {

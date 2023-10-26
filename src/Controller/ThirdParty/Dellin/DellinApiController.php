@@ -37,7 +37,29 @@ class DellinApiController extends AbstractController
         catch (Exception | TransportExceptionInterface $e) {
             if ($e->getResponse()->getStatusCode() === 400) {
                 $response->setData([
-                    'error_message_for_client' => 'Не удалось провести расчёты, пожалуйста обратитесь к менеджеру'
+                    'error_message_for_client' => 'Не удалось провести расчёты, вы можете провести расчёты вручную'
+                ]);
+                $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        return $response;
+    }
+
+    #[Route('/ajax/custom_calculate', name: 'dellin_custom_calculate')]
+    public function customCalculate(Request $req, DellinApi $dellinApi): JsonResponse
+    {
+        $requestData = json_decode($req->getContent(), true);
+        $response = new JsonResponse();
+
+        try {
+            $dellinResponse = $dellinApi->requestCalculatorByUserFormRequest($requestData);
+            $response->setData($dellinResponse->toArray());
+        }
+        catch (Exception | TransportExceptionInterface $e) {
+            if ($e->getResponse()->getStatusCode() === 400) {
+                $response->setData([
+                    'error_message_for_client' => 'Не удалось провести расчёты, вы можете провести расчёты вручную'
                 ]);
                 $response->setStatusCode(Response::HTTP_BAD_REQUEST);
             }

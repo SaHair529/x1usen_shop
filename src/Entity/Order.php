@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
@@ -67,6 +68,10 @@ class Order
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address_geocoords = null;
+
+    #[ORM\Column]
+    #[Assert\Choice(choices: [-1, 0, 1])]
+    private ?int $payment_status = null;
 
     #[Pure]
     public function __construct()
@@ -335,6 +340,18 @@ class Order
     public function setAddressGeocoords(?string $address_geocoords): self
     {
         $this->address_geocoords = $address_geocoords;
+
+        return $this;
+    }
+
+    public function getPaymentStatus(): ?int
+    {
+        return $this->payment_status;
+    }
+
+    public function setPaymentStatus(int $payment_status): self
+    {
+        $this->payment_status = $payment_status;
 
         return $this;
     }

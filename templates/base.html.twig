@@ -11,6 +11,8 @@
     {% endfor %}
 {% endif %}
 
+{% set cartItemsAmount = globals_generator.currentUserActiveCartItemsAmount %}
+
 <!DOCTYPE html>
 <html lang="">
     <head>
@@ -56,7 +58,12 @@
                     </i>
                     {% if is_granted('ROLE_USER') %}
                         <a class="nav-item" href="{{ path('order_my_orders') }}"><i title="Мои заказы" class="fa-solid fa-bag-shopping"></i></a>
-                        <a class="nav-item" href="{{ path('cart_items') }}"><i title="Корзина" class="fa-solid fa-cart-shopping"></i></a>
+                        <a class="nav-item" href="{{ path('cart_items') }}">
+                            <i title="Корзина" class="fa-solid fa-cart-shopping"></i>
+                            {% if cartItemsAmount > 0 %}
+                                <div class="cart-icon-items-counter counter">{{ cartItemsAmount }}</div>
+                            {% endif %}
+                        </a>
                         <i class="fa-solid fa-user nav-item">
                             <div class="nav-item__menu">
                                 <p class="nav-item nav-item__menu-item">ID: {{ app.user.id }}</p>

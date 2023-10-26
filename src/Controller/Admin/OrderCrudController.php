@@ -21,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -110,7 +111,8 @@ class OrderCrudController extends AbstractCrudController
         return parent::configureFilters($filters)
             ->add(ChoiceFilter::new('status')
                 ->setChoices($this->statuses)
-            );
+            )
+            ->add(EntityFilter::new('customer'));
     }
 
     /*

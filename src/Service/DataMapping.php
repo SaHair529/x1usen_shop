@@ -10,15 +10,23 @@ class DataMapping
 {
     private array $admin_ids = [3];
 
+    private array $user_client_types = [
+        '1' => 'Физ. лицо',
+    ];
+
     private array $order_statuses = [
         '1' => 'В обработке',
-        '2' => 'Ожидание оплаты',
         '3' => 'Готово к отгрузке',
         '4' => 'Ожидание поступления',
         '5' => 'Доставлено',
         '6' => 'Нет в наличии',
         '7' => 'Требуется заказ вручную',
-        '8' => 'Платеж отклонен'
+    ];
+
+    private array $order_payment_statuses = [
+        '-1'    => 'Платеж не прошел',
+        '0'     => 'Ожидание оплаты',
+        '1'     => 'Оплата прошла успешно'
     ];
 
     private array $order_ways_to_get = [

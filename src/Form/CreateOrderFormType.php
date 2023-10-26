@@ -60,14 +60,14 @@ class CreateOrderFormType extends AbstractType
             ->add('city', TextType::class, [
                 'attr' => [
                     'placeholder' => 'Город',
-                    'class' => 'form-control'
+                    'class' => 'form-control waytoget-state-item rfdelivery-state-item'
                 ],
                 'label' => false
             ])
             ->add('address', TextType::class, [
                 'attr' => [
                     'placeholder' => 'Адрес',
-                    'class' => 'form-control',
+                    'class' => 'form-control waytoget-state-item spbdelivery-state-item rfdelivery-state-item',
                     'autocomplete' => 'off'
                 ],
                 'label' => false

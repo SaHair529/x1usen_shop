@@ -58,6 +58,9 @@ export default class HTMLAttributesNaming {
         },
         delButton: {
             class: 'js-delete-cart-item'
+        },
+        showDetails: {
+            class: 'js-show-details'
         }
     }
 
@@ -279,6 +282,143 @@ export default class HTMLAttributesNaming {
                 tagName: 'h5',
                 text: 'Корзина пуста :('
             }
+        ]
+    }
+
+    static calculationModalWindow_forCreator = {
+        tagName: 'div',
+        class: 'custom-calculation-modal-window',
+        children: [
+            { tagName: 'h4', text: 'Расчет стоимости доставки вручную' },
+            { tagName: 'p', class: 'custom-calculation-modal-window__subtitle', text: 'Заполните поля формы и нажмите на "Расчитать стоимость"' },
+            { tagName: 'hr' },
+            {
+                tagName: 'form',
+                class: 'custom-calculation-modal-window__form',
+                attributes: [ { id: 'calculate-form' } ],
+                children: [
+                    {
+                        tagName: 'div',
+                        class: 'input-group',
+                        children: [
+                            {
+                                tagName: 'input',
+                                class: 'form-control',
+                                attributes: [{
+                                    name: 'cargo_length',
+                                    type: 'number',
+                                    step: '0.01',
+                                    placeholder: 'Длина, см',
+                                    required: 'required'
+                                }]
+                            },
+                            {
+                                tagName: 'input',
+                                class: 'form-control',
+                                attributes: [{
+                                    name: 'cargo_width',
+                                    type: 'number',
+                                    step: '0.01',
+                                    placeholder: 'Ширина, см',
+                                    required: 'required'
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        tagName: 'div',
+                        class: 'input-group',
+                        children: [
+                            {
+                                tagName: 'input',
+                                class: 'form-control',
+                                attributes: [{
+                                    name: 'cargo_height',
+                                    type: 'number',
+                                    step: '0.01',
+                                    placeholder: 'Высота, см',
+                                    required: 'required'
+                                }]
+                            },
+                            {
+                                tagName: 'input',
+                                class: 'form-control',
+                                attributes: [{
+                                    name: 'cargo_weight',
+                                    type: 'number',
+                                    step: '0.01',
+                                    placeholder: 'Вес, кг',
+                                    required: 'required'
+                                }]
+                            }
+                        ]
+                    },
+                    {
+                        tagName: 'div',
+                        class: 'input-group',
+                        children: [
+                            {
+                                tagName: 'input',
+                                class: 'form-control',
+                                attributes: [{
+                                    name: 'derival_city',
+                                    type: 'text',
+                                    placeholder: 'Город отправления',
+                                    required: 'required'
+                                }]
+                            },
+                            {
+                                tagName: 'input',
+                                class: 'form-control',
+                                attributes: [{
+                                    name: 'arrival_city',
+                                    type: 'text',
+                                    placeholder: 'Город получения',
+                                    required: 'required'
+                                }]
+                            }
+                        ]
+                    },
+                    { tagName: 'br' },
+                    { tagName: 'div', class: 'custom-calculation-modal-window__response-wrapper' },
+                    {
+                        tagName: 'button',
+                        class: 'btn btn-outline-primary js-submit-calculate-form',
+                        attributes: [ { type: 'submit' } ],
+                        text: 'Расчитать стоимость'
+                    }
+                ]
+            }
+        ]
+    }
+
+    static userCalculationResponseTable_forCreator = {
+        tagName: 'table',
+        class: 'table table-bordered table-primary table-sm small',
+        children: [
+            {
+                tagName: 'thead',
+                children: [
+                    {
+                        tagName: 'tr',
+                        children: [
+                            {tagName: 'th', attributes: [{scope: 'col'}], text: 'Компания'},
+                            {tagName: 'th', attributes: [{scope: 'col'}], text: 'Срок'},
+                            {tagName: 'th', attributes: [{scope: 'col'}], text: 'Цена перевозки (₽)'},
+                        ]
+                    }
+                ]
+            },
+            {tagName: 'tbody'}
+        ]
+    }
+
+    static userCalculationResponseTableRow_forCreator = {
+        tagName: 'tr',
+        children: [
+            {tagName: 'td', class: 'company'},
+            {tagName: 'td', class: 'days'},
+            {tagName: 'td', class: 'price'}
         ]
     }
 }

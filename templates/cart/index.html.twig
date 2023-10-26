@@ -19,23 +19,4 @@
             </h5>
         </div>
     {% endif %}
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const createOrderForm = document.querySelector('form[name="create_order_form"]')
-            if (!createOrderForm)
-                return
-
-            createOrderForm.addEventListener('submit', function (e) {
-                const cartItemsCheckboxes = document.getElementById('cart-items').querySelectorAll('input[type="checkbox"]')
-                let checkedCartItemsIds = ''
-                for (let i = 0; i < cartItemsCheckboxes.length; i++) {
-                    if(cartItemsCheckboxes[i].checked) {
-                        checkedCartItemsIds += ' '+cartItemsCheckboxes[i].getAttribute('value')
-                    }
-                }
-                document.getElementById('cart_items_ids').setAttribute('value', checkedCartItemsIds)
-            })
-        })
-    </script>
 {% endblock %}

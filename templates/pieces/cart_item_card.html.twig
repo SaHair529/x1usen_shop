@@ -8,7 +8,7 @@
                 <img src="{{ cart_item.product.imageLink }}" alt="{{ cart_item.product.name }}">
             </div>
             <div class="cart-item-card__info">
-                <a href="{{ path('detail_page', {id: cart_item.product.id}) }}" target="_blank" class="cart-item-card__name">{{ cart_item.product.name }}</a>
+                <a href="#" data-cart-item-id="{{ cart_item.product.id }}" class="js-show-details cart-item-card__name">{{ cart_item.product.name }}</a>
                 <div class="cart-item-card__action-buttons">
                     <div class="cart-item-card__delete-btn js-delete-cart-item">
                         <i class="fa-solid fa-trash js-delete-cart-item"></i> Удалить

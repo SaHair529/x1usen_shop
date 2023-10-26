@@ -240,6 +240,61 @@ class DellinRequestDataPreparer
         ];
     }
 
+    #[ArrayShape(['appkey' => "mixed", 'sessionID' => "string", 'delivery' => "array"])]
+    public function prepareCalculationRequestDataByUserFormData(array $userFormData, string $sessionId): array
+    {
+        $tomorrowDate = (new DateTime())->add(new DateInterval('P1D'));
+        $produceDate = $tomorrowDate->format('Y-m-d');
+
+        $derivalWorktimeStart = '10:00';
+        $derivalWorktimeEnd = '21:00';
+        $arrivalWorktimeStart = '10:00'; # todo
+        $arrivalWorktimeEnd = '21:00'; # todo
+
+        $derivalTerminalId = $this->getRandomTerminalIdByCity($userFormData['derival_city']);
+        $arrivalTerminalId = $this->getRandomTerminalIdByCity($userFormData['arrival_city']);
+
+        $cargoTotalVolume = $userFormData['cargo_length'] * $userFormData['cargo_width'] * $userFormData['cargo_height'];
+
+        return [
+            'appkey' => $_ENV['DELLIN_APP_KEY'],
+            'sessionID' => $sessionId,
+            'delivery' => [
+                'deliveryType' => [
+                    'type' => 'auto'
+                ],
+                'derival' => [
+                    'produceDate' => $produceDate,
+                    'variant' => 'terminal',
+                    'terminalID' => $derivalTerminalId,
+                    'time' => [
+                        'worktimeStart' => $derivalWorktimeStart,
+                        'worktimeEnd' => $derivalWorktimeEnd
+                    ]
+                ],
+                'arrival' => [
+                    'variant' => 'terminal',
+                    'terminalID' => $arrivalTerminalId,
+                    'time' => [
+                        'worktimeStart' => $arrivalWorktimeStart,
+                        'worktimeEnd' => $arrivalWorktimeEnd
+                    ]
+                ]
+            ],
+            'cargo' => [
+                'quantity' => '1',
+                'length' => $userFormData['cargo_length'],
+                'width' => $userFormData['cargo_width'],
+                'height' => $userFormData['cargo_height'],
+                'weight' => $userFormData['cargo_weight'],
+                'totalVolume' => $cargoTotalVolume,
+                'totalWeight' => $userFormData['cargo_weight'],
+                'freightUID' => '0x982400215e7024d411e1e844ef594aad' # todo ?
+            ]
+        ];
+    }
+
+
     /**
      * Определение близжайшего терминала к указанным в $coords широте и долготе
      * @param string $coords 'широта:долгота'
@@ -261,6 +316,17 @@ class DellinRequestDataPreparer
         }
 
         return $closestTerminalId;
+    }
+
+    /**
+     * Получение случайного терминала по введенному пользователем городу
+     * Это нужно для корректной отработки функционала кастомного калькулятора, в котором указываются только города без точного адреса.
+     * А деловым линиям в API нужен точный адрес. Поэтому мы вместо адреса указываем id терминала из города, указанного пользователем в форме
+     */
+    public function getRandomTerminalIdByCity(string $city): int
+    {
+        $cityRandomTerminal = $this->terminalRep->findOneBy(['city' => $city]);
+        return $cityRandomTerminal->getTerminalId();
     }
 
     /**

@@ -66,6 +66,14 @@
         </div>
         <div class="order-row">
             <div class="order-label text-muted">
+                Статус оплаты
+            </div>
+            <div class="order-value">
+                {{ payment_statuses[order.paymentStatus] }}
+            </div>
+        </div>
+        <div class="order-row">
+            <div class="order-label text-muted">
                 ФИО заказчика
             </div>
             <div class="order-value">

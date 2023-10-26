@@ -35,15 +35,11 @@ class DellinApi
      * Запрос на перевозку сборных грузов
      * https://dev.dellin.ru/api/ordering/ltl-request/#_header3
      * @param string $derivalAddress
-     * @param string $arrivalAddress
      * @param string $companyOwnerFullname
      * @param string $companyINN
      * @param string $companyContactPhone
-     * @param string $receiverPhone
-     * @param string $receiverName
      * @param CartItem[] $cartItems
-     * @param string $arrivalAddressCoords
-     * @param int $deliveryType
+     * @param Order $order
      * @throws TransportExceptionInterface
      */
     public function requestConsolidatedCargoTransportation(
@@ -66,7 +62,19 @@ class DellinApi
     }
 
     /**
-     * Запрос на калькулятор стоимости и сроков перевозки
+     * Запрос на расчет примерных стоимости и сроков перевозки по запросу из формы "Расчет стоимости доставки вручную"
+     */
+    public function requestCalculatorByUserFormRequest(array $userFormData): ResponseInterface
+    {
+        $requestData = $this->dataPreparer->prepareCalculationRequestDataByUserFormData($userFormData, $this->sessionId);
+
+        return $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/calculator.json", [
+            'json' => $requestData
+        ]);
+    }
+
+    /**
+     * Запрос на расчет примерных стоимости и сроков перевозки по указанным в корзине данным
      * https://dev.dellin.ru/api/calculation/calculator/#_header14
      * @throws TransportExceptionInterface
      */

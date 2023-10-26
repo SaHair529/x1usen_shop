@@ -5,6 +5,25 @@ import MainDOMElementsCreator from "../main/DOMElementsCreator";
 import BaseElementsCreator from "../BaseElementsCreator";
 
 export default class Renderer {
+    static renderAlertOnUserCalculationResponseWrapper() {
+        const $userCalculationResponseWrapper = document.querySelector('.custom-calculation-modal-window__response-wrapper')
+
+        const alertText = 'Не удалось провести расчеты. Возможно, вы ввели неверный город'
+        const $alert = MainDOMElementsCreator.createAlert('danger', alertText)
+
+        $userCalculationResponseWrapper.innerHTML = ''
+        $userCalculationResponseWrapper.append($alert)
+    }
+
+    static renderCalculationModal() {
+        const modal = DOMElementsCreator.createModal()
+        const calculationModalWindow = DOMElementsCreator.createDOMElementByObject(AttributesNaming.calculationModalWindow_forCreator)
+
+        modal.append(calculationModalWindow)
+
+        document.querySelector('body').append(modal)
+    }
+
     static shakeElement(element) {
         element.classList.add('shake')
         setTimeout(() => {
@@ -137,5 +156,27 @@ export default class Renderer {
         const modal = ElementsCreator.createModal()
         modal.innerHTML = infoTemplate
         document.querySelector('body').append(modal)
+    }
+
+    static renderUserCalculationResponseTable(calculateData) {
+        const currentDate = new Date()
+        const deliveryDate = new Date(calculateData['data']['orderDates']['giveoutFromOspReceiver'])
+        const neededCalculateData = {
+            company: 'Деловые Линии',
+            deliveryDaysAmount: Math.floor((deliveryDate - currentDate) / (1000 * 60 * 60 * 24))+' дн.',
+            price: calculateData.data.price
+        }
+
+        const calculationResponseWrapper = document.querySelector('.custom-calculation-modal-window__response-wrapper')
+        const userCalculationResponseTable = DOMElementsCreator.createDOMElementByObject(AttributesNaming.userCalculationResponseTable_forCreator)
+        const userCalculationResponseTableRow = DOMElementsCreator.createDOMElementByObject(AttributesNaming.userCalculationResponseTableRow_forCreator)
+
+        userCalculationResponseTableRow.querySelector('.company').textContent = neededCalculateData.company
+        userCalculationResponseTableRow.querySelector('.days').textContent = neededCalculateData.deliveryDaysAmount
+        userCalculationResponseTableRow.querySelector('.price').textContent = neededCalculateData.price
+
+        userCalculationResponseTable.querySelector('tbody').append(userCalculationResponseTableRow)
+        calculationResponseWrapper.innerHTML = ''
+        calculationResponseWrapper.append(userCalculationResponseTable)
     }
 }

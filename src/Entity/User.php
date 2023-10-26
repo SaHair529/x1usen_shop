@@ -54,6 +54,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'sender', targetEntity: OrderComment::class, orphanRemoval: true)]
     private Collection $orderComments;
 
+    public function __toString(): string
+    {
+        return $this->id;
+    }
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();

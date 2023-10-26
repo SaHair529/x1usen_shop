@@ -1,4 +1,5 @@
 import Renderer from "./Renderer"
+import MainRenderer from "../main/Renderer";
 import AttributesNaming from "./HTMLAttributesNaming"
 import DOMElementsCreator from "./DOMElementsCreator";
 import BaseRenderer from "../BaseRenderer";
@@ -172,6 +173,22 @@ export default class ResponseHandler {
                     break
                 case 400:
                     Renderer.replaceLoaderWithCalculateClientError(calculateData)
+                    break
+            }
+        })
+    }
+
+    static handleUserCalculateResponse(resp) {
+        resp.json().then(calculateData => {
+            const $submitBtn = document.querySelector('.js-submit-calculate-form')
+            switch (resp.status) {
+                case 200:
+                    Renderer.renderUserCalculationResponseTable(calculateData)
+                    MainRenderer.offButtonLoadingState($submitBtn)
+                    break
+                case 400:
+                    Renderer.renderAlertOnUserCalculationResponseWrapper()
+                    MainRenderer.offButtonLoadingState($submitBtn)
                     break
             }
         })

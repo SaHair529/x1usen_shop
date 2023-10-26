@@ -10,6 +10,10 @@ class DataMapping
 {
     private array $admin_ids = [3];
 
+    private array $user_client_types = [
+        '1' => 'Физ. лицо',
+    ];
+
     private array $order_statuses = [
         '1' => 'В обработке',
         '3' => 'Готово к отгрузке',

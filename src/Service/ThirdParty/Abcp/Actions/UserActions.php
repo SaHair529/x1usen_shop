@@ -28,7 +28,7 @@ class UserActions
      */
     public function new(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', $this->domain.self::NEW_URL, [
+        return $this->httpClient->request('POST', $this->domain.self::NEW_URL, [
             'body' => $requestBody
         ]);
     }
@@ -43,7 +43,7 @@ class UserActions
      */
     public function activation(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', $this->domain.self::ACTIVATION_URL, [
+        return $this->httpClient->request('POST', $this->domain.self::ACTIVATION_URL, [
             'body' => $requestBody
         ]);
     }
@@ -73,7 +73,7 @@ class UserActions
      */
     public function restore(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', $this->domain.self::RESTORE_URL, [
+        return $this->httpClient->request('POST', $this->domain.self::RESTORE_URL, [
             'body' => $requestBody
         ]);
     }

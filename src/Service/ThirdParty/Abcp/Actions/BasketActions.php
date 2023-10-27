@@ -28,7 +28,7 @@ class BasketActions
      */
     public function add(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', $this->domain.self::ADD_URL, [
+        return $this->httpClient->request('POST', $this->domain.self::ADD_URL, [
             'body' => $requestBody
         ]);
     }
@@ -43,7 +43,7 @@ class BasketActions
      */
     public function clear(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', $this->domain.self::CLEAR_URL, [
+        return $this->httpClient->request('POST', $this->domain.self::CLEAR_URL, [
             'body' => $requestBody
         ]);
     }
@@ -73,7 +73,7 @@ class BasketActions
      */
     public function order(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', $this->domain.self::ORDER_URL, [
+        return $this->httpClient->request('POST', $this->domain.self::ORDER_URL, [
             'body' => $requestBody
         ]);
     }

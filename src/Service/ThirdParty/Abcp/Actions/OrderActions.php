@@ -14,7 +14,7 @@ class OrderActions
     private const ORDERS_URL = ''; # todo
     private const LIST_URL = ''; # todo
 
-    public function __construct(private HttpClientInterface $httpClient){}
+    public function __construct(private HttpClientInterface $httpClient, private $domain){}
 
     /**
      * Получение списка заказов
@@ -26,7 +26,7 @@ class OrderActions
      */
     public function orders(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', self::ORDERS_URL, [
+        return $this->httpClient->request('GET', $this->domain.self::ORDERS_URL, [
             'body' => $requestBody
         ]);
     }
@@ -41,7 +41,7 @@ class OrderActions
      */
     public function list(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', self::LIST_URL, [
+        return $this->httpClient->request('GET', $this->domain.self::LIST_URL, [
             'body' => $requestBody
         ]);
     }

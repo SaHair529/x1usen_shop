@@ -16,7 +16,7 @@ class UserActions
     private const INFO_URL = ''; # todo
     private const RESTORE_URL = ''; # todo
 
-    public function __construct(private HttpClientInterface $httpClient){}
+    public function __construct(private HttpClientInterface $httpClient, private $domain){}
 
     /**
      * Регистрация пользователя
@@ -28,7 +28,7 @@ class UserActions
      */
     public function new(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', self::NEW_URL, [
+        return $this->httpClient->request('GET', $this->domain.self::NEW_URL, [
             'body' => $requestBody
         ]);
     }
@@ -43,7 +43,7 @@ class UserActions
      */
     public function activation(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', self::ACTIVATION_URL, [
+        return $this->httpClient->request('GET', $this->domain.self::ACTIVATION_URL, [
             'body' => $requestBody
         ]);
     }
@@ -58,7 +58,7 @@ class UserActions
      */
     public function info(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', self::INFO_URL, [
+        return $this->httpClient->request('GET', $this->domain.self::INFO_URL, [
             'body' => $requestBody
         ]);
     }
@@ -73,7 +73,7 @@ class UserActions
      */
     public function restore(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', self::RESTORE_URL, [
+        return $this->httpClient->request('GET', $this->domain.self::RESTORE_URL, [
             'body' => $requestBody
         ]);
     }

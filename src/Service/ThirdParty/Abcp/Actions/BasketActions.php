@@ -16,7 +16,7 @@ class BasketActions
     private const CONTENT_URL = ''; # todo
     private const ORDER_URL = ''; # todo
 
-    public function __construct(private HttpClientInterface $httpClient){}
+    public function __construct(private HttpClientInterface $httpClient, private $domain){}
 
     /**
      * Добавление товаров в корзину. Удаление товара из корзины
@@ -28,7 +28,7 @@ class BasketActions
      */
     public function add(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', self::ADD_URL, [
+        return $this->httpClient->request('GET', $this->domain.self::ADD_URL, [
             'body' => $requestBody
         ]);
     }
@@ -43,7 +43,7 @@ class BasketActions
      */
     public function clear(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', self::CLEAR_URL, [
+        return $this->httpClient->request('GET', $this->domain.self::CLEAR_URL, [
             'body' => $requestBody
         ]);
     }
@@ -58,7 +58,7 @@ class BasketActions
      */
     public function content(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', self::CONTENT_URL, [
+        return $this->httpClient->request('GET', $this->domain.self::CONTENT_URL, [
             'body' => $requestBody
         ]);
     }
@@ -73,7 +73,7 @@ class BasketActions
      */
     public function order(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', self::ORDER_URL, [
+        return $this->httpClient->request('GET', $this->domain.self::ORDER_URL, [
             'body' => $requestBody
         ]);
     }

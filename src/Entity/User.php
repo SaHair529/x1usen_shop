@@ -54,6 +54,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'sender', targetEntity: OrderComment::class, orphanRemoval: true)]
     private Collection $orderComments;
 
+    #[ORM\Column(length: 20)]
+    private ?string $phone = null;
+
     public function __toString(): string
     {
         return $this->id;
@@ -270,6 +273,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $orderComment->setSender(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): self
+    {
+        $this->phone = $phone;
 
         return $this;
     }

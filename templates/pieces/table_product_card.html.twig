@@ -1,19 +1,19 @@
-<div class="product-card table-product-card" id="{{ product.id }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product.id}) }}">
+<div class="product-card table-product-card" id="{{ product['itemKey'] }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product['itemKey']}) }}">
     <div class="table-product-card__field">
         <div class="product-card__img-wrapper" style="max-width: 90%; padding: 0">
             <div class="img-zoom action-zoom-img"><i class="fa-solid fa-magnifying-glass-plus action-zoom-img"></i></div>
-            <img class="product-card__img" src="{{ product.imageLink }}">
+            <img class="product-card__img" src="#">
         </div>
     </div>
-    <div class="table-product-card__field">{{ product.brand }}</div>
-    <div class="table-product-card__field">{{ product.articleNumber }}</div>
-    <div class="table-product-card__field name">{{ product.name }}</div>
-    <div class="table-product-card__field">{{ product.totalBalance }} шт</div>
-    <div class="table-product-card__field"><strong>{{ product.price }}</strong></div>
+    <div class="table-product-card__field">{{ product['brand'] }}</div>
+    <div class="table-product-card__field">{{ product['number'] }}</div>
+    <div class="table-product-card__field name">{{ product['description'] }}</div>
+    <div class="table-product-card__field">{{ product['availability'] }} шт</div>
+    <div class="table-product-card__field"><strong>{{ product['price'] }}</strong></div>
     <div class="table-product-card__field"><a href="#" class="js-show-details">Подробнее</a></div>
     <div class="cart-item-card__quantity-counter">
-        <div class="cart-item-card__minus-btn js-decrease-cart-item {% if cart_items[product.id] is not defined  %}disabled{% endif %}">-</div>
-        {% if cart_items[product.id] is defined  %}
+        <div class="cart-item-card__minus-btn js-decrease-cart-item {% if cart_items[product['itemKey']] is not defined  %}disabled{% endif %}">-</div>
+        {% if cart_items[product['itemKey']] is defined  %}
             <div class="cart-item-card__amount">{{ cart_items[product.id].quantity }}</div>
         {% else %}
             <div class="cart-item-card__amount">0</div>

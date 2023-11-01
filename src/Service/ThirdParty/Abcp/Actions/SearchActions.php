@@ -11,7 +11,8 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 class SearchActions
 {
-    const ARTICLES = 'search/articles';
+    private const ARTICLES = '/search/articles';
+    private const BRANDS = '/search/brands';
 
     public function __construct(private HttpClientInterface $httpClient, private $domain){}
 
@@ -25,8 +26,33 @@ class SearchActions
      */
     public function articles(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', $this->domain.self::ARTICLES, [
-            'body' => $requestBody
+        $requestBody = array_merge($requestBody, [
+            'userlogin' => $_ENV['ABCP_API_LOGIN'],
+            'userpsw' => $_ENV['ABCP_API_PASSWORD']
         ]);
+
+        $queryParams = http_build_query($requestBody);
+
+        return $this->httpClient->request('GET', $this->domain.self::ARTICLES.'?'.$queryParams);
+    }
+
+    /**
+     * Поиск брендов по номеру
+     * Ссылка на метод в документации \/
+     * https://www.abcp.ru/wiki/API.ABCP.Client#.D0.9F.D0.BE.D0.B8.D1.81.D0.BA_.D0.B1.D1.80.D0.B5.D0.BD.D0.B4.D0.BE.D0.B2_.D0.BF.D0.BE_.D0.BD.D0.BE.D0.BC.D0.B5.D1.80.D1.83
+     * @param array $requestBody
+     * @return ResponseInterface
+     * @throws TransportExceptionInterface
+     */
+    public function brands(array $requestBody): ResponseInterface
+    {
+        $requestBody = array_merge($requestBody, [
+            'userlogin' => $_ENV['ABCP_API_LOGIN'],
+            'userpsw' => $_ENV['ABCP_API_PASSWORD']
+        ]);
+
+        $queryParams = http_build_query($requestBody);
+
+        return $this->httpClient->request('GET', $this->domain.self::BRANDS.'?'.$queryParams);
     }
 }

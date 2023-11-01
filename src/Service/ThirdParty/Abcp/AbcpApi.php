@@ -9,6 +9,10 @@ use App\Service\ThirdParty\Abcp\Actions\SearchActions;
 use App\Service\ThirdParty\Abcp\Actions\UserActions;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -32,6 +36,28 @@ class AbcpApi
         $this->orderActions = new OrderActions($this->httpClient, self::DOMAIN);
         $this->userActions = new UserActions($this->httpClient, self::DOMAIN);
         $this->searchActions = new SearchActions($this->httpClient, self::DOMAIN);
+    }
+
+    /**
+     * Поиск товара по Артикулу
+     * @param string $number
+     * @return array
+     * @throws TransportExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     */
+    public function searchArticlesByNumber(string $number): array
+    {
+        $foundBrand = current($this->searchActions->brands([
+            'number' => $number
+        ])->toArray(false))['brand'];
+
+        return $this->searchActions->articles([
+            'number' => $number,
+            'brand' => $foundBrand
+        ])->toArray(false);
     }
 
     /**

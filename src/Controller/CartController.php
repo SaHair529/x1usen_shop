@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\ThirdParty\Abcp\AbcpApi;
 use App\Service\ThirdParty\Alfabank\AlfabankApi;
 use App\Service\ThirdParty\Dellin\DellinApi;
 use App\Service\ThirdParty\Google\EmailSender;
@@ -26,11 +27,30 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 #[Route('/cart')]
 class CartController extends AbstractController
 {
     /**
+     * @param Request $req
+     * @param CartItemRepository $cartItemRep
+     * @param OrderRepository $orderRep
+     * @param DataMapping $dataMapping
+     * @param EmailSender $emailSender
+     * @param UrlGeneratorInterface $urlGenerator
+     * @param AlfabankApi $alfabankApi
+     * @param DellinApi $dellinApi
+     * @return Response
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      * @throws Exception
      */
     #[Route('/items', name: 'cart_items')]
@@ -187,14 +207,14 @@ class CartController extends AbstractController
         return ResponseCreator::decreaseQuantity_cartItemNotFound();
     }
 
-    /** @noinspection PhpPossiblePolymorphicInvocationInspection */
     /**
      * @throws Exception
      */
     #[Route('/add_item', name: 'cart_add_item', methods: 'GET')]
-    public function addItem(Request $req, ProductRepository $productRep, CartItemRepository $cartItemRep): Response
+    public function addItem(Request $req, ProductRepository $productRep, CartItemRepository $cartItemRep, AbcpApi $abcpApi): Response
     {
-        if (is_null($this->getUser()))
+        /** @var User $user */
+        if (is_null($user = $this->getUser()))
             return ResponseCreator::notAuthorized();
 
         $productId = $req->query->get('item_id');
@@ -202,11 +222,13 @@ class CartController extends AbstractController
         if (is_null($productId) && is_null($product))
             return ResponseCreator::addItem_productNotFound();
 
+        $abcpApi->addArticleToBasket($user, $product->getArticleNumber(), $product->getBrand());
+
         if ($product->getTotalBalance() <= 0)
             return ResponseCreator::outOfStock();
 
         /** @var Cart $cart */
-        $cart = $this->getUser()->getCart();
+        $cart = $user->getCart();
         $cartItem = null;
         /** @var CartItem $item */
         foreach ($cart->getItems()->getIterator() as $item) {
@@ -230,7 +252,6 @@ class CartController extends AbstractController
         return ResponseCreator::addItem_ok($cartItem, $product);
     }
 
-    /** @noinspection PhpPossiblePolymorphicInvocationInspection */
     #[Route('/remove_item', name: 'cart_remove_item', methods: 'GET')]
     #[IsGranted('ROLE_USER')]
     public function removeItem(Request $req, CartItemRepository $cartItemRep, ProductRepository $productRep): Response

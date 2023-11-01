@@ -57,6 +57,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20)]
     private ?string $phone = null;
 
+    #[ORM\Column(length: 50)]
+    private ?string $abcp_user_code = null;
+
     public function __toString(): string
     {
         return $this->id;
@@ -285,6 +288,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhone(string $phone): self
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getAbcpUserCode(): ?string
+    {
+        return $this->abcp_user_code;
+    }
+
+    public function setAbcpUserCode(string $abcp_user_code): self
+    {
+        $this->abcp_user_code = $abcp_user_code;
 
         return $this;
     }

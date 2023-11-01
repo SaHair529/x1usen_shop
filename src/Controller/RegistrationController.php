@@ -24,7 +24,8 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->registerUser($user, $userPasswordHasher, $form, $entityManager);
-            $abcpApi->registerUser($user, $form); # todo обработать Exception регистрации
+            $abcpResponse = $abcpApi->registerUser($user, $form);
+            # todo обработать различные ответы от ABCP (например, когда он сообщает, что введенный номер телефона уже зарегистрирован)
             return $this->redirectToRoute('app_login');
         }
 

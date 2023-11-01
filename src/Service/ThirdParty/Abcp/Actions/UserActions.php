@@ -11,7 +11,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 class UserActions
 {
-    private const NEW_URL = ''; # todo
+    private const NEW_URL = '/cp/user/new';
     private const ACTIVATION_URL = ''; # todo
     private const INFO_URL = ''; # todo
     private const RESTORE_URL = ''; # todo
@@ -28,6 +28,11 @@ class UserActions
      */
     public function new(array $requestBody): ResponseInterface
     {
+        $requestBody = array_merge($requestBody, [
+            'userlogin' => $_ENV['ABCP_API_LOGIN'],
+            'userpsw' => $_ENV['ABCP_API_PASSWORD']
+        ]);
+
         return $this->httpClient->request('POST', $this->domain.self::NEW_URL, [
             'body' => $requestBody
         ]);

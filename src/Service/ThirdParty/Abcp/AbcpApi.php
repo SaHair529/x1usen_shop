@@ -9,12 +9,9 @@ use App\Service\ThirdParty\Abcp\Actions\SearchActions;
 use App\Service\ThirdParty\Abcp\Actions\UserActions;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class AbcpApi
 {
@@ -41,20 +38,17 @@ class AbcpApi
      * Регистрация нового пользователя в ABCP и его активация
      * @param User $user
      * @param FormInterface $form
-     * @return void
+     * @return ResponseInterface
      * @throws TransportExceptionInterface
-     * @throws ClientExceptionInterface
-     * @throws DecodingExceptionInterface
-     * @throws RedirectionExceptionInterface
-     * @throws ServerExceptionInterface
      */
-    public function registerUser(User $user, FormInterface $form)
+    public function registerUser(User $user, FormInterface $form): ResponseInterface
     {
         $userFullnameArray = explode(' ', $user->getName());
 
         $registerUserRequestData = [
             'name' => $userFullnameArray[0],
-            'password' => $form->get('plainPassword')->getData()
+            'password' => $form->get('plainPassword')->getData(),
+            'mobile' => $user->getPhone()
         ];
 
         if (isset($userFullnameArray[1]))
@@ -62,8 +56,7 @@ class AbcpApi
         if (isset($userFullnameArray[2]))
             $registerUserRequestData['secondName'] = $userFullnameArray[2];
 
-        $abcpRegisterResponseData = $this->userActions->new($registerUserRequestData)->toArray(false);
-        $this->userActions->activation($abcpRegisterResponseData);
+        return $this->userActions->new($registerUserRequestData);
     }
 
     /**

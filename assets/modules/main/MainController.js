@@ -57,7 +57,7 @@ export default class MainController {
             let productInfo = JSON.parse(clickedItemParentProductCard.dataset.product)
 
             if (e.target.classList.contains('js-show-details')) {
-                MainController.showProductFullInfoModal(productInfo.id)
+                MainController.showProductFullInfoModal(clickedItemParentProductCard.dataset.productRoute)
             }
             else if (e.target.classList.contains('js-increase-cart-item') && !e.target.classList.contains('disabled')) {
                 CartController.addToCart(productInfo.id).then(resp => {
@@ -230,8 +230,8 @@ export default class MainController {
             ResponseHandler.handleShowModelsModalResponse(resp)
         })
     }
-    static showProductFullInfoModal(productId) {
-        fetch(Routes.DetailsController.detail_info+'/'+productId)
+    static showProductFullInfoModal(productInfoUrl) {
+        fetch(productInfoUrl)
             .then(resp => {
                 resp.text().then(productInfoTemplate => {
                     CartRenderer.showProductFullInfoModal(productInfoTemplate)

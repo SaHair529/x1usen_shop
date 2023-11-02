@@ -1,55 +1,63 @@
-<div class="detail-full-info" data-detail-id="{{ product.id }}">
-    <h5 class="detail-full-info__name" style="font-weight: 300">{{ product.name }}</h5>
+{# TODO разобраться с фотками товаров ABCP #}
+{# TODO разобраться с фотками товаров ABCP #}
+{# TODO разобраться с фотками товаров ABCP #}
+
+{# TODO разобраться с длиной, шириной, высотой #}
+{# TODO разобраться с длиной, шириной, высотой #}
+{# TODO разобраться с длиной, шириной, высотой #}
+
+<div class="detail-full-info" data-detail-id="{{ product['itemKey'] }}">
+    <h5 class="detail-full-info__name" style="font-weight: 300">{{ product['description'] }}</h5>
     <div class="detail-full-info__content">
         <div class="detail-full-info__left">
             <div class="detail-full-info__img-wrapper">
-                <img src="{{ product.imageLink }}" alt="{{ product.name }}" class="img-thumbnail detail-full-info__img">
+                <img src="#" alt="{{ product['description'] }}" class="img-thumbnail detail-full-info__img">
             </div>
             <div class="detail-full-info__gallery">
-                {% set productImageLinks = product.additionalImagesLinks|replace({' ': ''})|split(',') %}
-                {% for imageLink in productImageLinks %}
-                    {% if imageLink != '' %}
-                        <div class="detail-full-info__gallery-item js-put-to-image-wrapper">
-                            <img src="{{ imageLink }}">
-                        </div>
-                    {% endif %}
-                {% endfor %}
+{#                {% set productImageLinks = product.additionalImagesLinks|replace({' ': ''})|split(',') %}#}
+{#                {% for imageLink in productImageLinks %}#}
+{#                    {% if imageLink != '' %}#}
+{#                        <div class="detail-full-info__gallery-item js-put-to-image-wrapper">#}
+{#                            <img src="{{ imageLink }}">#}
+{#                        </div>#}
+{#                    {% endif %}#}
+{#                {% endfor %}#}
             </div>
         </div>
         <div class="detail-full-info__right">
             <div class="detail-full-info__info">
                 <p class="info-row">
                     <span>Производитель</span>
-                    <span>{{ product.brand }}</span>
+                    <span>{{ product['brand'] }}</span>
                 </p>
                 <p class="info-row">
                     <span>Артикул</span>
-                    <span>{{ product.articleNumber }}</span>
+                    <span>{{ product['number'] }}</span>
                 </p>
                 <p class="detail-full-info__total-balance info-row">
                     <span>В наличии</span>
-                    <span>{{ product.totalBalance }}{{ product.measurementUnit }}</span>
+                    <span>{{ product['availability'] }}шт</span>
                 </p>
                 <p class="detail-full-info__price info-row">
                     <span style="color: red !important;">Цена</span>
-                    <span>{{ product.price }} ₽</span>
+                    <span>{{ product['price'] }} ₽</span>
                 </p>
                 <br>
                 <p class="info-row">
                     <span>Длина</span>
-                    <span>{{ product.length }}</span>
+                    <span>0</span>
                 </p>
                 <p class="info-row">
                     <span>Ширина</span>
-                    <span>{{ product.width }}</span>
+                    <span>0</span>
                 </p>
                 <p class="info-row">
                     <span>Высота</span>
-                    <span>{{ product.height }}</span>
+                    <span>0</span>
                 </p>
                 <p class="info-row">
                     <span>Вес</span>
-                    <span>{{ product.weight }}</span>
+                    <span>{{ product['weight'] }}</span>
                 </p>
             </div>
         </div>

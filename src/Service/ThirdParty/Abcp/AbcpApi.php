@@ -61,6 +61,29 @@ class AbcpApi
     }
 
     /**
+     * Поиск конкретного товара по itemKey и артикулу
+     * @param string $targetItemKey
+     * @param string $articleNumber
+     * @return mixed|null
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getConcreteArticleByItemKeyAndNumber(string $targetItemKey, string $articleNumber): ?array
+    {
+        $articles = $this->searchArticlesByNumber($articleNumber);
+
+        foreach ($articles as $article) {
+            if ($article['itemKey'] === $targetItemKey)
+                return $article;
+        }
+
+        return null;
+    }
+
+    /**
      * Регистрация нового пользователя в ABCP и его активация
      * @param User $user
      * @param FormInterface $form

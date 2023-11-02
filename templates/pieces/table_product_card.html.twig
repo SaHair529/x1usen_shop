@@ -1,4 +1,4 @@
-<div class="product-card table-product-card" id="{{ product['itemKey'] }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product['itemKey']}) }}">
+<div class="product-card table-product-card" id="{{ product['itemKey'] }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_info', {'articleNumber': product['number'], 'itemKey': product['itemKey']}) }}">
     <div class="table-product-card__field">
         <div class="product-card__img-wrapper" style="max-width: 90%; padding: 0">
             <div class="img-zoom action-zoom-img"><i class="fa-solid fa-magnifying-glass-plus action-zoom-img"></i></div>

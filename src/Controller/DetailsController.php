@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\BrandRepository;
 use App\Repository\ProductRepository;
+use App\Service\ThirdParty\Abcp\AbcpApi;
 use GuayaquilLib\ServiceOem;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -51,15 +52,13 @@ class DetailsController extends AbstractController
     /**
      * Кусок html-блока с информацией о товаре
      */
-    #[Route('/{id}', name: 'detail_info')]
-    public function info($id, ProductRepository $productRep): Response
+    #[Route('/{articleNumber}', name: 'detail_info')]
+    public function info($articleNumber, Request $request, AbcpApi $abcpApi): Response
     {
-        if (!is_numeric($id))
-            return $this->redirectToRoute('homepage');
+        $foundArticle = $abcpApi->getConcreteArticleByItemKeyAndNumber($request->query->get('itemKey'), $articleNumber);
 
-        $product = $productRep->find($id);
         return $this->render('details/detail_info.html.twig', [
-            'product' => $product
+            'product' => $foundArticle
         ]);
     }
 

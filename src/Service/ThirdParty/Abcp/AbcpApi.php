@@ -8,7 +8,7 @@ use App\Service\ThirdParty\Abcp\Actions\OrderActions;
 use App\Service\ThirdParty\Abcp\Actions\SearchActions;
 use App\Service\ThirdParty\Abcp\Actions\UserActions;
 use App\Service\ThirdParty\Abcp\Processors\SearchProcessor;
-use Symfony\Component\Form\FormInterface;
+use App\Service\ThirdParty\Abcp\Processors\UserProcessor;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -21,45 +21,20 @@ class AbcpApi
     private HttpClientInterface $httpClient;
 
     public SearchProcessor $searchProcessor;
+    public UserProcessor $userProcessor;
 
     public BasketActions $basketActions;
     public OrderActions $orderActions;
-    public UserActions $userActions;
 
     public function __construct()
     {
         $this->httpClient = HttpClient::create();
 
-        $this->basketActions = new BasketActions($this->httpClient, self::DOMAIN);
-        $this->orderActions = new OrderActions($this->httpClient, self::DOMAIN);
-        $this->userActions = new UserActions($this->httpClient, self::DOMAIN);
+        $this->basketActions = new BasketActions($this->httpClient, self::DOMAIN); # todo добавить BasketProcessor
+        $this->orderActions = new OrderActions($this->httpClient, self::DOMAIN); # todo добавить OrderProcessor
 
         $this->searchProcessor = new SearchProcessor(new SearchActions($this->httpClient, self::DOMAIN));
-    }
-
-    /**
-     * Регистрация нового пользователя в ABCP и его активация
-     * @param User $user
-     * @param FormInterface $form
-     * @return ResponseInterface
-     * @throws TransportExceptionInterface
-     */
-    public function registerUser(User $user, FormInterface $form): ResponseInterface
-    {
-        $userFullnameArray = explode(' ', $user->getName());
-
-        $registerUserRequestData = [
-            'name' => $userFullnameArray[0],
-            'password' => $form->get('plainPassword')->getData(),
-            'mobile' => $user->getPhone()
-        ];
-
-        if (isset($userFullnameArray[1]))
-            $registerUserRequestData['surname'] = $userFullnameArray[1];
-        if (isset($userFullnameArray[2]))
-            $registerUserRequestData['secondName'] = $userFullnameArray[2];
-
-        return $this->userActions->new($registerUserRequestData);
+        $this->userProcessor = new UserProcessor(new UserActions($this->httpClient, self::DOMAIN));
     }
 
     /**

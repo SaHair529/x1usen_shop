@@ -114,13 +114,15 @@ class AbcpApi
     public function addArticleToBasket(User $user, string $productArticleNumber, string $productBrand)
     {
         $foundArticle = $this->searchActions->articles([
-            'userlogin' => $user->getUsername(),
+            'userlogin' => $user->getAbcpUserCode(),
             'userpsw' => $user->getPassword(),
             'number' => $productArticleNumber,
             'brand' => $productBrand
         ])->toArray(false);
 
         $this->basketActions->add([
+            'userlogin' => $user->getAbcpUserCode(),
+            'userpsw' => $user->getPassword(),
             'positions' => [
                 [
                     'brand' => $productBrand,

@@ -2,6 +2,7 @@
 
 namespace App\Service\ThirdParty\Abcp\Actions;
 
+use App\Entity\User;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -22,12 +23,18 @@ class BasketActions
      * Добавление товаров в корзину. Удаление товара из корзины
      * Ссылка на метод в документации \/
      * https://www.abcp.ru/wiki/API.ABCP.Client#.D0.94.D0.BE.D0.B1.D0.B0.D0.B2.D0.BB.D0.B5.D0.BD.D0.B8.D0.B5_.D1.82.D0.BE.D0.B2.D0.B0.D1.80.D0.BE.D0.B2_.D0.B2_.D0.BA.D0.BE.D1.80.D0.B7.D0.B8.D0.BD.D1.83._.D0.A3.D0.B4.D0.B0.D0.BB.D0.B5.D0.BD.D0.B8.D0.B5_.D1.82.D0.BE.D0.B2.D0.B0.D1.80.D0.B0_.D0.B8.D0.B7_.D0.BA.D0.BE.D1.80.D0.B7.D0.B8.D0.BD.D1.8B
+     * @param User $user
      * @param array $requestBody
      * @return ResponseInterface
      * @throws TransportExceptionInterface
      */
-    public function add(array $requestBody): ResponseInterface
+    public function add(User $user, array $requestBody): ResponseInterface
     {
+        $requestBody = array_merge($requestBody, [
+            'userlogin' => $user->getAbcpUserCode(),
+            'userpsw' => $user->getPassword()
+        ]);
+
         return $this->httpClient->request('POST', $this->domain.self::ADD_URL, [
             'body' => $requestBody
         ]);

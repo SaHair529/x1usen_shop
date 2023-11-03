@@ -110,24 +110,21 @@ class AbcpApi
 
     /**
      * Добавление товара в корзину ABCP
+     * @param User $user
+     * @param array $article
+     * @return ResponseInterface
+     * @throws TransportExceptionInterface
      */
-    public function addArticleToBasket(User $user, string $productArticleNumber, string $productBrand)
+    public function addArticleToBasket(User $user, array $article): ResponseInterface
     {
-        $foundArticle = $this->searchActions->articles([
-            'userlogin' => $user->getAbcpUserCode(),
-            'userpsw' => $user->getPassword(),
-            'number' => $productArticleNumber,
-            'brand' => $productBrand
-        ])->toArray(false);
-
-        $this->basketActions->add([
+        return $this->basketActions->add([
             'userlogin' => $user->getAbcpUserCode(),
             'userpsw' => $user->getPassword(),
             'positions' => [
                 [
-                    'brand' => $productBrand,
-                    'number' => $productArticleNumber,
-                    'itemKey' => $foundArticle[0]['itemKey'],
+                    'brand' => $article['brand'],
+                    'number' => $article['number'],
+                    'itemKey' => $article['itemKey'],
                     'quantity' => 1
                 ]
             ]

@@ -105,7 +105,7 @@ class MainController extends AbstractController
 
     private function handleSearchRequest($queryStr = ''): Response
     {
-        $abcpArticles = $this->abcpApi->searchArticlesByNumber($queryStr);
+        $abcpArticles = $this->abcpApi->searchProcessor->searchArticlesByNumber($queryStr);
         $vehicle = $this->lxCacher->getVehicleObjectByVin($queryStr);
 
         if ($vehicle === null) {

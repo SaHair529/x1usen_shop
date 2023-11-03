@@ -55,7 +55,7 @@ class DetailsController extends AbstractController
     #[Route('/{articleNumber}', name: 'detail_info')]
     public function info($articleNumber, Request $request, AbcpApi $abcpApi): Response
     {
-        $foundArticle = $abcpApi->getConcreteArticleByItemKeyAndNumber($request->query->get('itemKey'), $articleNumber);
+        $foundArticle = $abcpApi->searchProcessor->getConcreteArticleByItemKeyAndNumber($request->query->get('itemKey'), $articleNumber);
 
         return $this->render('details/detail_info.html.twig', [
             'product' => $foundArticle

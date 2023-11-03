@@ -10,7 +10,7 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
- * Обертка для класса SearchActions
+ * Обертка для класса @link SearchActions
  */
 class SearchProcessor
 {

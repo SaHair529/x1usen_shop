@@ -8,6 +8,9 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
+/**
+ * Обертка для класса @link UserActions
+ */
 class UserProcessor
 {
     public function __construct(private UserActions $userActions){}

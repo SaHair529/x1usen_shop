@@ -41,7 +41,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    private function registerUser($user, $userPasswordHasher, $form, $entityManager)
+    private function registerUser(User $user, $userPasswordHasher, $form, $entityManager)
     {
         $user->setPassword(
             $userPasswordHasher->hashPassword(
@@ -49,6 +49,7 @@ class RegistrationController extends AbstractController
                 $form->get('plainPassword')->getData()
             )
         );
+        $user->setPasswordMd5(md5($form->get('plainPassword')->getData()));
 
         $cart = new Cart();
         $user->setCart($cart);

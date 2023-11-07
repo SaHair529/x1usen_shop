@@ -60,6 +60,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     private ?string $abcp_user_code = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $password_md5 = null;
+
     public function __toString(): string
     {
         return $this->id;
@@ -300,6 +303,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAbcpUserCode(string $abcp_user_code): self
     {
         $this->abcp_user_code = $abcp_user_code;
+
+        return $this;
+    }
+
+    public function getPasswordMd5(): ?string
+    {
+        return $this->password_md5;
+    }
+
+    public function setPasswordMd5(string $password_md5): self
+    {
+        $this->password_md5 = $password_md5;
 
         return $this;
     }

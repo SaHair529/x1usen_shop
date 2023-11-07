@@ -45,14 +45,11 @@ export default class ResponseHandler {
             case 200:
                 responsePromise.json().then(responseData => {
                     if (responseData['message'] === 'ok') {
-                        if (responseData['quantity'] > 0) {
-                            Renderer.updateTableProductCardData(tableProductCard, responseData)
+                        Renderer.updateTableProductCardData(tableProductCard, responseData)
+                        if (responseData['product_total_balance'] > responseData['quantity'])
                             CartRenderer.enableCartItemCardIncreaseButton(tableProductCard)
-                        }
-                        else {
-                            Renderer.updateTableProductCardData(tableProductCard, responseData)
+                        else
                             CartRenderer.disableCartItemCardDecreaseButton(tableProductCard)
-                        }
                     }
                 })
                 break

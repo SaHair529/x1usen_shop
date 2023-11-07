@@ -197,7 +197,7 @@ class CartController extends AbstractController
             $userBasketArticle['quantity']--;
             $abcpApi->basketProcessor->setArticleQuantity($userBasketArticle['quantity'], $abcpArticleItem, $user);
 
-            return ResponseCreator::decreaseQuantity_ok($userBasketArticle['quantity'], $abcpArticleItem['price'], $abcpArticleItem['availability']-1);
+            return ResponseCreator::decreaseQuantity_ok($userBasketArticle['quantity'], $abcpArticleItem['price'], $abcpArticleItem['availability']);
         }
 
         return ResponseCreator::decreaseQuantity_cartItemNotFound();

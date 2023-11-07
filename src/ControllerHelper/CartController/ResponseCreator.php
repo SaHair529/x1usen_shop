@@ -9,14 +9,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ResponseCreator
 {
-    public static function addItem_ok(CartItem $cartItem, Product $product): JsonResponse
+    public static function addItem_ok(array $cartItem, array $articleItem): JsonResponse
     {
         return new JsonResponse([
             'message' => 'ok',
-            'quantity' => $cartItem->getQuantity(),
-            'product_price' => $product->getPrice(),
-            'product_total_balance' => $product->getTotalBalance(),
-            'has_more_product' => $product->getTotalBalance() > 0,
+            'quantity' => $cartItem['quantity'],
+            'product_price' => $articleItem['price'],
+            'product_total_balance' => $articleItem['availability'] - $cartItem['quantity'],
+            'has_more_product' => ($articleItem['availability'] - $cartItem['quantity']) > 0,
         ]);
     }
 

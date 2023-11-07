@@ -14,7 +14,7 @@ class BasketActions
 {
     private const ADD_URL = '/basket/add';
     private const CLEAR_URL = ''; # todo
-    private const CONTENT_URL = ''; # todo
+    private const CONTENT_URL = '/basket/content';
     private const ORDER_URL = ''; # todo
 
     public function __construct(private HttpClientInterface $httpClient, private $domain){}
@@ -59,9 +59,9 @@ class BasketActions
      */
     public function content(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', $this->domain.self::CONTENT_URL, [
-            'body' => $requestBody
-        ]);
+        $queryParams = http_build_query($requestBody);
+
+        return $this->httpClient->request('GET', $this->domain.self::CONTENT_URL.'?'.$queryParams);
     }
 
     /**

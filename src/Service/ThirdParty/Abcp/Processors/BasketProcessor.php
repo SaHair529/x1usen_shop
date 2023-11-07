@@ -4,6 +4,10 @@ namespace App\Service\ThirdParty\Abcp\Processors;
 
 use App\Entity\User;
 use App\Service\ThirdParty\Abcp\Actions\BasketActions;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
@@ -21,7 +25,7 @@ class BasketProcessor
      * @return ResponseInterface
      * @throws TransportExceptionInterface
      */
-    public function addArticleToBasket(User $user, array $article): ResponseInterface
+    public function addArticleToBasket(User $user, array &$article): ResponseInterface
     {
         return $this->basketActions->add([
             'userlogin' => $user->getAbcpUserCode(),
@@ -36,5 +40,32 @@ class BasketProcessor
                 ]
             ]
         ]);
+    }
+
+    /**
+     * @param User $user
+     * @param string $itemKey
+     * @return array
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getArticleFromBasket(User $user, string $itemKey): array
+    {
+        $userBasketArticles = $this->basketActions->content([
+            'userlogin' => $user->getAbcpUserCode(),
+            'userpsw' => $user->getPasswordMd5()
+        ])->toArray();
+
+        foreach ($userBasketArticles as $basketArticle) {
+            if ($basketArticle['itemKey'] === $itemKey)
+                return $basketArticle;
+        }
+
+        return [
+            'quantity' => 0
+        ];
     }
 }

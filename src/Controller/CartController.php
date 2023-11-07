@@ -7,7 +7,6 @@ use App\Service\ThirdParty\Alfabank\AlfabankApi;
 use App\Service\ThirdParty\Dellin\DellinApi;
 use App\Service\ThirdParty\Google\EmailSender;
 use App\ControllerHelper\CartController\ResponseCreator;
-use App\Entity\Cart;
 use App\Entity\CartItem;
 use App\Entity\Order;
 use App\Entity\User;
@@ -208,48 +207,34 @@ class CartController extends AbstractController
     }
 
     /**
-     * @throws Exception
+     * @param Request $req
+     * @param ProductRepository $productRep
+     * @param CartItemRepository $cartItemRep
+     * @param AbcpApi $abcpApi
+     * @return Response
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
-    #[Route('/add_item', name: 'cart_add_item', methods: 'GET')]
+    #[Route('/add_item', name: 'cart_add_item', methods: 'POST')]
     public function addItem(Request $req, ProductRepository $productRep, CartItemRepository $cartItemRep, AbcpApi $abcpApi): Response
     {
         /** @var User $user */
         if (is_null($user = $this->getUser()))
             return ResponseCreator::notAuthorized();
 
-        $productId = $req->query->get('item_id');
-        $product = $productRep->findOneBy(['id'=>$productId]);
-        if (is_null($productId) && is_null($product))
-            return ResponseCreator::addItem_productNotFound();
+        $abcpArticleItem = json_decode($req->getContent(), true);
+        $userBasketArticle = $abcpApi->basketProcessor->getArticleFromBasket($user, $abcpArticleItem['itemKey']);
 
-        $abcpApi->addArticleToBasket($user, $product->getArticleNumber(), $product->getBrand());
-
-        if ($product->getTotalBalance() <= 0)
+        if ($abcpArticleItem['availability'] <= $userBasketArticle['quantity'])
             return ResponseCreator::outOfStock();
 
-        /** @var Cart $cart */
-        $cart = $user->getCart();
-        $cartItem = null;
-        /** @var CartItem $item */
-        foreach ($cart->getItems()->getIterator() as $item) {
-            if (!$item->isInOrder() && $item->getProduct()->getId() === $product->getId()) {
-                $cartItem = $item;
-                break;
-            }
-        }
+        $abcpApi->basketProcessor->addArticleToBasket($user, $abcpArticleItem);
+        $userBasketArticle['quantity']++;
 
-        if (is_null($cartItem)) {
-            $cartItem = new CartItem($product, 1);
-            $cart->addItem($cartItem);
-        }
-        else
-            $cartItem->increaseQuantity();
-        $cartItemRep->save($cartItem, true);
-
-        $product->decreaseTotalBalance();
-        $productRep->save($product, true);
-
-        return ResponseCreator::addItem_ok($cartItem, $product);
+        return ResponseCreator::addItem_ok($userBasketArticle, $abcpArticleItem);
     }
 
     #[Route('/remove_item', name: 'cart_remove_item', methods: 'GET')]

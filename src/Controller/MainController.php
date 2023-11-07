@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\SearchFormType;
 use App\Repository\ProductRepository;
 use App\Service\Cacher\LaximoCacher;
@@ -134,21 +135,15 @@ class MainController extends AbstractController
         $mainDetails = $this->productRep->findBy(['article_number' => $queryStr]);
         $replacementDetails = $this->productRep->findBy(['article_number' => $replacementsOems]);
 
+        /** @var User $user */
         $user = $this->getUser();
         $cartItemsArray = [];
         if ($user) {
-            $cartItems = $user->getCart()->getItems();
-            foreach ($cartItems->getIterator() as $item) {
-                foreach ($mainDetails as $product) {
-                    if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
-                        $cartItemsArray[$product->getId()] = $item;
-                    }
-                }
-
-                foreach ($replacementDetails as $product) {
-                    if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
-                        $cartItemsArray[$product->getId()] = $item;
-                    }
+            $basketArticles = $this->abcpApi->basketProcessor->getBasketArticles($user);
+            foreach ($basketArticles as $basketArticle) {
+                foreach ($abcpArticles as $abcpArticle) {
+                    if ($basketArticle['itemKey'] === $abcpArticle['itemKey'])
+                        $cartItemsArray[$abcpArticle['itemKey']] = $basketArticle;
                 }
             }
         }

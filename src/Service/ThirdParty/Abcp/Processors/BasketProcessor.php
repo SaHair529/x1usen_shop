@@ -68,4 +68,12 @@ class BasketProcessor
             'quantity' => 0
         ];
     }
+
+    public function getBasketArticles(User $user): array
+    {
+        return $this->basketActions->content([
+            'userlogin' => $user->getAbcpUserCode(),
+            'userpsw' => $user->getPasswordMd5()
+        ])->toArray(false);
+    }
 }

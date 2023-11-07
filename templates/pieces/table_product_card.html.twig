@@ -14,7 +14,7 @@
     <div class="cart-item-card__quantity-counter">
         <div class="cart-item-card__minus-btn js-decrease-cart-item {% if cart_items[product['itemKey']] is not defined  %}disabled{% endif %}">-</div>
         {% if cart_items[product['itemKey']] is defined  %}
-            <div class="cart-item-card__amount">{{ cart_items[product.id].quantity }}</div>
+            <div class="cart-item-card__amount">{{ cart_items[product['itemKey']]['quantity'] }}</div>
         {% else %}
             <div class="cart-item-card__amount">0</div>
         {% endif %}

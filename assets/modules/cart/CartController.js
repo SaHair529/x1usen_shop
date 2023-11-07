@@ -556,8 +556,14 @@ export default class CartController {
         }
     }
 
-    static addToCart(productId) {
-        return fetch(`/cart/add_item?item_id=${productId}`)
+    static addToCart(item) {
+        return fetch(`/cart/add_item`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(item)
+        })
     }
 
     static decreaseCartItemQuantity(productId) {

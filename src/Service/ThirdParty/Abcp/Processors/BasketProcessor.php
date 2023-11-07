@@ -25,12 +25,13 @@ class BasketProcessor
     {
         return $this->basketActions->add([
             'userlogin' => $user->getAbcpUserCode(),
-            'userpsw' => $user->getPassword(),
+            'userpsw' => $user->getPasswordMd5(),
             'positions' => [
                 [
                     'brand' => $article['brand'],
                     'number' => $article['number'],
                     'itemKey' => $article['itemKey'],
+                    'supplierCode' => $article['supplierCode'],
                     'quantity' => 1
                 ]
             ]

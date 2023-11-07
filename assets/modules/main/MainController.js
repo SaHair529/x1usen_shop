@@ -60,7 +60,7 @@ export default class MainController {
                 MainController.showProductFullInfoModal(clickedItemParentProductCard.dataset.productRoute)
             }
             else if (e.target.classList.contains('js-increase-cart-item') && !e.target.classList.contains('disabled')) {
-                CartController.addToCart(productInfo.id).then(resp => {
+                CartController.addToCart(productInfo).then(resp => {
                     ResponseHandler.handleTableProductCardIncreaseCartItemQuantityResponse(resp, clickedItemParentProductCard)
                 })
             }

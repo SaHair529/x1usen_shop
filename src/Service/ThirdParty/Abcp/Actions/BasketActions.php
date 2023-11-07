@@ -12,7 +12,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 class BasketActions
 {
-    private const ADD_URL = ''; # todo
+    private const ADD_URL = '/basket/add';
     private const CLEAR_URL = ''; # todo
     private const CONTENT_URL = ''; # todo
     private const ORDER_URL = ''; # todo

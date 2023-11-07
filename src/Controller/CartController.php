@@ -184,23 +184,20 @@ class CartController extends AbstractController
      * @throws Exception
      */
     #[Route('/decrease_quantity', name: 'cart_decrease_quantity')]
-    public function decreaseQuantity(Request $req, CartItemRepository $cartItemRep, ProductRepository $productRep): Response
+    public function decreaseQuantity(Request $req, CartItemRepository $cartItemRep, ProductRepository $productRep, AbcpApi $abcpApi): Response
     {
-        if (is_null($this->getUser()))
+        /** @var User $user */
+        if (is_null($user = $this->getUser()))
             return ResponseCreator::notAuthorized();
 
-        /** @var User $user */
-        $user = $this->getUser();
-        $cartItems = $user->getCart()->getItems();
-        /** @var CartItem $item */
-        foreach ($cartItems->getIterator() as $item) {
-            if(!$item->isInOrder() && $item->getProduct()->getId() === (int) $req->get('product_id')) {
-                $item->decreaseQuantity();
-                $item->getProduct()->increaseTotalBalance();
-                $item->getQuantity() === 0 ? $cartItemRep->remove($item, true) : $cartItemRep->save($item, true);
-                $productRep->save($item->getProduct(), true);
-                return ResponseCreator::decreaseQuantity_ok($item->getQuantity(), $item->getProduct()->getPrice(), $item->getProduct()->getTotalBalance());
-            }
+        $abcpArticleItem = json_decode($req->getContent(), true);
+        $userBasketArticle = $abcpApi->basketProcessor->getArticleFromBasket($user, $abcpArticleItem['itemKey']);
+
+        if (isset($userBasketArticle['itemKey'])) {
+            $userBasketArticle['quantity']--;
+            $abcpApi->basketProcessor->setArticleQuantity($userBasketArticle['quantity'], $abcpArticleItem, $user);
+
+            return ResponseCreator::decreaseQuantity_ok($userBasketArticle['quantity'], $abcpArticleItem['price'], $abcpArticleItem['availability']-1);
         }
 
         return ResponseCreator::decreaseQuantity_cartItemNotFound();

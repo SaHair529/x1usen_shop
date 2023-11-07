@@ -65,7 +65,7 @@ export default class MainController {
                 })
             }
             else if (e.target.classList.contains('js-decrease-cart-item') && !e.target.classList.contains('disabled')) {
-                CartController.decreaseCartItemQuantity(productInfo.id).then(resp => {
+                CartController.decreaseCartItemQuantity(productInfo).then(resp => {
                     ResponseHandler.handleTableProductCardDecreaseCartItemQuantityResponse(resp, clickedItemParentProductCard)
                 })
             }

@@ -566,8 +566,14 @@ export default class CartController {
         })
     }
 
-    static decreaseCartItemQuantity(productId) {
-        return fetch(`/cart/decrease_quantity?product_id=${productId}`)
+    static decreaseCartItemQuantity(item) {
+        return fetch(`/cart/decrease_quantity`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(item)
+        })
     }
 
     static deleteCartItem(cartItemId) {

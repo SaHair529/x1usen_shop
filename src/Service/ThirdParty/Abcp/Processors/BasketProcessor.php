@@ -25,7 +25,7 @@ class BasketProcessor
      * @return ResponseInterface
      * @throws TransportExceptionInterface
      */
-    public function addArticleToBasket(User $user, array &$article): ResponseInterface
+    public function addArticleToBasket(User $user, array $article): ResponseInterface
     {
         return $this->basketActions->add([
             'userlogin' => $user->getAbcpUserCode(),
@@ -40,6 +40,40 @@ class BasketProcessor
                 ]
             ]
         ]);
+    }
+
+    /**
+     * Указание количества товаров в корзине (Обычно используется для уменьшения количества на 1)
+     * @param int $targetQuantity
+     * @param array $article
+     * @param User $user
+     * @return ResponseInterface
+     * @throws TransportExceptionInterface
+     */
+    public function setArticleQuantity(int $targetQuantity, array $article, User $user): ResponseInterface
+    {
+        $requestData = [
+            'userlogin' => $user->getAbcpUserCode(),
+            'userpsw' => $user->getPasswordMd5(),
+            'positions' => [
+                [
+                    'brand' => $article['brand'],
+                    'number' => $article['number'],
+                    'itemKey' => $article['itemKey'],
+                    'supplierCode' => $article['supplierCode'],
+                    'quantity' => 0
+                ]
+            ]
+        ];
+
+        $abcpResponse = $this->basketActions->add($requestData);
+
+        if ($targetQuantity === 0)
+            return $abcpResponse;
+
+        $requestData['positions'][0]['quantity'] = $targetQuantity;
+
+        return $this->basketActions->add($requestData);
     }
 
     /**

@@ -54,7 +54,7 @@ class CartController extends AbstractController
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping, EmailSender $emailSender, UrlGeneratorInterface $urlGenerator, AlfabankApi $alfabankApi, DellinApi $dellinApi): Response
+    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping, EmailSender $emailSender, UrlGeneratorInterface $urlGenerator, AlfabankApi $alfabankApi, DellinApi $dellinApi, AbcpApi $abcpApi): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -164,13 +164,10 @@ class CartController extends AbstractController
             $this->addFlash('danger', 'Выберите товар в корзине (поставьте галочку слева от товара)');
         }
 
-        $cartItems = [];
-        $allCartItems = $user->getCart()->getItems()->getIterator();
-        foreach ($allCartItems as $item) {
-            if (!$item->isInOrder())
-            $cartItems[] = $item;
+        $cartItems = $abcpApi->basketProcessor->getBasketArticles($user);
+        foreach ($cartItems as $key => $cartItem) {
+            $cartItems[$key]['articleItem'] = $abcpApi->searchProcessor->getConcreteArticleByItemKeyAndNumber($cartItem['itemKey'], $cartItem['number']);
         }
-
 
         return $this->render('cart/index.html.twig', [
             'cart_items' => $cartItems,

@@ -202,13 +202,13 @@ export default class CartController {
         const cartItems = document.getElementById('cart-items')
         if (cartItems != null) {
             cartItems.addEventListener('click', function (e) {
-                const productId = e.target.closest('.'+AttributesNaming.cartItemCard.class).dataset.productId
+                const articleItem = JSON.parse(e.target.closest('.'+AttributesNaming.cartItemCard.class).dataset.articleItem)
                 const cartItemCard = e.target.closest('.cart-item-card')
 
                 if (e.target.classList.contains(AttributesNaming.cartItemCard.increaseBtn.class) &&
                     !e.target.classList.contains('disabled'))
                 {
-                    CartController.addToCart(productId).then(resp => {
+                    CartController.addToCart(articleItem).then(resp => {
                         ResponseHandler.handleCartItemCardIncreaseCartItemQuantityResponse(resp, cartItemCard)
                     })
                 }
@@ -220,12 +220,12 @@ export default class CartController {
                     if (parseInt(cartItemsAmount) === 1) {
                         const deleteUserConfirm = confirm('Вы уверены, что хотите убрать товар из корзины?')
                         if (deleteUserConfirm)
-                            CartController.decreaseCartItemQuantity(productId).then(resp => {
+                            CartController.decreaseCartItemQuantity(articleItem).then(resp => {
                                 ResponseHandler.handleCartItemCardDecreaseCartItemQuantityResponse(resp, cartItemCard)
                             })
                     }
                     else
-                        CartController.decreaseCartItemQuantity(productId).then(resp => {
+                        CartController.decreaseCartItemQuantity(articleItem).then(resp => {
                             ResponseHandler.handleCartItemCardDecreaseCartItemQuantityResponse(resp, cartItemCard)
                         })
                 }

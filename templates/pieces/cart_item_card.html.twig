@@ -1,14 +1,14 @@
-<div class="cart-item-card" data-cart-item-id="{{ cart_item.id }}" data-product-id="{{ cart_item.product.id }}">
+<div class="cart-item-card" data-cart-item-id="{{ cart_item['itemKey'] }}" data-product-id="{{ cart_item['itemKey'] }}" data-article-item="{{ cart_item['articleItem']|serialize(format='json') }}">
     <div class="cart-item-card__content">
         <label style="margin-right: .5rem">
-            <input type="checkbox" class="form-check-input js-cart-item-check" value="{{ cart_item.id }}">
+            <input type="checkbox" class="form-check-input js-cart-item-check" value="{{ cart_item['itemKey'] }}">
         </label>
         <div class="cart-item-card__left">
             <div class="cart-item-card__img-wrapper">
-                <img src="{{ cart_item.product.imageLink }}" alt="{{ cart_item.product.name }}">
+                <img src="#{# todo разобраться с картинками товара #}" alt="{{ cart_item['description'] }}">
             </div>
             <div class="cart-item-card__info">
-                <a href="#" data-cart-item-id="{{ cart_item.product.id }}" class="js-show-details cart-item-card__name">{{ cart_item.product.name }}</a>
+                <a href="#" data-cart-item-id="{{ cart_item['itemKey'] }}" class="js-show-details cart-item-card__name">{{ cart_item['description'] }}</a>
                 <div class="cart-item-card__action-buttons">
                     <div class="cart-item-card__delete-btn js-delete-cart-item">
                         <i class="fa-solid fa-trash js-delete-cart-item"></i> Удалить
@@ -18,11 +18,11 @@
         </div>
         <div class="cart-item-card__right">
             <div class="cart-item-card__price-wrapper">
-                <h5 class="cart-item-card__price">{{ cart_item.product.price * cart_item.quantity }} ₽</h5>
+                <h5 class="cart-item-card__price">{{ cart_item['price'] * cart_item['quantity'] }} ₽</h5>
             </div>
             <div class="cart-item-card__quantity-counter">
                 <div class="cart-item-card__minus-btn js-decrease-cart-item">-</div>
-                <div class="cart-item-card__amount">{{ cart_item.quantity }}</div>
+                <div class="cart-item-card__amount">{{ cart_item['quantity'] }}</div>
                 <div class="cart-item-card__plus-btn js-increase-cart-item">+</div>
             </div>
         </div>

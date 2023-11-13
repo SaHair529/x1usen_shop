@@ -141,4 +141,26 @@ class BasketProcessor
             'userpsw' => $user->getPasswordMd5()
         ])->toArray(false);
     }
+
+    /**
+     * Получение заказа по number
+     * @param User $user
+     * @param int $id
+     * @return array
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getOrderByNumber(User $user, int $id): array
+    {
+        $orders = $this->basketActions->ordersList([
+            'userlogin' => $user->getAbcpUserCode(),
+            'userpsw' => $user->getPasswordMd5(),
+            'orders' => [$id]
+        ])->toArray(false);
+
+        return current($orders);
+    }
 }

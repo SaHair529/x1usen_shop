@@ -62,6 +62,12 @@ class CartController extends AbstractController
             }
 
             $abcpCreateOrderResponse = $abcpApi->basketProcessor->createOrder($user, $positionIds, $shipmentAddressId);
+            $order = current($abcpCreateOrderResponse->toArray(false)['orders']);
+
+            return $this->render('order/show.html.twig', [
+                'order' => $order
+            ]);
+
             # объявление полей в $order из формы
 
             # указание статуса $order
@@ -75,10 +81,6 @@ class CartController extends AbstractController
             #_____________________________________________________
 
             # Оплата в альфабанке, если тип оплаты через сайт
-
-            return $this->redirectToRoute('order_page', [
-                'id' => $order->getId()
-            ]);
         }
         elseif ($orderForm->isSubmitted() && count($positionIds) <= 0) {
             $this->addFlash('danger', 'Выберите товар в корзине (поставьте галочку слева от товара)');

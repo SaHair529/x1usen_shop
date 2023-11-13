@@ -2,16 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\OrderComment;
 use App\Entity\User;
-use App\Form\WriteOrderCommentFormType;
-use App\Repository\OrderCommentRepository;
 use App\Repository\OrderRepository;
 use App\Service\DataMapping;
-use App\Service\NotificationsCreator;
+use App\Service\ThirdParty\Abcp\AbcpApi;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -35,46 +31,26 @@ class OrderController extends AbstractController
 
     #[Route('/item/{id}', name: 'order_page')]
     #[IsGranted('ROLE_USER')]
-    public function show($id, OrderRepository $orderRep, Request $req, OrderCommentRepository $commentRep, NotificationsCreator $notificationsCreator): Response
+    public function show($id, AbcpApi $abcpApi): Response
     {
         if (!is_numeric($id))
             return $this->redirectToRoute('homepage');
 
         /** @var User $user */
         $user = $this->getUser();
-        $order = $orderRep->findOneBy(['id' => $id, 'customer' => $user->getId()]);
+        $order = $abcpApi->basketProcessor->getOrderByNumber($user, $id);
 
-        $paymentResult = $req->query->get('payment_result');
-        if ($paymentResult === 'success') {
-            $order->setPaymentStatus(1); /** @link DataMapping::$order_payment_statuses */
-            $this->addFlash('success', 'Оплата прошла успешно');
-        }
-        elseif($paymentResult === 'fail') {
-            $order->setPaymentStatus(-1); /** @link DataMapping::$order_payment_statuses */
-            $this->addFlash('danger', 'Платеж отклонен');
-        }
+        # получение $order из бд
 
-        if (is_null($order))
-            return $this->redirectToRoute('homepage');
+        # указание статуса оплаты, если сюда редиректнулись со страницы оплаты
 
-        $comment = new OrderComment();
-        $commentForm = $this->createForm(WriteOrderCommentFormType::class, $comment);
-        $commentForm->handleRequest($req);
-        if ($commentForm->isSubmitted()) {
-            $comment->setParentOrder($order)
-                ->setSender($user);
+//        if (is_null($order))
+//            return $this->redirectToRoute('homepage');
 
-            $commentRep->save($comment, true);
-            $notificationsCreator->createNewCommentNotificationForAdmins($order);
-        }
+        # комментарии
 
         return $this->render('order/show.html.twig', [
             'order' => $order,
-            'statuses' => $this->statuses,
-            'ways_to_get' => $this->waysToGet,
-            'payment_types' => $this->paymentTypes,
-            'payment_statuses' => $this->paymentStatuses,
-            'comment_form' => $commentForm
         ]);
     }
 

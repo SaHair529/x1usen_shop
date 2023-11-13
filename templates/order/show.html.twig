@@ -1,31 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Заказ № {{ order.id }}{% endblock %}
-
-{% set total_price = 0 %}
-{% for item in order.items %}
-    {% set total_price = total_price + item.quantity * item.product.price %}
-{% endfor %}
-
-{% set hasNewCommentsNewNotifications = false %}
-{% for notification in order.notifications %}
-    {% if notification.action == 2 and notification.recipient.id == app.user.id %}
-        {% set hasNewCommentsNewNotifications = true %}
-    {% endif %}
-{% endfor %}
+{% block title %}Заказ № {{ order['number'] }}{% endblock %}
 
 {% block body %}
     {{ include('@EasyAdmin/flash_messages.html.twig') }}
-    <h5>Итоговая сумма: {{ total_price }}<span class="small">₽</span></h5>
+    <h5>Итоговая сумма: {{ order['sum'] }}<span class="small">₽</span></h5>
     <br>
 
-    <div class="order-table {% if hasNewCommentsNewNotifications %}has-new-comment{% endif %}">
+    <div class="order-table">
         <div class="order-row">
             <div class="order-label text-muted">
                 Номер заказа
             </div>
             <div class="order-value order-id">
-                {{ order.id }}
+                {{ order['number'] }}
             </div>
         </div>
         <div class="order-row">
@@ -33,67 +21,15 @@
                 Дата заказа
             </div>
             <div class="order-value">
-                {{ order.createdAt|date('d.m.Y') }}
+                {{ order['date'] }}
             </div>
         </div>
-        {% if order.city is not null %}
-            <div class="order-row">
-                <div class="order-label text-muted">
-                    Город
-                </div>
-                <div class="order-value">
-                    {{ order.city }}
-                </div>
-            </div>
-        {% endif %}
-        {% if order.city is not null %}
-            <div class="order-row">
-                <div class="order-label text-muted">
-                    Адрес
-                </div>
-                <div class="order-value">
-                    {{ order.address }}
-                </div>
-            </div>
-        {% endif %}
         <div class="order-row">
             <div class="order-label text-muted">
                 Статус заказа
             </div>
-            <div class="order-value order_status_{{ order.status }}">
-                {{ statuses[order.status] }}
-            </div>
-        </div>
-        <div class="order-row">
-            <div class="order-label text-muted">
-                Статус оплаты
-            </div>
             <div class="order-value">
-                {{ payment_statuses[order.paymentStatus] }}
-            </div>
-        </div>
-        <div class="order-row">
-            <div class="order-label text-muted">
-                ФИО заказчика
-            </div>
-            <div class="order-value">
-                {{ order.clientFullname }}
-            </div>
-        </div>
-        <div class="order-row">
-            <div class="order-label text-muted">
-                Способ получения
-            </div>
-            <div class="order-value">
-                {{ ways_to_get[order.wayToGet] }}
-            </div>
-        </div>
-        <div class="order-row">
-            <div class="order-label text-muted">
-                Способ оплаты
-            </div>
-            <div class="order-value">
-                {{ payment_types[order.paymentType] }}
+                {{ order['status'] }}
             </div>
         </div>
         <div class="order-row">
@@ -104,10 +40,10 @@
                 <a href="#" class="js-toggle-order-products-visibility">Показать товары</a>
                 <br>
                 <br>
-                {% for item in order.items %}
+                {% for item in order['positions'] %}
                     <div class="order-product hidden">
-                        <p><a href="{{ path('detail_info', { 'id': item.product.id }) }}" class="product-link">{{ item.product.name|slice(0, 100) }}</a></p>
-                        <p>{{ item.quantity }}<span class="small">шт</span> - {{ item.product.price }}<span class="small">₽</span></p>
+                        <p><a href="{{ path('detail_info', {'articleNumber': item['number'], 'itemKey': item['itemKey']}) }}" class="product-link">{{ item['description'] }}</a></p>
+                        <p>{{ item['quantity'] }}<span class="small">шт</span> - {{ item['price'] }}<span class="small">₽</span></p>
                         {% if not loop.last %}
                             <hr>
                         {% endif %}
@@ -117,32 +53,5 @@
         </div>
     </div>
 
-    <div class="order-comments">
-        <h5 style="margin-bottom: 2rem">Комментарии</h5>
-        <div class="order-comment-items">
-            {% if order.comments.iterator.count == 0 %}
-                <p class="small text-muted">
-                    Комментариев нет. Можете оставить свой вопрос по поводу заказа здесь
-                </p>
-            {% else %}
-                {% for comment in order.comments.iterator %}
-                    {% if comment.sender.id == app.user.id %}
-                        <h6>Вы</h6>
-                    {% else %}
-                        <h6>{{ comment.sender.name }}</h6>
-                    {% endif %}
-                    <p>{{ comment.text }}</p>
-                    {% if not loop.last %}
-                        <hr>
-                    {% else %}
-                        <br>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        </div>
-        {{ form_start(comment_form) }}
-            {{ form_widget(comment_form.text, { 'attr': { 'class': 'form-control', 'placeholder': 'Введите комментарий' } }) }}
-            <button type="submit" class="btn btn-dark" style="margin-top: 5px">Отправить</button>
-        {{ form_end(comment_form) }}
-    </div>
+    {#  Тут был блок с комментариями  #}
 {% endblock %}

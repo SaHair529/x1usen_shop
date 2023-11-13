@@ -110,4 +110,35 @@ class BasketProcessor
             'userpsw' => $user->getPasswordMd5()
         ])->toArray(false);
     }
+
+    /**
+     * Оформление заказа
+     */
+    public function createOrder(User $user, array $positionIds, int $shipmentAddress)
+    {
+        return $this->basketActions->order([
+            'userlogin' => $user->getAbcpUserCode(),
+            'userpsw' => $user->getPasswordMd5(),
+            'shipmentAddress' => $shipmentAddress,
+            'positionIds' => $positionIds
+        ]);
+    }
+
+    /**
+     * Получение адресов корзины
+     * @param User $user
+     * @return array
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getShipmentAddresses(User $user): array
+    {
+        return $this->basketActions->shipmentAddresses([
+            'userlogin' => $user->getAbcpUserCode(),
+            'userpsw' => $user->getPasswordMd5()
+        ])->toArray(false);
+    }
 }

@@ -15,7 +15,8 @@ class BasketActions
     private const ADD_URL = '/basket/add';
     private const CLEAR_URL = ''; # todo
     private const CONTENT_URL = '/basket/content';
-    private const ORDER_URL = ''; # todo
+    private const ORDER_URL = '/basket/order';
+    private const SHIPMENT_ADDRESSES = '/basket/shipmentAddresses';
 
     public function __construct(private HttpClientInterface $httpClient, private $domain){}
 
@@ -77,5 +78,20 @@ class BasketActions
         return $this->httpClient->request('POST', $this->domain.self::ORDER_URL, [
             'body' => $requestBody
         ]);
+    }
+
+    /**
+     * Получение списка адресов доставки
+     * Ссылка на метод в документации \/
+     * https://www.abcp.ru/wiki/API.ABCP.Client#.D0.9F.D0.BE.D0.BB.D1.83.D1.87.D0.B5.D0.BD.D0.B8.D0.B5_.D1.81.D0.BF.D0.B8.D1.81.D0.BA.D0.B0_.D0.B0.D0.B4.D1.80.D0.B5.D1.81.D0.BE.D0.B2_.D0.B4.D0.BE.D1.81.D1.82.D0.B0.D0.B2.D0.BA.D0.B8
+     * @param array $requestBody
+     * @return ResponseInterface
+     * @throws TransportExceptionInterface
+     */
+    public function shipmentAddresses(array $requestBody): ResponseInterface
+    {
+        $queryParams = http_build_query($requestBody);
+
+        return $this->httpClient->request('GET', $this->domain.self::SHIPMENT_ADDRESSES.'?'.$queryParams);
     }
 }

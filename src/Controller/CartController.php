@@ -3,20 +3,12 @@
 namespace App\Controller;
 
 use App\Service\ThirdParty\Abcp\AbcpApi;
-use App\Service\ThirdParty\Alfabank\AlfabankApi;
-use App\Service\ThirdParty\Dellin\DellinApi;
-use App\Service\ThirdParty\Google\EmailSender;
 use App\ControllerHelper\CartController\ResponseCreator;
-use App\Entity\CartItem;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Form\CreateOrderFormType;
 use App\Repository\CartItemRepository;
-use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
-use App\Service\DataMapping;
-use DateTimeImmutable;
-use DateTimeZone;
 use Exception;
 use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +16,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -37,130 +28,59 @@ class CartController extends AbstractController
 {
     /**
      * @param Request $req
-     * @param CartItemRepository $cartItemRep
-     * @param OrderRepository $orderRep
-     * @param DataMapping $dataMapping
-     * @param EmailSender $emailSender
-     * @param UrlGeneratorInterface $urlGenerator
-     * @param AlfabankApi $alfabankApi
-     * @param DellinApi $dellinApi
+     * @param AbcpApi $abcpApi
      * @return Response
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws Exception
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $req, CartItemRepository $cartItemRep, OrderRepository $orderRep, DataMapping $dataMapping, EmailSender $emailSender, UrlGeneratorInterface $urlGenerator, AlfabankApi $alfabankApi, DellinApi $dellinApi, AbcpApi $abcpApi): Response
+    public function index(Request $req, AbcpApi $abcpApi): Response
     {
         /** @var User $user */
         $user = $this->getUser();
-        $cartItemsIds = array_filter(explode(' ', $req->request->get('cart_items_ids')));
+        $positionIds = array_filter(explode(' ', $req->request->get('cart_items_ids')));
 
         $order = new Order();
         $orderForm = $this->createForm(CreateOrderFormType::class, $order);
         $orderForm->handleRequest($req);
 
-        if ($orderForm->isSubmitted() && count($cartItemsIds) > 0) {
+        if ($orderForm->isSubmitted() && count($positionIds) > 0) {
             /** @var User $user */
             $user = $this->getUser();
-            $order->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('Europe/Moscow')));
-            $order->setClientFullname($orderForm->get('client_fullname')->getData());
-            $order->setPhoneNumber($orderForm->get('phone_number')->getData());
-            $order->setPaymentType($orderForm->get('payment_type')->getData());
-            $order->setWayToGet($orderForm->get('way_to_get')->getData());
-            $order->setAddressGeocoords($orderForm->get('addressGeocoords')->getData());
-            $order->setPaymentStatus(0); /** @link DataMapping::$order_payment_statuses */
+            $shipmentAddressId = 0;
+            if ($order->getAddress() !== null) {
+                $shipmentAddresses = $abcpApi->basketProcessor->getShipmentAddresses($user);
 
-            if (($email = $orderForm->get('email')->getData()) !== null)
-                $order->setEmail($email);
-            if (($city = $orderForm->get('city')->getData()) !== null)
-                $order->setCity($city);
-            if (($address = $orderForm->get('address')->getData()) !== null)
-                $order->setAddress($address);
-
-            $orderStatuses = $dataMapping->getData('order_statuses');
-            if ($order->getPaymentType() === 1)
-                $order->setStatus(1);
-            else
-                $order->setStatus(array_key_first($orderStatuses));
-            $order->setCustomer($user);
-            # Добавление товаров из корзины
-            $cartItems = $cartItemRep->findBy(['id' => $cartItemsIds]);
-            $orderTotalPrice = 0;
-            foreach ($cartItems as $cartItem) {
-                $order->addItem($cartItem);
-                $orderTotalPrice += $cartItem->getProduct()->getPrice();
+                foreach ($shipmentAddresses as $address) {
+                    if ($order->getAddress() === $address['name'])
+                        $shipmentAddressId = $address['id'];
+                }
             }
-            $orderRep->save($order, true);
+
+            $abcpCreateOrderResponse = $abcpApi->basketProcessor->createOrder($user, $positionIds, $shipmentAddressId);
+            # объявление полей в $order из формы
+
+            # указание статуса $order
+            # указание клиента $order
+            # Добавление товаров из корзины в $order
 
             # Отмечаем товар корзины, как уже заказанный (т.е. скрытый из корзины)
-            for ($i = 0; $i < count($cartItems); $i++) {
-                $cartItems[$i]->setInOrder(true);
-                $cartItemRep->save($cartItems[$i], $i+1 === count($cartItems));
-            }
-            if ($email !== null)
-                $emailSender->sendEmailByIGG($email);
+            # отправка эл. почты если указан email
 
             # Отправка заказа в деловые линии, если доставка по РФ
-            if ($order->getWayToGet() === 3) {
-                $isProductsIndicatedDimensions = true;
-
-                foreach ($cartItems as $item) {
-                    if (!$item->getProduct()->getLength() || !$item->getProduct()->getWidth() || !$item->getProduct()->getHeight()) {
-                        $isProductsIndicatedDimensions = false;
-                        break;
-                    }
-                }
-
-                if ($isProductsIndicatedDimensions) {
-                    # Отправка запроса на заказ в ТК "Деловые линии"
-                    $derivalAddress = $dataMapping->getData('companyStockAddress');
-                    $companyOwnerFullname = $dataMapping->getData('companyOwnerFullname');
-                    $companyContactPhone = $dataMapping->getData('companyContactPhone');
-                    $companyINN = $dataMapping->getData('companyINN');
-
-                    $dellinApi->requestConsolidatedCargoTransportation(
-                        $derivalAddress,
-                        $companyOwnerFullname, $companyINN, $companyContactPhone,
-                        $cartItems, $order
-                    );
-                }
-                else {
-                    # Установка статуса "Требуется заказ вручную" для заказа
-                    $order->setStatus(7);
-                    $orderRep->save($order, true);
-                }
-            }
             #_____________________________________________________
 
-            if ($order->getPaymentType() === 1) { # Если тип оплаты - карточкой через сайт
-                $host = Request::createFromGlobals();
-                $domain = $host->getScheme().'://'.$host->getHost().':'.$host->getPort();
-
-                $costInCopecks = $orderTotalPrice*100;
-                $successPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $order->getId(), 'payment_result' => 'success']);
-                $failedPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $order->getId(), 'payment_result' => 'fail']);
-
-                $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $successPaymentUrl, $failedPaymentUrl, $order->getId());
-                $alfabankResponseData = $alfabankResponse->toArray(false);
-
-                $order->setAlfabankOrderId($alfabankResponseData['orderId']);
-                $order->setAlfabankPaymentUrl($alfabankResponseData['formUrl']);
-
-                $orderRep->save($order, true);
-
-                return $this->redirect($alfabankResponseData['formUrl']);
-            }
+            # Оплата в альфабанке, если тип оплаты через сайт
 
             return $this->redirectToRoute('order_page', [
                 'id' => $order->getId()
             ]);
         }
-        elseif ($orderForm->isSubmitted() && count($cartItemsIds) <= 0) {
+        elseif ($orderForm->isSubmitted() && count($positionIds) <= 0) {
             $this->addFlash('danger', 'Выберите товар в корзине (поставьте галочку слева от товара)');
         }
 

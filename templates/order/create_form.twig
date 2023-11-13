@@ -25,10 +25,6 @@
             </div>
         </div>
     {% endblock %}
-    {{ form_row(order_form.client_fullname) }}
-    {{ form_row(order_form.phone_number) }}
-    {{ form_row(order_form.email) }}
-    {{ form_row(order_form.city) }}
     {{ form_row(order_form.address) }}
     {{ form_row(order_form.addressGeocoords) }}
     {% block choice_payment_type_widget %}

@@ -11,8 +11,8 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 class OrderActions
 {
-    private const ORDERS_URL = ''; # todo
-    private const LIST_URL = ''; # todo
+    private const ORDERS_URL = '/orders';
+    private const LIST_URL = '/orders/list';
 
     public function __construct(private HttpClientInterface $httpClient, private $domain){}
 
@@ -26,9 +26,9 @@ class OrderActions
      */
     public function orders(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', $this->domain.self::ORDERS_URL, [
-            'body' => $requestBody
-        ]);
+        $queryParams = http_build_query($requestBody);
+
+        return $this->httpClient->request('GET', $this->domain.self::ORDERS_URL.'?'.$queryParams);
     }
 
     /**
@@ -41,8 +41,8 @@ class OrderActions
      */
     public function list(array $requestBody): ResponseInterface
     {
-        return $this->httpClient->request('GET', $this->domain.self::LIST_URL, [
-            'body' => $requestBody
-        ]);
+        $queryParams = http_build_query($requestBody);
+
+        return $this->httpClient->request('GET', $this->domain.self::LIST_URL.'?'.$queryParams);
     }
 }

@@ -1,41 +1,12 @@
-{% set total_price = 0 %}
-
-{% set hasStatusChangedNotification = false %}
-{% set hasNewCommentStatus = false %}
-{% set hasNotifications = false %}
-
-{% for notification in order.notifications %}
-    {% if notification.action == 1 %}
-        {% set hasStatusChangedNotification = true %}
-        {% set hasNotifications = true %}
-    {% elseif notification.action == 2 %}
-        {% set hasNewCommentStatus = true %}
-        {% set hasNotifications = true %}
-    {% endif %}
-{% endfor %}
-
-<div class="card order-card {% if hasNotifications %}order-with-notifications{% endif %} {% if hasStatusChangedNotification %}order-with-status-changed-notifications{% endif %}" data-order-id="{{ order.id }}" style="width: 300px">
-    {% if order.notifications.iterator|length > 0 %}
-        <span class="notifications-head-indicator"></span>
-    {% endif %}
+<div class="card order-card order-with-status-changed-notifications" data-order-id="{{ order['number'] }}" style="width: 300px">
     <div class="card-body">
-        <p class="card-title small"><b>Номер заказа: </b>{{ order.id }}</p>
-        <p class="card-title small"><b>Дата оформления: </b>{{ order.createdAt|date('d.m.Y') }}</p>
-        <p class="card-text small"><b>Способ получения</b>{{ ways_to_get[order.wayToGet] }}</p>
-        <p class="card-text small"><b>Статус: </b><span class="order_status_{{ order.status }}">
-                {{ statuses[order.status] }}
-                {% if hasStatusChangedNotification %}
-                    <span class="notifications-indicator" title="Статус заказа изменился"></span>
-                {% endif %}
-            </span></p>
-        <p class="card-text"><a href="{{ path('order_page', { 'id': order.id }) }}">Перейти на страницу заказа</a></p>
-        {% if hasNewCommentStatus %}
-            <p class="card-text text-danger small">Есть непрочитанные комментарии</p>
-        {% endif %}
-
-        {% for item in order.items %}
-            {% set total_price = total_price + item.quantity * item.product.price %}
-        {% endfor %}
-        <p class="card-text"><b style="color: #c92e2e">Итоговая цена: </b><strong>{{ total_price }}₽</strong></p>
+        <p class="card-title small"><b>Номер заказа: </b>{{ order['number'] }}</p>
+        <p class="card-title small"><b>Дата оформления: </b>{{ order['date'] }}</p>
+        <p class="card-text small"><b>Способ получения</b>{{ order['paymentType'] }}</p>
+        <p class="card-text small"><b>Статус: </b>
+            <span>{{ order['status'] }}</span>
+        </p>
+        <p class="card-text"><a href="{{ path('order_page', { 'id': order['number'] }) }}">Перейти на страницу заказа</a></p>
+        <p class="card-text"><b style="color: #c92e2e">Итоговая цена: </b><strong>{{ order['sum'] }}₽</strong></p>
     </div>
 </div>

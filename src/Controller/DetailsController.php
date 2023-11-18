@@ -126,7 +126,7 @@ class DetailsController extends AbstractController
     }
 
     #[Route('/ajax/details', name: 'details_list_details')]
-    public function listDetails(Request $req, ProductRepository $productRep): Response
+    public function listDetails(Request $req, AbcpApi $abcpApi, ProductRepository $productRep): Response
     {
         $oems = explode(',', json_decode($req->getContent(), true)['oems'] ?? '');
         if (empty($oems)) {
@@ -136,9 +136,10 @@ class DetailsController extends AbstractController
             ]);
         }
 
-        $products = $productRep->findBy(['article_number' => $oems]);
+        $abcpArticles = $abcpApi->searchProcessor->searchBatchArticlesByNumbers($oems);
+
         return $this->render('details/details-list.html.twig', [
-            'products' => $products
+            'products' => $abcpArticles
         ]);
     }
 }

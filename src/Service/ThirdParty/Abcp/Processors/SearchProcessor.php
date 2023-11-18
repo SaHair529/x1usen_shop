@@ -30,12 +30,35 @@ class SearchProcessor
     {
         $foundBrand = current($this->searchActions->brands([
             'number' => $number
-        ])->toArray(false))['brand'];
+        ])->toArray(false))['brand'] ?? null;
+
+        if ($foundBrand === null)
+            return [];
 
         return $this->searchActions->articles([
             'number' => $number,
             'brand' => $foundBrand
         ])->toArray(false);
+    }
+
+    public function searchBatchArticlesByNumbers(array $numbers): array
+    {
+        $foundBrand = current($this->searchActions->brands([
+                'number' => $numbers[0]
+            ])->toArray(false))['brand'] ?? null;
+
+        if ($foundBrand === null)
+            return [];
+
+        $searchRequestParam = [];
+        foreach ($numbers as $num) {
+            $searchRequestParam[] = [
+                'number' => $num,
+                'brand' => $foundBrand
+            ];
+        }
+
+        return $this->searchActions->batch(['search' => $searchRequestParam])->toArray(false);
     }
 
     /**

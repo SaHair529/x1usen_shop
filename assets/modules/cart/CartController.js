@@ -239,7 +239,7 @@ export default class CartController {
                     }
                 }
                 else if (e.target.classList.contains(AttributesNaming.cartItemCard.showDetails.class)) {
-                    MainController.showProductFullInfoModal(e.target.dataset.cartItemId)
+                    MainController.showProductFullInfoModal(e.target.dataset.productRoute)
                 }
             })
         }

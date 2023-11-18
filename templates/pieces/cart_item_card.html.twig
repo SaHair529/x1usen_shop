@@ -8,7 +8,7 @@
                 <img src="#{# todo разобраться с картинками товара #}" alt="{{ cart_item['description'] }}">
             </div>
             <div class="cart-item-card__info">
-                <a href="#" data-cart-item-id="{{ cart_item['itemKey'] }}" class="js-show-details cart-item-card__name">{{ cart_item['description'] }}</a>
+                <a href="#" data-product-route="{{ path('detail_info', {'articleNumber': cart_item['number'], 'itemKey': cart_item['itemKey']}) }}" data-cart-item-id="{{ cart_item['itemKey'] }}" class="js-show-details cart-item-card__name">{{ cart_item['description'] }}</a>
                 <div class="cart-item-card__action-buttons">
                     <div class="cart-item-card__delete-btn js-delete-cart-item">
                         <i class="fa-solid fa-trash js-delete-cart-item"></i> Удалить

@@ -186,6 +186,10 @@ export default class CartController {
                         ResponseHandler.handleAddToCartResponse(resp)
                     })
                 }
+                else if (e.target.classList.contains('detail-link')) {
+                    e.preventDefault()
+                    MainController.showProductFullInfoModal(e.target.getAttribute('href'))
+                }
                 else if (e.target.classList.contains(AttributesNaming.BUTTONS.REMOVE_FROM_CART.CLASS)) {
                     CartController.decreaseCartItemQuantity(productInfoModal.dataset.productId).then(resp => {
                         ResponseHandler.handleDecreaseCartItemQuantityResponse(resp)

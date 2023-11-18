@@ -1,4 +1,4 @@
-<div class="product-card small {% if hidden is defined %}hidden{% endif %}" id="{{ product['itemKey'] }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product['itemKey']}) }}">
+<div class="product-card small {% if hidden is defined %}hidden{% endif %}" data-product-route="{{ path('detail_info', {'articleNumber': product['number'], 'itemKey': product['itemKey']}) }}" id="{{ product['itemKey'] }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product['itemKey']}) }}">
 {#    <p class="product-card__used small" title="code"> todo разобраться с состоянием БУ#}
 {#        {% if product.used == 1 %}Б/У{% endif %}#}
 {#    </p>#}

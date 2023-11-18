@@ -182,7 +182,7 @@ export default class CartController {
 
             if (productInfoModal != null) {
                 if (e.target.classList.contains(AttributesNaming.BUTTONS.INCREASE_CART_ITEM.CLASS)) {
-                    CartController.addToCart(productInfoModal.dataset.productId).then(resp => {
+                    CartController.addToCart(JSON.parse(productInfoModal.dataset.productInfo)).then(resp => {
                         ResponseHandler.handleAddToCartResponse(resp)
                     })
                 }
@@ -191,7 +191,7 @@ export default class CartController {
                     MainController.showProductFullInfoModal(e.target.getAttribute('href'))
                 }
                 else if (e.target.classList.contains(AttributesNaming.BUTTONS.REMOVE_FROM_CART.CLASS)) {
-                    CartController.decreaseCartItemQuantity(productInfoModal.dataset.productId).then(resp => {
+                    CartController.decreaseCartItemQuantity(JSON.parse(productInfoModal.dataset.productInfo)).then(resp => {
                         ResponseHandler.handleDecreaseCartItemQuantityResponse(resp)
                     })
                 }

@@ -135,7 +135,7 @@ class CartController extends AbstractController
      * @throws TransportExceptionInterface
      */
     #[Route('/add_item', name: 'cart_add_item', methods: 'POST')]
-    public function addItem(Request $req, ProductRepository $productRep, CartItemRepository $cartItemRep, AbcpApi $abcpApi): Response
+    public function addItem(Request $req, AbcpApi $abcpApi): Response
     {
         /** @var User $user */
         if (is_null($user = $this->getUser()))

@@ -126,6 +126,7 @@ export default class ResponseHandler {
         productInfoModal.querySelector('.name').textContent = productInfo['name']
         productInfoModal.querySelector('.price').textContent = '0'
         productInfoModal.querySelector('.detail-link').setAttribute('href', productInfo.route)
+        productInfoModal.dataset.productInfo = JSON.stringify(productInfo)
 
         switch (responsePromise.status) {
             case 200:

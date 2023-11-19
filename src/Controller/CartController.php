@@ -88,7 +88,9 @@ class CartController extends AbstractController
 
         $cartItems = $abcpApi->basketProcessor->getBasketArticles($user);
         foreach ($cartItems as $key => $cartItem) {
-            $cartItems[$key]['articleItem'] = $abcpApi->searchProcessor->getConcreteArticleByItemKeyAndNumber($cartItem['itemKey'], $cartItem['number']);
+            $cartItems[$key]['articleItem'] = $abcpApi->searchProcessor->getConcreteArticleByItemKeyAndNumber($cartItem['itemKey'], $cartItem['numberFix']);
+            if ($cartItems[$key]['articleItem'] === null)
+                unset($cartItems[$key]);
         }
 
         return $this->render('cart/index.html.twig', [

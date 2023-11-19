@@ -35,10 +35,15 @@ class SearchProcessor
         if ($foundBrand === null)
             return [];
 
-        return $this->searchActions->articles([
+        $abcpResponse = $this->searchActions->articles([
             'number' => $number,
             'brand' => $foundBrand
         ])->toArray(false);
+
+        if (isset($abcpResponse['errorMessage']))
+            return [];
+
+        return $abcpResponse;
     }
 
     public function searchBatchArticlesByNumbers(array $numbers): array

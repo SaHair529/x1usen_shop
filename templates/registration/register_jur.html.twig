@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Регистрация юр. лица{% endblock %}
+
+{% block body %}
+    <div class="login-form-container">
+        {{ form_start(registrationForm) }}
+        <h4 class="mb-3 font-weight-normal">Регистрация юр. лица</h4>
+        <div class="btn-group w-100">
+            <a href="{{ path('app_register') }}" class="btn btn-lg btn-dark">Физ. лицо</a>
+            <a href="#" class="btn btn-lg disabled">Юр. лицо</a>
+        </div>
+        <div class="input-group">
+            {{ form_row(registrationForm.username) }}
+            {{ form_row(registrationForm.plainPassword) }}
+        </div>
+        <div class="input-group">
+            {{ form_row(registrationForm.phone) }}
+            {{ form_row(registrationForm.email) }}
+        </div>
+        <div class="input-group">
+            {{ form_row(registrationForm.city) }}
+            {{ form_row(registrationForm.region) }}
+        </div>
+        <div class="input-group">
+            {{ form_row(registrationForm.name) }}
+            {{ form_row(registrationForm.organizationName) }}
+        </div>
+        <div class="input-group">
+            {{ form_row(registrationForm.bankName) }}
+            {{ form_row(registrationForm.bankBik) }}
+        </div>
+        <div class="input-group">
+            {{ form_row(registrationForm.correspondentAccount) }}
+            {{ form_row(registrationForm.checkingAccount) }}
+        </div>
+        <div class="input-group">
+            {{ form_row(registrationForm.organisationType) }}
+            {{ form_row(registrationForm.juridicalEntityType) }}
+        </div>
+        {{ form_row(registrationForm.inn) }}
+        {{ form_row(registrationForm.juridicalAddress) }}
+
+        <button type="submit" class="btn btn-lg btn-dark">Зарегистрироваться</button>
+        {{ form_end(registrationForm) }}
+    </div>
+{% endblock %}

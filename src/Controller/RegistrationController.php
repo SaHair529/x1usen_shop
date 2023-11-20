@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Cart;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Form\RegistrationJurFormType;
 use App\Service\ThirdParty\Abcp\AbcpApi;
 use App\Service\ThirdParty\Abcp\AbcpBackDoor;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,6 +38,31 @@ class RegistrationController extends AbstractController
         }
 
         return $this->render('registration/register.html.twig', [
+            'registrationForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/register_jur', name: 'app_register_jur')]
+    public function registerJur(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, AbcpApi $abcpApi): Response
+    {
+        $user = new User();
+        $form = $this->createForm(RegistrationJurFormType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $abcpResponse = $abcpApi->userProcessor->registerUser($user, $form);
+            $abcpResponseData = $abcpResponse->toArray(false);
+            # todo обработать различные ответы от ABCP (например, когда он сообщает, что введенный номер телефона уже зарегистрирован)
+
+            $user->setAbcpUserCode($abcpResponseData['userCode']);
+            $abcpLoginCookies = AbcpBackDoor::loginToGetCookies($_ENV['ABCP_USER_LOGIN'], $_ENV['ABCP_USER_PASSWORD']);
+            AbcpBackDoor::addWhiteIPToUser($user->getAbcpUserCode(), $_ENV['ABCP_VALID_IP'], $abcpLoginCookies);
+
+            $this->registerUser($user, $userPasswordHasher, $form, $entityManager);
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('registration/register_jur.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
     }

@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Service\DataMapping;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -16,6 +18,10 @@ class RegistrationJurFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $dataMapping = new DataMapping();
+        $organisationTypes = array_flip($dataMapping->getData('abcp_organisation_types'));
+        $juridicalEntityTypes = array_flip($dataMapping->getData('abcp_juridical_entity_types'));
+
         $builder
             ->add('name', null, [
                 'label' => false,
@@ -106,31 +112,33 @@ class RegistrationJurFormType extends AbstractType
             ->add('region', null, [
                 'label' => false,
                 'attr' => [
-                    'placeholder' => 'Регион',
+                    'placeholder' => 'Код региона',
                     'class' => 'form-control',
                     'required' => true
                 ]
             ])
-            ->add('organisationType', null, [
+            ->add('organisationType', ChoiceType::class, [
                 'label' => false,
+                'placeholder' => 'Тип организации',
                 'attr' => [
-                    'placeholder' => 'Тип организации',
-                    'class' => 'form-control',
+                    'class' => 'form-control text-muted',
                     'required' => true
-                ]
+                ],
+                'choices' => $organisationTypes
+            ])
+            ->add('juridicalEntityType', ChoiceType::class, [
+                'label' => false,
+                'placeholder' => 'Тип юридического лица',
+                'attr' => [
+                    'class' => 'form-control text-muted',
+                    'required' => true
+                ],
+                'choices' => $juridicalEntityTypes
             ])
             ->add('juridicalAddress', null, [
                 'label' => false,
                 'attr' => [
                     'placeholder' => 'Юридический адрес',
-                    'class' => 'form-control',
-                    'required' => true
-                ]
-            ])
-            ->add('juridicalEntityType', null, [
-                'label' => false,
-                'attr' => [
-                    'placeholder' => 'Тип юридического лица',
                     'class' => 'form-control',
                     'required' => true
                 ]

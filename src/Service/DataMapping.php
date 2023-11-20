@@ -67,6 +67,22 @@ class DataMapping
         'image_link' /*'width', 'length', 'height', 'brand'*/
     ];
 
+    private array $abcp_organisation_types = [
+        '1' => 'Автосервис',
+        '2' => 'Автомагазин',
+        '3' => 'Собственный автопарк'
+    ];
+
+    private array $abcp_juridical_entity_types = [
+        'ООО' => 'ООО',
+        'ОАО' => 'ОАО',
+        'ЗАО' => 'ЗАО',
+        'ТОО' => 'ТОО',
+        'АО' => 'АО',
+        'ЧП' => 'ЧП',
+        'ПБОЮЛ' => 'ПБОЮЛ'
+    ];
+
     private string $companyINN = '7810902553';
     private string $companyKPP = '781001001';
     private string $companyOGRN = '1207800112519';

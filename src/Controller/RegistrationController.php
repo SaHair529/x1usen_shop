@@ -50,7 +50,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $abcpResponse = $abcpApi->userProcessor->registerUser($user, $form);
+            $abcpResponse = $abcpApi->userProcessor->registerJurUser($user, $form);
             $abcpResponseData = $abcpResponse->toArray(false);
             # todo обработать различные ответы от ABCP (например, когда он сообщает, что введенный номер телефона уже зарегистрирован)
 

@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\AbcpOrderCustomFieldsEntity;
+use App\Repository\AbcpOrderCustomFieldsEntityRepository;
+use App\Service\DataMapping;
 use App\Service\ThirdParty\Abcp\AbcpApi;
 use App\ControllerHelper\CartController\ResponseCreator;
 use App\Entity\Order;
@@ -9,6 +12,7 @@ use App\Entity\User;
 use App\Form\CreateOrderFormType;
 use App\Repository\CartItemRepository;
 use App\Repository\ProductRepository;
+use App\Service\ThirdParty\Alfabank\AlfabankApi;
 use Exception;
 use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -38,7 +43,7 @@ class CartController extends AbstractController
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $req, AbcpApi $abcpApi): Response
+    public function index(Request $req, AbcpApi $abcpApi, UrlGeneratorInterface $urlGenerator, AlfabankApi $alfabankApi, AbcpOrderCustomFieldsEntityRepository $abcpOrderCustomFieldsEntityRep): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -62,10 +67,33 @@ class CartController extends AbstractController
             }
 
             $abcpCreateOrderResponse = $abcpApi->basketProcessor->createOrder($user, $positionIds, $shipmentAddressId);
-            $order = current($abcpCreateOrderResponse->toArray(false)['orders']);
+            $abcpOrder = current($abcpCreateOrderResponse->toArray(false)['orders']);
+
+            /** @link DataMapping::$order_payment_types */
+            if ($order->getPaymentType() === 1) {
+                unset($order);
+                $host = Request::createFromGlobals();
+                $domain = $host->getScheme().'://'.$host->getHost().':'.$host->getPort();
+
+                $costInCopecks = $abcpOrder['sum']*100;
+                $successPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $abcpOrder['number']]);
+                $failedPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $abcpOrder['number'], 'payment_result' => 'fail']);
+
+                $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $successPaymentUrl, $failedPaymentUrl, $abcpOrder['number']);
+                $alfabankResponseData = $alfabankResponse->toArray(false);
+
+                $abcpOrderCustomFieldsEntity = new AbcpOrderCustomFieldsEntity();
+                $abcpOrderCustomFieldsEntity->setAlfabankOrderId($alfabankResponseData['orderId']);
+                $abcpOrderCustomFieldsEntity->setAlfabankPaymentUrl($alfabankResponseData['formUrl']);
+                $abcpOrderCustomFieldsEntity->setAbcpOrderNumber($abcpOrder['number']);
+
+                $abcpOrderCustomFieldsEntityRep->save($abcpOrderCustomFieldsEntity, true);
+
+                return $this->redirect($alfabankResponseData['formUrl']);
+            }
 
             return $this->render('order/show.html.twig', [
-                'order' => $order
+                'order' => $abcpOrder
             ]);
 
             # объявление полей в $order из формы

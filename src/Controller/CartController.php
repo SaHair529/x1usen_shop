@@ -76,7 +76,7 @@ class CartController extends AbstractController
                 $domain = $host->getScheme().'://'.$host->getHost().':'.$host->getPort();
 
                 $costInCopecks = $abcpOrder['sum']*100;
-                $successPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $abcpOrder['number']]);
+                $successPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $abcpOrder['number'], 'payment_result' => 'success']);
                 $failedPaymentUrl = $domain.$urlGenerator->generate('order_page', ['id' => $abcpOrder['number'], 'payment_result' => 'fail']);
 
                 $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $successPaymentUrl, $failedPaymentUrl, $abcpOrder['number']);

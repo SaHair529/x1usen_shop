@@ -22,6 +22,9 @@ class AbcpOrderCustomFieldsEntity
     #[ORM\Column(nullable: true)]
     private ?int $abcpOrderNumber = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isPaid = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,18 @@ class AbcpOrderCustomFieldsEntity
     public function setAbcpOrderNumber(?int $abcpOrderNumber): self
     {
         $this->abcpOrderNumber = $abcpOrderNumber;
+
+        return $this;
+    }
+
+    public function isIsPaid(): ?bool
+    {
+        return $this->isPaid;
+    }
+
+    public function setIsPaid(?bool $isPaid): self
+    {
+        $this->isPaid = $isPaid;
 
         return $this;
     }

@@ -32,7 +32,7 @@ class DataMapping
     private array $order_ways_to_get = [
         '1' => 'Самовывоз',
         '2' => 'Доставка по СПБ',
-        '3' => 'Доставка по РФ (ТК "Деловые линии")'
+        '3' => 'Доставка по РФ'
     ];
 
     private array $order_delivery_types = [

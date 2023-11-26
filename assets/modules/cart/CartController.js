@@ -387,7 +387,7 @@ export default class CartController {
         new ymaps.SuggestView(ADDRESS_INPUT_ID, {
             provider: {
                 suggest: (function (req) {
-                    return ymaps.suggest(document.getElementById('create_order_form_city').value+', '+req)
+                    return ymaps.suggest(req)
                 })
             }
         })
@@ -490,7 +490,6 @@ export default class CartController {
 
         requestData.wayToGet = getWayToGet()
         requestData.checkedCartItemsIds = getCheckedCartItemsIds()
-        requestData.city = getCity()
         requestData.address = document.querySelector('#create_order_form_address').value
 
         const validationErrors = validateRequestData(requestData)
@@ -542,12 +541,6 @@ export default class CartController {
                 })
 
             return wayToGet
-        }
-        function getCity() {
-            if (requestData.wayToGet === 'create_order_form_way_to_get_1')
-                return 'Санкт-Петербург'
-            else
-                return  document.querySelector('#create_order_form_city').value
         }
         function getCheckedCartItemsIds() {
             let checkedCartItemsIds = ''

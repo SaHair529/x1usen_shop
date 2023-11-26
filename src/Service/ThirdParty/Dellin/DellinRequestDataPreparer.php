@@ -219,7 +219,7 @@ class DellinRequestDataPreparer
                 'arrival' => [
                     'variant' => 'address',
                     'address' => [
-                        'search' => "{$requestData['city']}, {$requestData['address']}"
+                        'search' => $requestData['address']
                     ],
                     'time' => [
                         'worktimeStart' => $arrivalWorktimeStart,

@@ -56,14 +56,12 @@ class CartController extends AbstractController
         if ($orderForm->isSubmitted() && count($positionIds) > 0) {
             /** @var User $user */
             $user = $this->getUser();
+
             $shipmentAddressId = 0;
             if ($order->getAddress() !== null) {
-                $shipmentAddresses = $abcpApi->basketProcessor->getShipmentAddresses($user);
-
-                foreach ($shipmentAddresses as $address) {
-                    if ($order->getAddress() === $address['name'])
-                        $shipmentAddressId = $address['id'];
-                }
+                $shipmentAddressId =
+                    $abcpApi->basketProcessor->getShipmentAddressIdByAddressName($order->getAddress(), $user)
+                    ?? $abcpApi->basketProcessor->getNewAddressId($order->getAddress(), $user);
             }
 
             $abcpCreateOrderResponse = $abcpApi->basketProcessor->createOrder($user, $positionIds, $shipmentAddressId);

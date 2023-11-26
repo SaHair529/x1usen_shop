@@ -143,6 +143,48 @@ class BasketProcessor
     }
 
     /**
+     * Получение id адреса по его названию
+     * @param string $targetAddress - Название адреса
+     * @param User $user - Пользователь, в чьей корзине будет вестись поиск искомого адреса
+     * @return int|null
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getShipmentAddressIdByAddressName(string $targetAddress, User $user): ?int
+    {
+        $shipmentAddresses = $this->getShipmentAddresses($user);
+
+        foreach ($shipmentAddresses as $address) {
+            if ($targetAddress === $address['name'])
+                return $address['id'];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $address
+     * @param User $user
+     * @return int
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getNewAddressId(string $address, User $user): int
+    {
+        return $this->basketActions->shipmentAddress([
+            'userlogin' => $user->getAbcpUserCode(),
+            'userpsw' => $user->getPasswordMd5(),
+            'address' => $address
+        ])->toArray(false)['shipmentAddressId'];
+    }
+
+    /**
      * Получение заказа по number
      * @param User $user
      * @param int $id

@@ -33,7 +33,7 @@ class DetailsController extends AbstractController
     public function show($id, ProductRepository $productRep): Response
     {
         /** @var User $user */
-        $user = $this->getUser();
+        $user = $this->getUser(); # todo
         $cartItems = $user->getCart()->getItems();
         $inCartQuantity = 0;
         foreach ($cartItems as $cartItem) {
@@ -126,7 +126,7 @@ class DetailsController extends AbstractController
     }
 
     #[Route('/ajax/details', name: 'details_list_details')]
-    public function listDetails(Request $req, AbcpApi $abcpApi, ProductRepository $productRep): Response
+    public function listDetails(Request $req, AbcpApi $abcpApi): Response
     {
         $oems = explode(',', json_decode($req->getContent(), true)['oems'] ?? '');
         if (empty($oems)) {

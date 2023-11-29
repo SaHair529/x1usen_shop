@@ -13,6 +13,8 @@ use App\Form\CreateOrderFormType;
 use App\Repository\CartItemRepository;
 use App\Repository\ProductRepository;
 use App\Service\ThirdParty\Alfabank\AlfabankApi;
+use App\Service\ThirdParty\Dellin\DellinApi;
+use App\Service\ThirdParty\Dellin\DellinProcessor;
 use Exception;
 use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -43,7 +45,7 @@ class CartController extends AbstractController
      */
     #[Route('/items', name: 'cart_items')]
     #[IsGranted('ROLE_USER')]
-    public function index(Request $req, AbcpApi $abcpApi, UrlGeneratorInterface $urlGenerator, AlfabankApi $alfabankApi, AbcpOrderCustomFieldsEntityRepository $abcpOrderCustomFieldsEntityRep): Response
+    public function index(Request $req, AbcpApi $abcpApi, UrlGeneratorInterface $urlGenerator, AlfabankApi $alfabankApi, AbcpOrderCustomFieldsEntityRepository $abcpOrderCustomFieldsEntityRep, DellinApi $dellinApi): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -65,11 +67,26 @@ class CartController extends AbstractController
             }
 
             $abcpCreateOrderResponse = $abcpApi->basketProcessor->createOrder($user, $positionIds, $shipmentAddressId);
+            $basketArticles = $abcpApi->basketProcessor->getBasketArticles($user);
             $abcpOrder = current($abcpCreateOrderResponse->toArray(false)['orders']);
+
+            /** @link DataMapping::$order_ways_to_get */
+            if ($order->getWayToGet() === 3) {
+                $isPositionsWithDimensions = true;
+                foreach ($abcpOrder['positions'] as $orderPosition) {
+                    if (!isset($orderPosition['length']) || !isset($orderPosition['width']) || !isset($orderPosition['height'])) { # todo Изменить проверку, если требуется
+                        $isPositionsWithDimensions = false;
+                        break;
+                    }
+                }
+
+                if ($isPositionsWithDimensions) {
+                    (new DellinProcessor($dellinApi))->requestTransportation($abcpOrder['positions'], $user, $order);
+                }
+            }
 
             /** @link DataMapping::$order_payment_types */
             if ($order->getPaymentType() === 1) {
-                unset($order);
                 $host = Request::createFromGlobals();
                 $domain = $host->getScheme().'://'.$host->getHost().':'.$host->getPort();
 

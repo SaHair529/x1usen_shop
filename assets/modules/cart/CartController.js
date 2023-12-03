@@ -91,7 +91,7 @@ export default class CartController {
             }
             else if (e.target.classList.contains(AttributesNaming.productCard.imageZoomBtn.class)) {
                 let imageTag = e.target.nextElementSibling || e.target.parentElement.nextElementSibling
-                let imagesUrls = JSON.parse(productCard.dataset.product)['additionalImagesLinks'].split(',')
+                let imagesUrls = [] // todo разобраться с imagesUrls
                 if (!Array.isArray(imagesUrls))
                     imagesUrls = []
                 imagesUrls.unshift(imageTag.getAttribute('src'))

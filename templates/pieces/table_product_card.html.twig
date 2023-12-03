@@ -1,13 +1,17 @@
+{% set productDescriptionArray = product['description']|split(';') %}
+{% set productName = productDescriptionArray[0] %}
+{% set productImageLink = productDescriptionArray[1] %}
+
 <div class="product-card table-product-card" id="{{ product['itemKey'] }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_info', {'articleNumber': product['number'], 'itemKey': product['itemKey']}) }}">
     <div class="table-product-card__field">
         <div class="product-card__img-wrapper" style="max-width: 90%; padding: 0">
             <div class="img-zoom action-zoom-img"><i class="fa-solid fa-magnifying-glass-plus action-zoom-img"></i></div>
-            <img class="product-card__img" src="#">
+            <img class="product-card__img" src="{{ productImageLink }}">
         </div>
     </div>
     <div class="table-product-card__field">{{ product['brand'] }}</div>
     <div class="table-product-card__field">{{ product['number'] }}</div>
-    <div class="table-product-card__field name">{{ product['description'] }}</div>
+    <div class="table-product-card__field name">{{ productName }}</div>
     <div class="table-product-card__field">{{ product['availability'] }} шт</div>
     <div class="table-product-card__field"><strong>{{ product['price'] }}</strong></div>
     <div class="table-product-card__field"><a href="#" class="js-show-details">Подробнее</a></div>

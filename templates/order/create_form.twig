@@ -25,6 +25,7 @@
             </div>
         </div>
     {% endblock %}
+    {{ form_row(order_form.city) }}
     {{ form_row(order_form.address) }}
     {{ form_row(order_form.addressGeocoords) }}
     {% block choice_payment_type_widget %}

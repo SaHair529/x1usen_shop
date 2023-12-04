@@ -387,7 +387,7 @@ export default class CartController {
         new ymaps.SuggestView(ADDRESS_INPUT_ID, {
             provider: {
                 suggest: (function (req) {
-                    return ymaps.suggest(req)
+                    return ymaps.suggest(document.getElementById('create_order_form_city').value+', '+req)
                 })
             }
         })

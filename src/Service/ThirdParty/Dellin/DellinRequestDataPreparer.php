@@ -2,6 +2,7 @@
 
 namespace App\Service\ThirdParty\Dellin;
 
+use App\CustomException\ThirdParty\Dellin\CityTerminalNotFoundException;
 use App\Repository\DellinTerminalRepository;
 use DateInterval;
 use DateTime;
@@ -28,7 +29,7 @@ class DellinRequestDataPreparer
      * @param string $arrivalAddressCoords
      * @param int $deliveryType (По умолчанию - До терминала)
      * @return array
-     * @throws Exception
+     * @throws CityTerminalNotFoundException
      */
     #[ArrayShape(['appkey' => "mixed", 'sessionID' => "string", 'inOrder' => "false", 'delivery' => "array", 'cargo' => "array", 'members' => "array", 'payment' => "string[]"])]
     public function prepareConsolidatedCargoTransportationRequestData(
@@ -296,11 +297,14 @@ class DellinRequestDataPreparer
     /**
      * Определение близжайшего терминала к указанным в $coords широте и долготе
      * @param string $coords 'широта:долгота'
-     * @throws Exception
+     * @throws CityTerminalNotFoundException
      */
     public function detectClosestTerminalByAddressCoords(string $coords, string $city): int
     {
         $cityTerminals = $this->terminalRep->findBy(['city' => $city]);
+        if (empty($cityTerminals))
+            throw new CityTerminalNotFoundException();
+
         $minDistance = PHP_FLOAT_MAX;
         $closestTerminalId = $cityTerminals[0]->getTerminalId();
         [$targetLatitude, $targetLongitude] = explode(':', $coords);

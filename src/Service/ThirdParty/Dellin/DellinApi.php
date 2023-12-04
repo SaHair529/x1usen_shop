@@ -2,6 +2,7 @@
 
 namespace App\Service\ThirdParty\Dellin;
 
+use App\CustomException\ThirdParty\Dellin\CityTerminalNotFoundException;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Repository\DellinTerminalRepository;
@@ -39,6 +40,8 @@ class DellinApi
      * @param string $companyContactPhone
      * @param array[] $abcpOrderPositions
      * @param Order $order
+     * @param User $user
+     * @throws CityTerminalNotFoundException
      * @throws TransportExceptionInterface
      */
     public function requestConsolidatedCargoTransportation(
@@ -49,7 +52,7 @@ class DellinApi
     {
         $requestData = $this->dataPreparer->prepareConsolidatedCargoTransportationRequestData(
             $this->sessionId,
-            $derivalAddress, explode(', ', $order->getAddress())[0], $order->getAddress(),
+            $derivalAddress, $order->getCity(), $order->getAddress(),
             $companyOwnerFullname, $companyINN, TextFormatter::reformatPhoneForDellinRequest($companyContactPhone),
             TextFormatter::reformatPhoneForDellinRequest($user->getPhone()), $user->getName(),
             $abcpOrderPositions, $order->getAddressGeocoords(), $order->getDeliveryType()

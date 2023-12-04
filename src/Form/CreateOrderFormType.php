@@ -34,6 +34,14 @@ class CreateOrderFormType extends AbstractType
                 'choices' => $waysToGet,
                 'data' => array_keys(array_flip($waysToGet))[1],
             ])
+            ->add('city', TextType::class, [
+                'attr' => [
+                    'placeholder' => 'Город',
+                    'class' => 'form-control waytoget-state-item rfdelivery-state-item',
+                    'autocomplete' => 'off'
+                ],
+                'label' => false
+            ])
             ->add('address', TextType::class, [
                 'attr' => [
                     'placeholder' => 'Адрес',

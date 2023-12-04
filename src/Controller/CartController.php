@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\CustomException\ThirdParty\Dellin\CityTerminalNotFoundException;
 use App\Entity\AbcpOrderCustomFieldsEntity;
 use App\Repository\AbcpOrderCustomFieldsEntityRepository;
 use App\Service\DataMapping;
@@ -100,8 +101,11 @@ class CartController extends AbstractController
                     try {
                         (new DellinProcessor($dellinApi))->requestTransportation($abcpOrder['positions'], $user, $order);
                     }
-                    catch (Exception $e) {
-                        $this->addFlash('danger', 'ТК отклонил запрос на доставку. Обратитесь к менеджеру');
+                    catch (CityTerminalNotFoundException $e) {
+                        $this->addFlash('danger', $e->getMessage());
+                        return $this->redirectToRoute('order_page', [
+                            'id' => $abcpOrder['number']
+                        ]);
                     }
                 }
             }
@@ -117,6 +121,12 @@ class CartController extends AbstractController
 
                 $alfabankResponse = $alfabankApi->registerOrder($costInCopecks, $successPaymentUrl, $failedPaymentUrl, $abcpOrder['number']);
                 $alfabankResponseData = $alfabankResponse->toArray(false);
+                if (isset($alfabankResponseData['errorMessage'])) {
+                    $this->addFlash('danger', 'Оформление оплаты не удалось, обратитесь к менеджеру');
+                    return $this->redirectToRoute('order_page', [
+                        'id' => $abcpOrder['number']
+                    ]);
+                }
 
                 $abcpOrderCustomFieldsEntity = new AbcpOrderCustomFieldsEntity();
                 $abcpOrderCustomFieldsEntity->setAlfabankOrderId($alfabankResponseData['orderId']);

@@ -2,6 +2,7 @@
 
 namespace App\Service\ThirdParty\Dellin;
 
+use App\CustomException\ThirdParty\Dellin\CityTerminalNotFoundException;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Service\DataMapping;
@@ -14,7 +15,7 @@ class DellinProcessor
     }
 
     /**
-     * @throws TransportExceptionInterface
+     * @throws TransportExceptionInterface|CityTerminalNotFoundException
      */
     public function requestTransportation(array $abcpOrderPositions, User $user, Order $orderEntity)
     {

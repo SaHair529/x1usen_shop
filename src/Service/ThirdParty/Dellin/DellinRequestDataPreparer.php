@@ -54,19 +54,19 @@ class DellinRequestDataPreparer
         $arrivalWorktimeEnd = '21:00'; # todo
 
         foreach ($abcpOrderPositions as $abcpOrderPosition) {
-            if ($cargoMaxLength < $productLength = $abcpOrderPosition['length'])
+            if ($cargoMaxLength < $productLength = $abcpOrderPosition['customFields']['dimensions']['length'])
                 $cargoMaxLength = $productLength;
-            if ($cargoMaxWidth < $productWidth = $abcpOrderPosition['width'])
+            if ($cargoMaxWidth < $productWidth = $abcpOrderPosition['customFields']['dimensions']['width'])
                 $cargoMaxWidth = $productWidth;
-            if ($cargoMaxHeight < $productHeight = $abcpOrderPosition['height'])
+            if ($cargoMaxHeight < $productHeight = $abcpOrderPosition['customFields']['dimensions']['height'])
                 $cargoMaxHeight = $productHeight;
-            if ($cargoWeight < $productWeight = $abcpOrderPosition['weight'])
+            if ($cargoWeight < $productWeight = $abcpOrderPosition['customFields']['dimensions']['weight'])
                 $cargoWeight = $productWeight;
-            $cargoTotalWeight += $abcpOrderPosition['weight'];
+            $cargoTotalWeight += $abcpOrderPosition['customFields']['dimensions']['weight'];
             $cargoTotalVolume +=
-                $abcpOrderPosition['length'] *
-                $abcpOrderPosition['width'] *
-                $abcpOrderPosition['height'];
+                $abcpOrderPosition['customFields']['dimensions']['length'] *
+                $abcpOrderPosition['customFields']['dimensions']['width'] *
+                $abcpOrderPosition['customFields']['dimensions']['height'];
         }
 
         $result = [

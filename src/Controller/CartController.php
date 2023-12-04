@@ -73,15 +73,36 @@ class CartController extends AbstractController
             /** @link DataMapping::$order_ways_to_get */
             if ($order->getWayToGet() === 3) {
                 $isPositionsWithDimensions = true;
-                foreach ($abcpOrder['positions'] as $orderPosition) {
-                    if (!isset($orderPosition['length']) || !isset($orderPosition['width']) || !isset($orderPosition['height'])) { # todo Изменить проверку, если требуется
+                foreach ($abcpOrder['positions'] as $i => $orderPosition) {
+                    $positionDescriptionArray = explode(';', $orderPosition['description']);
+
+                    $positionDimensions = [];
+                    if ($positionDescriptionArray[2] > 0)
+                        $positionDimensions['weight'] = $positionDescriptionArray[2];
+                    if ($positionDescriptionArray[3] > 0)
+                        $positionDimensions['length'] = $positionDescriptionArray[3];
+                    if ($positionDescriptionArray[4] > 0)
+                        $positionDimensions['width'] = $positionDescriptionArray[4];
+                    if ($positionDescriptionArray[5] > 0)
+                        $positionDimensions['height'] = $positionDescriptionArray[5];
+
+                    if (!isset($positionDimensions['length']) || !isset($positionDimensions['width']) || !isset($positionDimensions['height'])) {
                         $isPositionsWithDimensions = false;
                         break;
                     }
+
+                    # Кастомизируем структуру массива товара из abcp (добавляем габариты, которые изначально находились в описании)
+                    $abcpOrder['positions'][$i]['customFields']['dimensions'] = $positionDimensions;
                 }
 
+                # Если во всех товарах указаны корректные габариты, оформляем заказ на доставку в ТК "Деловые Линии"
                 if ($isPositionsWithDimensions) {
-                    (new DellinProcessor($dellinApi))->requestTransportation($abcpOrder['positions'], $user, $order);
+                    try {
+                        (new DellinProcessor($dellinApi))->requestTransportation($abcpOrder['positions'], $user, $order);
+                    }
+                    catch (Exception $e) {
+                        $this->addFlash('danger', 'ТК отклонил запрос на доставку. Обратитесь к менеджеру');
+                    }
                 }
             }
 

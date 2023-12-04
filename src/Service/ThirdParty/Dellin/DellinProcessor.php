@@ -5,6 +5,7 @@ namespace App\Service\ThirdParty\Dellin;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Service\DataMapping;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class DellinProcessor
 {
@@ -12,6 +13,9 @@ class DellinProcessor
     {
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     public function requestTransportation(array $abcpOrderPositions, User $user, Order $orderEntity)
     {
         $dataMapping = new DataMapping();

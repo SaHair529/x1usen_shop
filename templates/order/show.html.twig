@@ -33,12 +33,14 @@
             </div>
         </div>
         <div class="order-row">
-            <div class="order-label text-muted">
-                Адрес
-            </div>
-            <div class="order-value">
-                {{ order['deliveryAddress'] }}
-            </div>
+            {% if 'deliveryAddress' in order and order['deliveryAddress'] is defined %}
+                <div class="order-label text-muted">
+                    Адрес
+                </div>
+                <div class="order-value">
+                    {{ order['deliveryAddress'] }}
+                </div>
+            {% endif %}
         </div>
         <div class="order-row">
             <div class="order-label text-muted">

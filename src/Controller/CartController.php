@@ -78,6 +78,7 @@ class CartController extends AbstractController
                     $positionDescriptionArray = explode(';', $orderPosition['description']);
 
                     $positionDimensions = [];
+                    # todo добавить индексы полей в DataMapping
                     if ($positionDescriptionArray[2] > 0)
                         $positionDimensions['weight'] = $positionDescriptionArray[2];
                     if ($positionDescriptionArray[3] > 0)

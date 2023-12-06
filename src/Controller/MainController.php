@@ -109,7 +109,7 @@ class MainController extends AbstractController
         $abcpArticles = $this->abcpApi->searchProcessor->searchArticlesByNumber($queryStr);
         $vehicle = $this->lxCacher->getVehicleObjectByVin($queryStr);
 
-        if ($vehicle === null) {
+        if (false) { # todo replace with $vehicle === null
             try {
                 $vehicle = $this->serviceOem->findVehicleByVin($queryStr)->getVehicles()[0] ?? null;
                 // $vehicle = unserialize(file_get_contents(__DIR__.'/../../serialized_data/serialized_vehicle.txt')); # todo remove
@@ -117,7 +117,7 @@ class MainController extends AbstractController
             } catch (InvalidParameterException) {}
         }
 
-        if ($vehicle !== null) {
+        if (false) { # todo replace with $vehicle !== null
             $detailGroups = $this->serviceOem->listQuickGroup(
                 $vehicle->getCatalog(),
                 $vehicle->getVehicleId(),
@@ -131,7 +131,7 @@ class MainController extends AbstractController
             ]);
         }
 
-        $replacementsOems = $this->laximoAPIWrapper->getReplacements($queryStr);
+        $replacementsOems = []; # todo replace with $this->laximoAPIWrapper->getReplacements($queryStr);
         $mainDetails = $this->productRep->findBy(['article_number' => $queryStr]);
         $replacementDetails = $this->productRep->findBy(['article_number' => $replacementsOems]);
 

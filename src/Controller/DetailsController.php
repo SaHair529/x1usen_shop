@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\BrandRepository;
 use App\Repository\ProductRepository;
+use App\Service\ThirdParty\Abcp\AbcpApi;
 use GuayaquilLib\ServiceOem;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,7 +33,7 @@ class DetailsController extends AbstractController
     public function show($id, ProductRepository $productRep): Response
     {
         /** @var User $user */
-        $user = $this->getUser();
+        $user = $this->getUser(); # todo
         $cartItems = $user->getCart()->getItems();
         $inCartQuantity = 0;
         foreach ($cartItems as $cartItem) {
@@ -51,15 +52,13 @@ class DetailsController extends AbstractController
     /**
      * Кусок html-блока с информацией о товаре
      */
-    #[Route('/{id}', name: 'detail_info')]
-    public function info($id, ProductRepository $productRep): Response
+    #[Route('/{articleNumber}', name: 'detail_info')]
+    public function info($articleNumber, Request $request, AbcpApi $abcpApi): Response
     {
-        if (!is_numeric($id))
-            return $this->redirectToRoute('homepage');
+        $foundArticle = $abcpApi->searchProcessor->getConcreteArticleByItemKeyAndNumber($request->query->get('itemKey'), $articleNumber);
 
-        $product = $productRep->find($id);
         return $this->render('details/detail_info.html.twig', [
-            'product' => $product
+            'product' => $foundArticle
         ]);
     }
 
@@ -127,7 +126,7 @@ class DetailsController extends AbstractController
     }
 
     #[Route('/ajax/details', name: 'details_list_details')]
-    public function listDetails(Request $req, ProductRepository $productRep): Response
+    public function listDetails(Request $req, AbcpApi $abcpApi): Response
     {
         $oems = explode(',', json_decode($req->getContent(), true)['oems'] ?? '');
         if (empty($oems)) {
@@ -137,9 +136,10 @@ class DetailsController extends AbstractController
             ]);
         }
 
-        $products = $productRep->findBy(['article_number' => $oems]);
+        $abcpArticles = $abcpApi->searchProcessor->searchBatchArticlesByNumbers($oems);
+
         return $this->render('details/details-list.html.twig', [
-            'products' => $products
+            'products' => $abcpArticles
         ]);
     }
 }

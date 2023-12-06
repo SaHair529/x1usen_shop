@@ -34,33 +34,11 @@ class CreateOrderFormType extends AbstractType
                 'choices' => $waysToGet,
                 'data' => array_keys(array_flip($waysToGet))[1],
             ])
-            ->add('client_fullname', TextType::class, [
-                'attr' => [
-                    'placeholder' => 'ФИО',
-                    'class' => 'form-control'
-                ],
-                'label' => false
-            ])
-            ->add('phone_number', TextType::class, [
-                'attr' => [
-                    'placeholder' => 'Номер телефона',
-                    'class' => 'form-control'
-                ],
-                'label' => false
-            ])
-            ->add('email', TextType::class, [
-                'required' => false,
-                'label' => false,
-                'attr' => [
-                    'placeholder' => 'Email(Необязательно)',
-                    'class' => 'form-control'
-                ],
-                'constraints' => [new Email()]
-            ])
             ->add('city', TextType::class, [
                 'attr' => [
                     'placeholder' => 'Город',
-                    'class' => 'form-control waytoget-state-item rfdelivery-state-item'
+                    'class' => 'form-control waytoget-state-item rfdelivery-state-item',
+                    'autocomplete' => 'off'
                 ],
                 'label' => false
             ])

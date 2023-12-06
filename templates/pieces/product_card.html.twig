@@ -1,23 +1,23 @@
-<div class="product-card small {% if hidden is defined %}hidden{% endif %}" id="{{ product.id }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product.id}) }}">
-    <p class="product-card__used small" title="code">
-        {% if product.used == 1 %}Б/У{% endif %}
-    </p>
+<div class="product-card small {% if hidden is defined %}hidden{% endif %}" data-product-route="{{ path('detail_info', {'articleNumber': product['number'], 'itemKey': product['itemKey']}) }}" id="{{ product['itemKey'] }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product['itemKey']}) }}">
+{#    <p class="product-card__used small" title="code"> todo разобраться с состоянием БУ#}
+{#        {% if product.used == 1 %}Б/У{% endif %}#}
+{#    </p>#}
     <div class="product-card__img-wrapper">
         <div class="img-zoom action-zoom-img"><i class="fa-solid fa-magnifying-glass-plus action-zoom-img"></i></div>
-        <img class="product-card__img" src="{{ product.imageLink }}">
+        <img class="product-card__img" src="#{# todo разобраться с фотками товаров {{ product.imageLink }}#}">
     </div>
     <div class="product-card__info">
-        <h5 class="product-card__price">{{ product.price }} ₽</h5>
-        <p class="product-card__name">{{ product.name|replace({"Б/У": "", "б/у": ""}) }}</p>
+        <h5 class="product-card__price">{{ product['price'] }} ₽</h5>
+        <p class="product-card__name">{{ product['description']|replace({"Б/У": "", "б/у": ""}) }}</p>
     </div>
 </div>
 
 <script>
-    const card{{ product.id }} = document.getElementById('{{ product.id }}')
-    const imgTag{{ product.id }} = card{{ product.id }}.querySelector('img')
+    const card{{ product['itemKey'] }} = document.getElementById('{{ product['itemKey'] }}')
+    const imgTag{{ product['itemKey'] }} = card{{ product['itemKey'] }}.querySelector('img')
     setTimeout(() => {
-        if (!imgTag{{ product.id }}.complete) {
-            card{{ product.id }}.querySelector('.action-zoom-img').remove()
+        if (!imgTag{{ product['itemKey'] }}.complete) {
+            card{{ product['itemKey'] }}.querySelector('.action-zoom-img').remove()
             console.log('removed')
         }
     }, 1000)

@@ -2,15 +2,15 @@
 
 namespace App\Service\ThirdParty\Dellin;
 
-use App\Entity\CartItem;
+use App\CustomException\ThirdParty\Dellin\CityTerminalNotFoundException;
 use App\Entity\Order;
+use App\Entity\User;
 use App\Repository\DellinTerminalRepository;
 use App\Service\TextFormatter;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -24,11 +24,11 @@ class DellinApi
     private DellinRequestDataPreparer $dataPreparer;
 
     #[NoReturn]
-    public function __construct(MemcachedAdapter $cacheAdapter, KernelInterface $kernel, DellinTerminalRepository $terminalRep) {
+    public function __construct(MemcachedAdapter $cacheAdapter, DellinTerminalRepository $terminalRep) {
         $this->client = HttpClient::create();
         $this->memcached = $cacheAdapter;
         $this->setSessionId();
-        $this->dataPreparer = new DellinRequestDataPreparer($kernel, $terminalRep);
+        $this->dataPreparer = new DellinRequestDataPreparer($terminalRep);
     }
 
     /**
@@ -38,22 +38,24 @@ class DellinApi
      * @param string $companyOwnerFullname
      * @param string $companyINN
      * @param string $companyContactPhone
-     * @param CartItem[] $cartItems
+     * @param array[] $abcpOrderPositions
      * @param Order $order
+     * @param User $user
+     * @throws CityTerminalNotFoundException
      * @throws TransportExceptionInterface
      */
     public function requestConsolidatedCargoTransportation(
         string $derivalAddress,
         string $companyOwnerFullname, string $companyINN, string $companyContactPhone,
-        array $cartItems, Order $order
+        array  $abcpOrderPositions, Order $order, User $user
     )
     {
         $requestData = $this->dataPreparer->prepareConsolidatedCargoTransportationRequestData(
             $this->sessionId,
-            $derivalAddress, $order->getCity(), $order->getCity().', '.$order->getAddress(),
+            $derivalAddress, $order->getCity(), $order->getAddress(),
             $companyOwnerFullname, $companyINN, TextFormatter::reformatPhoneForDellinRequest($companyContactPhone),
-            TextFormatter::reformatPhoneForDellinRequest($order->getPhoneNumber()), $order->getClientFullname(),
-            $cartItems, $order->getAddressGeocoords(), $order->getDeliveryType()
+            TextFormatter::reformatPhoneForDellinRequest($user->getPhone()), $user->getName(),
+            $abcpOrderPositions, $order->getAddressGeocoords(), $order->getDeliveryType()
         );
 
         $this->client->request('POST', "{$_ENV['DELLIN_API_DOMAIN']}/v2/request.json", [

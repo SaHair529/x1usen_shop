@@ -188,25 +188,6 @@ header {
   }
 }
 
-.order_status_1 {
-  color: grey;
-}
-.order_status_2 {
-  color: orange;
-}
-.order_status_3 {
-  color: cornflowerblue;
-}
-.order_status_4 {
-  color: purple;
-}
-.order_status_5 {
-  color: limegreen;
-}
-.order_status_6 {
-  color: red;
-}
-
 .details404 {
   height: 100%;
   display: flex;
@@ -255,6 +236,11 @@ header {
   .btn {
     width: 100%;
     border-radius: 0;
+  }
+  .input-group-selects {
+    & > div {
+      width: 50% !important;
+    }
   }
 }
 
@@ -530,26 +516,9 @@ header {
     margin-left: 1rem;
     box-shadow: 0 0 5px #d6d6d6;
     position: relative;
-    .notifications-head-indicator {
-      background: lightslategrey;
-      width: 8px;
-      height: 8px;
-      display: inline-block;
-      border-radius: 50%;
-      position: absolute;
-      top: 5px;
-      right: 5px;
-    }
     .card-text, .card-title {
       display: flex;
       justify-content: space-between;
-      .notifications-indicator {
-        background: red;
-        width: 10px;
-        height: 10px;
-        display: inline-block;
-        border-radius: 50%;
-      }
     }
     a {
       color: grey;

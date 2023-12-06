@@ -73,6 +73,9 @@ class Order
     #[Assert\Choice(choices: [-1, 0, 1])]
     private ?int $payment_status = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $abcpOrderNumber = null;
+
     #[Pure]
     public function __construct()
     {
@@ -352,6 +355,18 @@ class Order
     public function setPaymentStatus(int $payment_status): self
     {
         $this->payment_status = $payment_status;
+
+        return $this;
+    }
+
+    public function getAbcpOrderNumber(): ?int
+    {
+        return $this->abcpOrderNumber;
+    }
+
+    public function setAbcpOrderNumber(int $abcpOrderNumber): self
+    {
+        $this->abcpOrderNumber = $abcpOrderNumber;
 
         return $this;
     }

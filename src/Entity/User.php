@@ -54,6 +54,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'sender', targetEntity: OrderComment::class, orphanRemoval: true)]
     private Collection $orderComments;
 
+    #[ORM\Column(length: 20)]
+    private ?string $phone = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $abcp_user_code = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $password_md5 = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $bankName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $bankBik = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $city = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $email = null;
+
+    #[ORM\Column(length: 60, nullable: true)]
+    private ?string $inn = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $correspondentAccount = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $checkingAccount = null;
+
+    #[ORM\Column(length: 60, nullable: true)]
+    private ?string $region = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $organisationType = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $juridicalAddress = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $juridicalEntityType = null;
+
     public function __toString(): string
     {
         return $this->id;
@@ -270,6 +312,174 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $orderComment->setSender(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getAbcpUserCode(): ?string
+    {
+        return $this->abcp_user_code;
+    }
+
+    public function setAbcpUserCode(string $abcp_user_code): self
+    {
+        $this->abcp_user_code = $abcp_user_code;
+
+        return $this;
+    }
+
+    public function getPasswordMd5(): ?string
+    {
+        return $this->password_md5;
+    }
+
+    public function setPasswordMd5(string $password_md5): self
+    {
+        $this->password_md5 = $password_md5;
+
+        return $this;
+    }
+
+    public function getBankName(): ?string
+    {
+        return $this->bankName;
+    }
+
+    public function setBankName(?string $bankName): self
+    {
+        $this->bankName = $bankName;
+
+        return $this;
+    }
+
+    public function getBankBik(): ?string
+    {
+        return $this->bankBik;
+    }
+
+    public function setBankBik(?string $bankBik): self
+    {
+        $this->bankBik = $bankBik;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getInn(): ?string
+    {
+        return $this->inn;
+    }
+
+    public function setInn(?string $inn): self
+    {
+        $this->inn = $inn;
+
+        return $this;
+    }
+
+    public function getCorrespondentAccount(): ?string
+    {
+        return $this->correspondentAccount;
+    }
+
+    public function setCorrespondentAccount(?string $correspondentAccount): self
+    {
+        $this->correspondentAccount = $correspondentAccount;
+
+        return $this;
+    }
+
+    public function getCheckingAccount(): ?string
+    {
+        return $this->checkingAccount;
+    }
+
+    public function setCheckingAccount(?string $checkingAccount): self
+    {
+        $this->checkingAccount = $checkingAccount;
+
+        return $this;
+    }
+
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    public function setRegion(?string $region): self
+    {
+        $this->region = $region;
+
+        return $this;
+    }
+
+    public function getOrganisationType(): ?string
+    {
+        return $this->organisationType;
+    }
+
+    public function setOrganisationType(?string $organisationType): self
+    {
+        $this->organisationType = $organisationType;
+
+        return $this;
+    }
+
+    public function getJuridicalAddress(): ?string
+    {
+        return $this->juridicalAddress;
+    }
+
+    public function setJuridicalAddress(?string $juridicalAddress): self
+    {
+        $this->juridicalAddress = $juridicalAddress;
+
+        return $this;
+    }
+
+    public function getJuridicalEntityType(): ?string
+    {
+        return $this->juridicalEntityType;
+    }
+
+    public function setJuridicalEntityType(?string $juridicalEntityType): self
+    {
+        $this->juridicalEntityType = $juridicalEntityType;
 
         return $this;
     }

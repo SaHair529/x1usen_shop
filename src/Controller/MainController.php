@@ -2,11 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\SearchFormType;
 use App\Repository\ProductRepository;
 use App\Service\Cacher\LaximoCacher;
 use App\Service\LaximoAPIWrapper;
-use App\Service\ThirdParty\Dellin\DellinApi;
+use App\Service\ThirdParty\Abcp\AbcpApi;
 use GuayaquilLib\exceptions\InvalidParameterException;
 use GuayaquilLib\ServiceOem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +22,8 @@ class MainController extends AbstractController
     public function __construct(
         private LaximoAPIWrapper $laximoAPIWrapper,
         private ProductRepository $productRep,
-        private LaximoCacher $lxCacher
+        private LaximoCacher $lxCacher,
+        private AbcpApi $abcpApi
     )
     {
         $this->serviceOem = new ServiceOem($_ENV['OEM_LOGIN'], $_ENV['OEM_PASSWORD']);
@@ -104,6 +106,7 @@ class MainController extends AbstractController
 
     private function handleSearchRequest($queryStr = ''): Response
     {
+        $abcpArticles = $this->abcpApi->searchProcessor->searchArticlesByNumber($queryStr);
         $vehicle = $this->lxCacher->getVehicleObjectByVin($queryStr);
 
         if ($vehicle === null) {
@@ -132,30 +135,24 @@ class MainController extends AbstractController
         $mainDetails = $this->productRep->findBy(['article_number' => $queryStr]);
         $replacementDetails = $this->productRep->findBy(['article_number' => $replacementsOems]);
 
+        /** @var User $user */
         $user = $this->getUser();
         $cartItemsArray = [];
         if ($user) {
-            $cartItems = $user->getCart()->getItems();
-            foreach ($cartItems->getIterator() as $item) {
-                foreach ($mainDetails as $product) {
-                    if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
-                        $cartItemsArray[$product->getId()] = $item;
-                    }
-                }
-
-                foreach ($replacementDetails as $product) {
-                    if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
-                        $cartItemsArray[$product->getId()] = $item;
-                    }
+            $basketArticles = $this->abcpApi->basketProcessor->getBasketArticles($user);
+            foreach ($basketArticles as $basketArticle) {
+                foreach ($abcpArticles as $abcpArticle) {
+                    if ($basketArticle['itemKey'] === $abcpArticle['itemKey'])
+                        $cartItemsArray[$abcpArticle['itemKey']] = $basketArticle;
                 }
             }
         }
 
         return $this->render('main/oem_search_response.html.twig', [
-            'main_details' => $mainDetails,
-            'replacements' => $replacementDetails,
+            'main_details' => $abcpArticles,
+            'replacements' => $replacementDetails, # todo разобраться с аналогами
             'query_str' => $queryStr,
-            'cart_items' => $cartItemsArray
+            'cart_items' => $cartItemsArray # todo разобраться c cart_items (нужен ли)
         ]);
 
 //        $this->addFlash('danger', 'Ничего не найдено');

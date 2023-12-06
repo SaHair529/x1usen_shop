@@ -32,7 +32,7 @@ class DataMapping
     private array $order_ways_to_get = [
         '1' => 'Самовывоз',
         '2' => 'Доставка по СПБ',
-        '3' => 'Доставка по РФ (ТК "Деловые линии")'
+        '3' => 'Доставка по РФ'
     ];
 
     private array $order_delivery_types = [
@@ -65,6 +65,22 @@ class DataMapping
     private array $import_table_title_columns = [
         'name', 'article_number', 'price', 'total_balance',
         'image_link' /*'width', 'length', 'height', 'brand'*/
+    ];
+
+    private array $abcp_organisation_types = [
+        '1' => 'Автосервис',
+        '2' => 'Автомагазин',
+        '3' => 'Собственный автопарк'
+    ];
+
+    private array $abcp_juridical_entity_types = [
+        'ООО' => 'ООО',
+        'ОАО' => 'ОАО',
+        'ЗАО' => 'ЗАО',
+        'ТОО' => 'ТОО',
+        'АО' => 'АО',
+        'ЧП' => 'ЧП',
+        'ПБОЮЛ' => 'ПБОЮЛ'
     ];
 
     private string $companyINN = '7810902553';

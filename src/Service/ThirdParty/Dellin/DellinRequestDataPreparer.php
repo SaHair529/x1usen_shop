@@ -2,17 +2,16 @@
 
 namespace App\Service\ThirdParty\Dellin;
 
-use App\Entity\CartItem;
+use App\CustomException\ThirdParty\Dellin\CityTerminalNotFoundException;
 use App\Repository\DellinTerminalRepository;
 use DateInterval;
 use DateTime;
 use Exception;
 use JetBrains\PhpStorm\ArrayShape;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 class DellinRequestDataPreparer
 {
-    public function __construct(private KernelInterface $kernel, private DellinTerminalRepository $terminalRep)
+    public function __construct(private DellinTerminalRepository $terminalRep)
     {
     }
 
@@ -26,11 +25,11 @@ class DellinRequestDataPreparer
      * @param string $companyContactPhone
      * @param string $receiverPhone
      * @param string $receiverName
-     * @param CartItem[] $cartItems
+     * @param array[] $abcpOrderPositions
      * @param string $arrivalAddressCoords
      * @param int $deliveryType (По умолчанию - До терминала)
      * @return array
-     * @throws Exception
+     * @throws CityTerminalNotFoundException
      */
     #[ArrayShape(['appkey' => "mixed", 'sessionID' => "string", 'inOrder' => "false", 'delivery' => "array", 'cargo' => "array", 'members' => "array", 'payment' => "string[]"])]
     public function prepareConsolidatedCargoTransportationRequestData(
@@ -38,7 +37,7 @@ class DellinRequestDataPreparer
         string $derivalAddress, string $city, string $arrivalAddress,
         string $companyOwnerFullname, string $companyINN, string $companyContactPhone,
         string $receiverPhone, string $receiverName,
-        array  $cartItems, string $arrivalAddressCoords, int $deliveryType = 2
+        array  $abcpOrderPositions, string $arrivalAddressCoords, int $deliveryType = 2
     ): array
     {
         $tomorrowDate = (new DateTime())->add(new DateInterval('P1D'));
@@ -55,20 +54,20 @@ class DellinRequestDataPreparer
         $arrivalWorktimeStart = '10:00'; # todo
         $arrivalWorktimeEnd = '21:00'; # todo
 
-        foreach ($cartItems as $cartItem) {
-            if ($cargoMaxLength < $productLength = $cartItem->getProduct()->getLength())
+        foreach ($abcpOrderPositions as $abcpOrderPosition) {
+            if ($cargoMaxLength < $productLength = $abcpOrderPosition['customFields']['dimensions']['length'])
                 $cargoMaxLength = $productLength;
-            if ($cargoMaxWidth < $productWidth = $cartItem->getProduct()->getWidth())
+            if ($cargoMaxWidth < $productWidth = $abcpOrderPosition['customFields']['dimensions']['width'])
                 $cargoMaxWidth = $productWidth;
-            if ($cargoMaxHeight < $productHeight = $cartItem->getProduct()->getHeight())
+            if ($cargoMaxHeight < $productHeight = $abcpOrderPosition['customFields']['dimensions']['height'])
                 $cargoMaxHeight = $productHeight;
-            if ($cargoWeight < $productWeight = $cartItem->getProduct()->getWeight())
+            if ($cargoWeight < $productWeight = $abcpOrderPosition['customFields']['dimensions']['weight'])
                 $cargoWeight = $productWeight;
-            $cargoTotalWeight += $cartItem->getProduct()->getWeight();
+            $cargoTotalWeight += $abcpOrderPosition['customFields']['dimensions']['weight'];
             $cargoTotalVolume +=
-                $cartItem->getProduct()->getLength() *
-                $cartItem->getProduct()->getWidth() *
-                $cartItem->getProduct()->getHeight();
+                $abcpOrderPosition['customFields']['dimensions']['length'] *
+                $abcpOrderPosition['customFields']['dimensions']['width'] *
+                $abcpOrderPosition['customFields']['dimensions']['height'];
         }
 
         $result = [
@@ -219,7 +218,7 @@ class DellinRequestDataPreparer
                 'arrival' => [
                     'variant' => 'address',
                     'address' => [
-                        'search' => "{$requestData['city']}, {$requestData['address']}"
+                        'search' => $requestData['address']
                     ],
                     'time' => [
                         'worktimeStart' => $arrivalWorktimeStart,
@@ -298,11 +297,14 @@ class DellinRequestDataPreparer
     /**
      * Определение близжайшего терминала к указанным в $coords широте и долготе
      * @param string $coords 'широта:долгота'
-     * @throws Exception
+     * @throws CityTerminalNotFoundException
      */
     public function detectClosestTerminalByAddressCoords(string $coords, string $city): int
     {
         $cityTerminals = $this->terminalRep->findBy(['city' => $city]);
+        if (empty($cityTerminals))
+            throw new CityTerminalNotFoundException();
+
         $minDistance = PHP_FLOAT_MAX;
         $closestTerminalId = $cityTerminals[0]->getTerminalId();
         [$targetLatitude, $targetLongitude] = explode(':', $coords);

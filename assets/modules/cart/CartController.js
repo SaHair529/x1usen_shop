@@ -91,7 +91,7 @@ export default class CartController {
             }
             else if (e.target.classList.contains(AttributesNaming.productCard.imageZoomBtn.class)) {
                 let imageTag = e.target.nextElementSibling || e.target.parentElement.nextElementSibling
-                let imagesUrls = JSON.parse(productCard.dataset.product)['additionalImagesLinks'].split(',')
+                let imagesUrls = [] // todo разобраться с imagesUrls
                 if (!Array.isArray(imagesUrls))
                     imagesUrls = []
                 imagesUrls.unshift(imageTag.getAttribute('src'))
@@ -182,12 +182,16 @@ export default class CartController {
 
             if (productInfoModal != null) {
                 if (e.target.classList.contains(AttributesNaming.BUTTONS.INCREASE_CART_ITEM.CLASS)) {
-                    CartController.addToCart(productInfoModal.dataset.productId).then(resp => {
+                    CartController.addToCart(JSON.parse(productInfoModal.dataset.productInfo)).then(resp => {
                         ResponseHandler.handleAddToCartResponse(resp)
                     })
                 }
+                else if (e.target.classList.contains('detail-link')) {
+                    e.preventDefault()
+                    MainController.showProductFullInfoModal(e.target.getAttribute('href'))
+                }
                 else if (e.target.classList.contains(AttributesNaming.BUTTONS.REMOVE_FROM_CART.CLASS)) {
-                    CartController.decreaseCartItemQuantity(productInfoModal.dataset.productId).then(resp => {
+                    CartController.decreaseCartItemQuantity(JSON.parse(productInfoModal.dataset.productInfo)).then(resp => {
                         ResponseHandler.handleDecreaseCartItemQuantityResponse(resp)
                     })
                 }
@@ -202,13 +206,13 @@ export default class CartController {
         const cartItems = document.getElementById('cart-items')
         if (cartItems != null) {
             cartItems.addEventListener('click', function (e) {
-                const productId = e.target.closest('.'+AttributesNaming.cartItemCard.class).dataset.productId
+                const articleItem = JSON.parse(e.target.closest('.'+AttributesNaming.cartItemCard.class).dataset.articleItem)
                 const cartItemCard = e.target.closest('.cart-item-card')
 
                 if (e.target.classList.contains(AttributesNaming.cartItemCard.increaseBtn.class) &&
                     !e.target.classList.contains('disabled'))
                 {
-                    CartController.addToCart(productId).then(resp => {
+                    CartController.addToCart(articleItem).then(resp => {
                         ResponseHandler.handleCartItemCardIncreaseCartItemQuantityResponse(resp, cartItemCard)
                     })
                 }
@@ -220,12 +224,12 @@ export default class CartController {
                     if (parseInt(cartItemsAmount) === 1) {
                         const deleteUserConfirm = confirm('Вы уверены, что хотите убрать товар из корзины?')
                         if (deleteUserConfirm)
-                            CartController.decreaseCartItemQuantity(productId).then(resp => {
+                            CartController.decreaseCartItemQuantity(articleItem).then(resp => {
                                 ResponseHandler.handleCartItemCardDecreaseCartItemQuantityResponse(resp, cartItemCard)
                             })
                     }
                     else
-                        CartController.decreaseCartItemQuantity(productId).then(resp => {
+                        CartController.decreaseCartItemQuantity(articleItem).then(resp => {
                             ResponseHandler.handleCartItemCardDecreaseCartItemQuantityResponse(resp, cartItemCard)
                         })
                 }
@@ -239,7 +243,7 @@ export default class CartController {
                     }
                 }
                 else if (e.target.classList.contains(AttributesNaming.cartItemCard.showDetails.class)) {
-                    MainController.showProductFullInfoModal(e.target.dataset.cartItemId)
+                    MainController.showProductFullInfoModal(e.target.dataset.productRoute)
                 }
             })
         }
@@ -486,7 +490,6 @@ export default class CartController {
 
         requestData.wayToGet = getWayToGet()
         requestData.checkedCartItemsIds = getCheckedCartItemsIds()
-        requestData.city = getCity()
         requestData.address = document.querySelector('#create_order_form_address').value
 
         const validationErrors = validateRequestData(requestData)
@@ -539,12 +542,6 @@ export default class CartController {
 
             return wayToGet
         }
-        function getCity() {
-            if (requestData.wayToGet === 'create_order_form_way_to_get_1')
-                return 'Санкт-Петербург'
-            else
-                return  document.querySelector('#create_order_form_city').value
-        }
         function getCheckedCartItemsIds() {
             let checkedCartItemsIds = ''
             const cartItemsCheckboxes = document.getElementById('cart-items').querySelectorAll('input[type="checkbox"]')
@@ -556,12 +553,24 @@ export default class CartController {
         }
     }
 
-    static addToCart(productId) {
-        return fetch(`/cart/add_item?item_id=${productId}`)
+    static addToCart(item) {
+        return fetch(`/cart/add_item`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(item)
+        })
     }
 
-    static decreaseCartItemQuantity(productId) {
-        return fetch(`/cart/decrease_quantity?product_id=${productId}`)
+    static decreaseCartItemQuantity(item) {
+        return fetch(`/cart/decrease_quantity`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(item)
+        })
     }
 
     static deleteCartItem(cartItemId) {

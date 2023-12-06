@@ -30,18 +30,17 @@ class DellinApiController extends AbstractController
         $cartItems = $user->getCart()->getItems();
         $response = new JsonResponse();
 
-        try {
-            $dellinResponse = $dellinApi->requestCostAndDeliveryTimeCalculator($cartItems, $dataMapping->getData('companyStockAddress'), $requestData);
-            $response->setData($dellinResponse->toArray());
+        $dellinResponse = $dellinApi->requestCostAndDeliveryTimeCalculator($cartItems, $dataMapping->getData('companyStockAddress'), $requestData);
+        $dellinResponseData = $dellinResponse->toArray(false);
+
+        if (isset($dellinResponseData['errors'][0])) {
+            $response->setData([
+                'error_message_for_client' => $dellinResponseData['errors'][0]['detail']
+            ]);
+            $response->setStatusCode(Response::HTTP_BAD_REQUEST);
         }
-        catch (Exception | TransportExceptionInterface $e) {
-            if ($e->getResponse()->getStatusCode() === 400) {
-                $response->setData([
-                    'error_message_for_client' => 'Не удалось провести расчёты, вы можете провести расчёты вручную'
-                ]);
-                $response->setStatusCode(Response::HTTP_BAD_REQUEST);
-            }
-        }
+        else
+            $response->setData($dellinResponseData);
 
         return $response;
     }

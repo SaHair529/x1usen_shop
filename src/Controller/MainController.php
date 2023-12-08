@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\SearchFormType;
 use App\Repository\ProductRepository;
 use App\Service\Cacher\LaximoCacher;
+use App\Service\DataMapping;
 use App\Service\LaximoAPIWrapper;
 use App\Service\ThirdParty\Abcp\AbcpApi;
 use GuayaquilLib\exceptions\InvalidParameterException;
@@ -152,7 +153,8 @@ class MainController extends AbstractController
             'main_details' => $abcpArticles,
             'replacements' => $replacementDetails, # todo разобраться с аналогами
             'query_str' => $queryStr,
-            'cart_items' => $cartItemsArray # todo разобраться c cart_items (нужен ли)
+            'cart_items' => $cartItemsArray, # todo разобраться c cart_items (нужен ли)
+            'descriptionArrayIndexes' => (new DataMapping())->getData('position_description_array_indexes')
         ]);
 
 //        $this->addFlash('danger', 'Ничего не найдено');

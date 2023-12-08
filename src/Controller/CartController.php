@@ -78,15 +78,17 @@ class CartController extends AbstractController
                     $positionDescriptionArray = explode(';', $orderPosition['description']);
 
                     $positionDimensions = [];
-                    # todo добавить индексы полей в DataMapping
+                    /** @link DataMapping::$position_description_array_indexes $descriptionArrayIndexes */
+                    $descriptionArrayIndexes = (new DataMapping())->getData('position_description_array_indexes');
+
                     if ($positionDescriptionArray[2] > 0)
-                        $positionDimensions['weight'] = $positionDescriptionArray[2];
+                        $positionDimensions['weight'] = $positionDescriptionArray[$descriptionArrayIndexes['weight']];
                     if ($positionDescriptionArray[3] > 0)
-                        $positionDimensions['length'] = $positionDescriptionArray[3];
+                        $positionDimensions['length'] = $positionDescriptionArray[$descriptionArrayIndexes['length']];
                     if ($positionDescriptionArray[4] > 0)
-                        $positionDimensions['width'] = $positionDescriptionArray[4];
+                        $positionDimensions['width'] = $positionDescriptionArray[$descriptionArrayIndexes['width']];
                     if ($positionDescriptionArray[5] > 0)
-                        $positionDimensions['height'] = $positionDescriptionArray[5];
+                        $positionDimensions['height'] = $positionDescriptionArray[$descriptionArrayIndexes['height']];
 
                     if (!isset($positionDimensions['length']) || !isset($positionDimensions['width']) || !isset($positionDimensions['height'])) {
                         $isPositionsWithDimensions = false;
@@ -172,7 +174,8 @@ class CartController extends AbstractController
             'cart_items' => $cartItems,
             'order_form' => $orderForm,
             'YANDEX_GEOCODER_API_KEY' => $_ENV['YANDEX_GEOCODER_API_KEY'],
-            'YANDEX_SUGGEST_API_KEY' => $_ENV['YANDEX_SUGGEST_API_KEY']
+            'YANDEX_SUGGEST_API_KEY' => $_ENV['YANDEX_SUGGEST_API_KEY'],
+            'descriptionArrayIndexes' => (new DataMapping())->getData('position_description_array_indexes')
         ]);
     }
 

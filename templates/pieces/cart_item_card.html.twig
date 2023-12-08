@@ -1,6 +1,6 @@
 {% set cartItemDescriptionArray = cart_item['description']|split(';') %}
-{% set cartItemName = cartItemDescriptionArray[0] %}
-{% set cartItemImageLink = cartItemDescriptionArray[1] %}
+{% set cartItemName = cartItemDescriptionArray[descriptionArrayIndexes['name']] %}
+{% set cartItemImageLink = cartItemDescriptionArray[descriptionArrayIndexes['img_link']] %}
 
 <div class="cart-item-card" data-cart-item-id="{{ cart_item['itemKey'] }}" data-product-id="{{ cart_item['itemKey'] }}" data-article-item="{{ cart_item['articleItem']|serialize(format='json') }}">
     <div class="cart-item-card__content">

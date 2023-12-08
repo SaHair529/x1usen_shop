@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\BrandRepository;
 use App\Repository\ProductRepository;
+use App\Service\DataMapping;
 use App\Service\ThirdParty\Abcp\AbcpApi;
 use GuayaquilLib\ServiceOem;
 use JMS\Serializer\SerializerInterface;
@@ -58,7 +59,8 @@ class DetailsController extends AbstractController
         $foundArticle = $abcpApi->searchProcessor->getConcreteArticleByItemKeyAndNumber($request->query->get('itemKey'), $articleNumber);
 
         return $this->render('details/detail_info.html.twig', [
-            'product' => $foundArticle
+            'product' => $foundArticle,
+            'descriptionArrayIndexes' => (new DataMapping())->getData('position_description_array_indexes')
         ]);
     }
 

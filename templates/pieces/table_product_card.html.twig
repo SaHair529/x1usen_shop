@@ -1,6 +1,6 @@
 {% set productDescriptionArray = product['description']|split(';') %}
-{% set productName = productDescriptionArray[0] %}
-{% set productImageLink = productDescriptionArray[1] %}
+{% set productName = productDescriptionArray[descriptionArrayIndexes['name']] %}
+{% set productImageLink = productDescriptionArray[descriptionArrayIndexes['img_link']] %}
 
 <div class="product-card table-product-card" id="{{ product['itemKey'] }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_info', {'articleNumber': product['number'], 'itemKey': product['itemKey']}) }}">
     <div class="table-product-card__field">

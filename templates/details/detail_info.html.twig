@@ -3,12 +3,12 @@
 {# TODO разобраться с дополнительными фотками товаров ABCP #}
 
 {% set productDescriptionArray = product['description']|split(';') %}
-{% set productName = productDescriptionArray[0] %}
-{% set productImageLink = productDescriptionArray[1] %}
-{% set productImageWeight = productDescriptionArray[2] %}
-{% set productImageLength = productDescriptionArray[3] %}
-{% set productImageWidth = productDescriptionArray[4] %}
-{% set productImageHeight = productDescriptionArray[5] %}
+{% set productName = productDescriptionArray[descriptionArrayIndexes['name']] %}
+{% set productImageLink = productDescriptionArray[descriptionArrayIndexes['img_link']] %}
+{% set productImageWeight = productDescriptionArray[descriptionArrayIndexes['weight']] %}
+{% set productImageLength = productDescriptionArray[descriptionArrayIndexes['length']] %}
+{% set productImageWidth = productDescriptionArray[descriptionArrayIndexes['width']] %}
+{% set productImageHeight = productDescriptionArray[descriptionArrayIndexes['height']] %}
 
 <div class="detail-full-info" data-detail-id="{{ product['itemKey'] }}">
     <h5 class="detail-full-info__name" style="font-weight: 300">{{ productName }}</h5>

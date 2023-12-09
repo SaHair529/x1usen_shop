@@ -50,6 +50,15 @@ class DataMapping
         '2' => 'Новый комментарий'
     ];
 
+    private array $position_description_array_indexes = [
+        'name' => 0,
+        'img_link' => 1,
+        'weight' => 2,
+        'length' => 3,
+        'width' => 4,
+        'height' => 5
+    ];
+
     private array $google_services_credentials_filenames = [
         'gmail' => 'gmail_credentials.json'
     ];

@@ -32,6 +32,7 @@ class RegistrationController extends AbstractController
             $user->setAbcpUserCode($abcpResponseData['userCode']);
             $abcpLoginCookies = AbcpBackDoor::loginToGetCookies($_ENV['ABCP_USER_LOGIN'], $_ENV['ABCP_USER_PASSWORD']);
             AbcpBackDoor::addWhiteIPToUser($user->getAbcpUserCode(), $_ENV['ABCP_VALID_IP'], $abcpLoginCookies);
+            AbcpBackDoor::addAllPermissions($user->getAbcpUserCode(), $abcpLoginCookies);
 
             $this->registerUser($user, $userPasswordHasher, $form, $entityManager);
             return $this->redirectToRoute('app_login');

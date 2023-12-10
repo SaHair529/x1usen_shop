@@ -30,7 +30,7 @@ class Brand
     public function fillBySpreadsheetLine(array $spreadsheetIndexes, array $spreadsheetLine)
     {
         foreach ($spreadsheetIndexes as $indexName => $index) {
-            $this->$indexName = $spreadsheetLine[$index];
+            $this->$indexName = trim($spreadsheetLine[$index]);
         }
     }
 

@@ -16,6 +16,17 @@ class Brand
     #[ORM\Column(length: 255)]
     private ?string $brand = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $article_number = null;
+
+    public function __construct(string $brand = null, string $article_number = null)
+    {
+        if ($brand !== null && $article_number !== null) {
+            $this->brand = $brand;
+            $this->article_number = $article_number;
+        }
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -29,6 +40,18 @@ class Brand
     public function setBrand(string $brand): self
     {
         $this->brand = $brand;
+
+        return $this;
+    }
+
+    public function getArticleNumber(): ?string
+    {
+        return $this->article_number;
+    }
+
+    public function setArticleNumber(string $article_number): self
+    {
+        $this->article_number = $article_number;
 
         return $this;
     }

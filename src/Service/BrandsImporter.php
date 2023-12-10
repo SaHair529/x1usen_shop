@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Brand;
+use App\Repository\BrandRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Worksheet\Row;
@@ -16,7 +17,7 @@ class BrandsImporter
     private array $csvIndexes;
     private array $xlsIndexes;
 
-    public function __construct(private DataMapping $dataMapping, private EntityManagerInterface $em)
+    public function __construct(private DataMapping $dataMapping, private EntityManagerInterface $em, private BrandRepository $brandRep)
     {
         $this->csvIndexes = $this->dataMapping->getData('brands_csv_indexes');
         $this->xlsIndexes = $this->dataMapping->getData('brands_xls_indexes');
@@ -41,6 +42,15 @@ class BrandsImporter
             $newBrandEntity = new Brand(trim($line[$this->csvIndexes['brand']]),
                 trim($line[$this->csvIndexes['article_number']]),
                 trim($line[$this->csvIndexes['model']]));
+
+            $foundBrand = $this->brandRep->findOneBy([
+                'brand' => $newBrandEntity->getBrand(),
+                'model' => $newBrandEntity->getModel(),
+                'article_number' => $newBrandEntity->getArticleNumber()
+            ]);
+            if ($foundBrand === null)
+                continue;
+
             $this->em->persist($newBrandEntity);
         }
 
@@ -68,6 +78,15 @@ class BrandsImporter
                 trim($tableRowData[$this->xlsIndexes['article_number']]),
                 trim($tableRowData[$this->xlsIndexes['model']])
             );
+
+            $foundBrand = $this->brandRep->findOneBy([
+                'brand' => $newBrandEntity->getBrand(),
+                'model' => $newBrandEntity->getModel(),
+                'article_number' => $newBrandEntity->getArticleNumber()
+            ]);
+            if ($foundBrand === null)
+                continue;
+
             $this->em->persist($newBrandEntity);
         }
 

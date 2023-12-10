@@ -22,15 +22,15 @@ class Brand
     #[ORM\Column(length: 255)]
     private ?string $model = null;
 
-    public function __construct(string $brand = null, string $article_number = null, string $model = null)
+    /**
+     * Заполнение полей сущности по строчке csv/xls/xlsx таблицы
+     * @param array $spreadsheetIndexes
+     * @param array $spreadsheetLine
+     */
+    public function fillBySpreadsheetLine(array $spreadsheetIndexes, array $spreadsheetLine)
     {
-        if ($brand !== null
-            && $article_number !== null
-            && $model !== null) {
-
-            $this->brand = $brand;
-            $this->article_number = $article_number;
-            $this->model = $model;
+        foreach ($spreadsheetIndexes as $indexName => $index) {
+            $this->$indexName = $spreadsheetLine[$index];
         }
     }
 

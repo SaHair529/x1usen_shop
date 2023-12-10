@@ -39,18 +39,16 @@ class BrandsImporter
                 continue;
             }
 
-            $newBrandEntity = new Brand(trim($line[$this->csvIndexes['brand']]),
-                trim($line[$this->csvIndexes['article_number']]),
-                trim($line[$this->csvIndexes['model']]));
+            $newBrandEntity = new Brand();
+            $newBrandEntity->fillBySpreadsheetLine($this->csvIndexes, $line);
 
             $foundBrand = $this->brandRep->findOneBy([
                 'brand' => $newBrandEntity->getBrand(),
                 'model' => $newBrandEntity->getModel(),
                 'article_number' => $newBrandEntity->getArticleNumber()
             ]);
-            if ($foundBrand === null)
+            if ($foundBrand !== null)
                 continue;
-
             $this->em->persist($newBrandEntity);
         }
 
@@ -73,18 +71,15 @@ class BrandsImporter
                 continue;
             }
 
-            $newBrandEntity = new Brand(
-                trim($tableRowData[$this->xlsIndexes['brand']]),
-                trim($tableRowData[$this->xlsIndexes['article_number']]),
-                trim($tableRowData[$this->xlsIndexes['model']])
-            );
+            $newBrandEntity = new Brand();
+            $newBrandEntity->fillBySpreadsheetLine($this->xlsIndexes, $tableRowData);
 
             $foundBrand = $this->brandRep->findOneBy([
                 'brand' => $newBrandEntity->getBrand(),
                 'model' => $newBrandEntity->getModel(),
                 'article_number' => $newBrandEntity->getArticleNumber()
             ]);
-            if ($foundBrand === null)
+            if ($foundBrand !== null)
                 continue;
 
             $this->em->persist($newBrandEntity);

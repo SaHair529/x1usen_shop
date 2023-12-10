@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Brand;
-use App\Repository\BrandRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Worksheet\Row;
@@ -14,8 +13,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class BrandsImporter
 {
-    public function __construct(private BrandRepository $brandRep, private DataMapping $dataMapping, private EntityManagerInterface $em)
+    private array $csvIndexes;
+    private array $xlsIndexes;
+
+    public function __construct(private DataMapping $dataMapping, private EntityManagerInterface $em)
     {
+        $this->csvIndexes = $this->dataMapping->getData('brands_csv_indexes');
+        $this->xlsIndexes = $this->dataMapping->getData('brands_xls_indexes');
     }
 
     public function importBrandsByCsv(UploadedFile $file): array
@@ -29,12 +33,14 @@ class BrandsImporter
         $invalidLines = [];
         foreach (array_filter($fullCsv) as $key => $line) {
             $lineValidationResult = $this->validateLine($line);
-            if (!empty($lineInvalidCells)) {
-                $invalidLines[$key + 1] = $lineInvalidCells;
+            if (!empty($lineValidationResult)) {
+                $invalidLines[$key + 1] = $lineValidationResult;
                 continue;
             }
 
-            $newBrandEntity = new Brand($line[0], $line[1]);
+            $newBrandEntity = new Brand(trim($line[$this->csvIndexes['brand']]),
+                trim($line[$this->csvIndexes['article_number']]),
+                trim($line[$this->csvIndexes['model']]));
             $this->em->persist($newBrandEntity);
         }
 
@@ -57,7 +63,11 @@ class BrandsImporter
                 continue;
             }
 
-            $newBrandEntity = new Brand($tableRowData['A'], $tableRowData['B']);
+            $newBrandEntity = new Brand(
+                trim($tableRowData[$this->xlsIndexes['brand']]),
+                trim($tableRowData[$this->xlsIndexes['article_number']]),
+                trim($tableRowData[$this->xlsIndexes['model']])
+            );
             $this->em->persist($newBrandEntity);
         }
 
@@ -70,10 +80,10 @@ class BrandsImporter
     {
         $validationResult = [];
 
-        if (!isset($line[0]) || empty($line[0]))
-            $validationResult[] = 'Не указана модель';
-        if (!isset($line[1]) || empty($line[1]))
-            $validationResult[] = 'Не указан номер артикула';
+        foreach ($this->csvIndexes as $indexName => $index) {
+            if (!isset($line[$index]) || empty(trim($line[$index])))
+                $validationResult[] = 'Не указан '.$indexName;
+        }
 
         return $validationResult;
     }
@@ -82,11 +92,10 @@ class BrandsImporter
     {
         $validationResult = [];
 
-        if (!isset($tableRowData['A']) || empty($tableRowData['A']))
-            $validationResult[] = 'Не указана модель';
-
-        if (!isset($tableRowData['B']) || empty($tableRowData['B']))
-            $validationResult[] = 'Не указан номер артикула';
+        foreach ($this->xlsIndexes as $indexName => $index) {
+            if (!isset($tableRowData[$index]) || empty(trim($tableRowData[$index])))
+                $validationResult[] = 'Не указан '.$indexName;
+        }
 
         return $validationResult;
     }

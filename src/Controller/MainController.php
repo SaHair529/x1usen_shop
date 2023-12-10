@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\SearchFormType;
+use App\Repository\BrandRepository;
 use App\Repository\ProductRepository;
 use App\Service\Cacher\LaximoCacher;
 use App\Service\DataMapping;
@@ -23,6 +24,7 @@ class MainController extends AbstractController
     public function __construct(
         private LaximoAPIWrapper $laximoAPIWrapper,
         private ProductRepository $productRep,
+        private BrandRepository $brandRep,
         private LaximoCacher $lxCacher,
         private AbcpApi $abcpApi
     )
@@ -71,37 +73,46 @@ class MainController extends AbstractController
 
     private function searchByVehicleModel(string $vehicleModel)
     {
-        $products = $this->productRep->findBy(['auto_model' => $vehicleModel], ['name' => 'ASC']);
-        if (empty($products)) {
+        $brands = $this->brandRep->findBy(['model' => $vehicleModel]);
+
+        if (empty($brands)) {
             $this->addFlash('danger', 'Ничего не найдено');
-            return $this->render('main/index.html.twig', [
-                'search_form' => $this->createForm(SearchFormType::class)
-            ]);
+            return $this->redirectToRoute('homepage');
         }
 
         $productCategories = [];
-        foreach ($products as $product) {
-            if (!in_array($product->getCategory(), $productCategories) && $product->getCategory())
-                $productCategories[] = $product->getCategory();
+        $productArticleNumbers = [];
+        foreach ($brands as $brand) {
+            $productCategories[$brand->getArticleNumber()] = $brand->getCategory();
+            if (!in_array($brand->getArticleNumber(), $productArticleNumbers) && $brand->getArticleNumber())
+                $productArticleNumbers[] = $brand->getArticleNumber();
+        }
+
+        $abcpArticles = $this->abcpApi->searchProcessor->searchBatchArticlesByNumbers($productArticleNumbers);
+        for ($i = 0; $i < count($abcpArticles); $i++) {
+            $abcpArticles[$i]['customFields']['category'] = $productCategories[$abcpArticles[$i]['number']];
         }
 
         $user = $this->getUser();
         $cartItemsArray = [];
         if ($user) {
-            $cartItems = $user->getCart()->getItems();
-            foreach ($cartItems->getIterator() as $item) {
-                foreach ($products as $product) {
-                    if (!$item->isInOrder() && $item->getProduct()->getId() === (int)$product->getId()) {
-                        $cartItemsArray[$product->getId()] = $item;
-                    }
+            $basketArticles = $this->abcpApi->basketProcessor->getBasketArticles($user);
+            foreach ($basketArticles as $basketArticle) {
+                foreach ($abcpArticles as $abcpArticle) {
+                    if ($basketArticle['itemKey'] === $abcpArticle['itemKey'])
+                        $cartItemsArray[$abcpArticle['itemKey']] = $basketArticle;
                 }
             }
         }
 
+        /** @link DataMapping::$position_description_array_indexes $descriptionArrayIndexes */
+        $descriptionArrayIndexes = (new DataMapping())->getData('position_description_array_indexes');
+
         return $this->render('main/vehicle_model_search_response.html.twig', [
-            'products' => $products,
-            'product_categories' => $productCategories,
-            'cart_items' => $cartItemsArray
+            'products' => $abcpArticles,
+            'product_categories' => array_unique(array_values($productCategories)),
+            'cart_items' => $cartItemsArray, # todo
+            'descriptionArrayIndexes' => $descriptionArrayIndexes
         ]);
     }
 

@@ -22,6 +22,9 @@ class Brand
     #[ORM\Column(length: 255)]
     private ?string $model = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $category = null;
+
     /**
      * Заполнение полей сущности по строчке csv/xls/xlsx таблицы
      * @param array $spreadsheetIndexes
@@ -71,6 +74,18 @@ class Brand
     public function setModel(string $model): self
     {
         $this->model = $model;
+
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

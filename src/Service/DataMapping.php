@@ -111,12 +111,14 @@ class DataMapping
     private array $brands_csv_indexes = [
         'article_number' => 0,
         'brand' => 1,
-        'model' => 2
+        'model' => 2,
+        'category' => 3
     ];
     private array $brands_xls_indexes = [
         'article_number' => 'A',
         'brand' => 'B',
         'model' => 'C',
+        'category' => 'D',
     ];
 
     public function getData($dataContainer): array|string

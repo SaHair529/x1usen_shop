@@ -67,11 +67,22 @@ class DetailsController extends AbstractController
     #[Route('/ajax/brands', name: 'detail_brands')]
     public function brands(BrandRepository $brandRep, SerializerInterface $serializer): JsonResponse
     {
-        return (new JsonResponse(json_decode($serializer->serialize($brandRep->findAll(), 'json'))));
+        $brands = json_decode($serializer->serialize($brandRep->findAll(), 'json'), true);
+
+        $uniqueBrands = [];
+        array_filter($brands, function ($item) use (&$uniqueBrands) {
+            if (!in_array(['brand' => $item['brand']], $uniqueBrands)) {
+                $uniqueBrands[] = ['brand' => $item['brand']];
+                return true;
+            }
+            return false;
+        });
+
+        return (new JsonResponse($uniqueBrands));
     }
 
     #[Route('/ajax/brand_models/{brand}', name: 'detail_brand_models')]
-    public function brandModels(string $brand, ProductRepository $productRep): JsonResponse
+    public function brandModels(string $brand, BrandRepository $brandRep): JsonResponse
     {
         if ($brand == null)
             return new JsonResponse([
@@ -79,11 +90,11 @@ class DetailsController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
 
         $models = [];
-        $products = $productRep->findBy(['auto_brand' => $brand]);
+        $brandEntities = $brandRep->findBy(['brand' => $brand]);
 
-        foreach ($products as $product) {
-            if (!in_array($product->getAutoModel(), $models) && !empty($product->getAutoModel()))
-                $models[] = $product->getAutoModel();
+        foreach ($brandEntities as $brandEntity) {
+            if (!in_array($brandEntity->getModel(), $models))
+                $models[] = $brandEntity->getModel();
         }
 
         return new JsonResponse($models, Response::HTTP_OK);

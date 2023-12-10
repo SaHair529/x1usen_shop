@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Brand;
 use App\Entity\Notification;
 use App\Entity\Order;
 use App\Entity\Product;
@@ -20,7 +21,7 @@ class DashboardController extends AbstractDashboardController
 {
     #[Route('/admin', name: 'admin')]
     #[IsGranted('ROLE_USER')]
-    #[IsGranted(new Expression("user.getUsername() == 'username'"))]
+    #[IsGranted(new Expression("user.getUsername() == 'login1232'"))]
     public function index(): Response
     {
         $routeBuilder = $this->container->get(AdminUrlGenerator::class);
@@ -75,6 +76,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Контроль заказов', 'fas fa-solid fa-exclamation', Order::class);
         yield MenuItem::linkToCrud('Оповещения', 'fas fa-solid fa-bell', Notification::class);
         yield MenuItem::linkToCrud('Котроль клиентов', 'fas fa-solid fa-user', User::class);
+        yield MenuItem::linkToCrud('Марки', 'fas fa-solid fa-copyright', Brand::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }

@@ -19,6 +19,14 @@ class Brand
     #[ORM\Column(length: 255)]
     private ?string $article_number = null;
 
+    public function __construct(string $brand = null, string $article_number = null)
+    {
+        if ($brand !== null && $article_number !== null) {
+            $this->brand = $brand;
+            $this->article_number = $article_number;
+        }
+    }
+
     public function getId(): ?int
     {
         return $this->id;

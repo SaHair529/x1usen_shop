@@ -61,7 +61,7 @@ class BrandCrudController extends AbstractCrudController
                 if (!empty($invalidLines)) {
                     $invalidLinesFilePath = $this->getParameter('kernel.project_dir') . '/var/invalid_lines.json';
                     $fileStream = fopen($invalidLinesFilePath, 'wb');
-                    fwrite($fileStream, json_encode($invalidLines, JSON_PRETTY_PRINT));
+                    fwrite($fileStream, json_encode($invalidLines, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
                     fclose($fileStream);
 
                     $downloadUrl = $urlGenerator->generate('download_invalid_import_lines_file', [], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -74,7 +74,10 @@ class BrandCrudController extends AbstractCrudController
                 $this->addFlash('danger', $ex->getMessage());
             }
 
-            return $this->redirectToRoute('admin');
+            return $this->redirectToRoute('admin', [
+                'crudAction' => 'index',
+                'crudControllerFqcn' => 'App\\Controller\\Admin\\BrandCrudController'
+            ]);
         }
 
         return $this->render('admin/brand/import.html.twig', [

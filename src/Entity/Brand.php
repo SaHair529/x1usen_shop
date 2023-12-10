@@ -19,11 +19,21 @@ class Brand
     #[ORM\Column(length: 255)]
     private ?string $article_number = null;
 
-    public function __construct(string $brand = null, string $article_number = null)
+    #[ORM\Column(length: 255)]
+    private ?string $model = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $category = null;
+
+    /**
+     * Заполнение полей сущности по строчке csv/xls/xlsx таблицы
+     * @param array $spreadsheetIndexes
+     * @param array $spreadsheetLine
+     */
+    public function fillBySpreadsheetLine(array $spreadsheetIndexes, array $spreadsheetLine)
     {
-        if ($brand !== null && $article_number !== null) {
-            $this->brand = $brand;
-            $this->article_number = $article_number;
+        foreach ($spreadsheetIndexes as $indexName => $index) {
+            $this->$indexName = trim($spreadsheetLine[$index]);
         }
     }
 
@@ -52,6 +62,30 @@ class Brand
     public function setArticleNumber(string $article_number): self
     {
         $this->article_number = $article_number;
+
+        return $this;
+    }
+
+    public function getModel(): ?string
+    {
+        return $this->model;
+    }
+
+    public function setModel(string $model): self
+    {
+        $this->model = $model;
+
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

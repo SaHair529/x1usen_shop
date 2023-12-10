@@ -108,6 +108,19 @@ class DataMapping
     private string $companyManagerContactPhone = '+7 (995) 890-77-42';
     private string $companyStockAddress = 'Санкт-Петербург, ул Уральская, д 4';
 
+    private array $brands_csv_indexes = [
+        'article_number' => 0,
+        'brand' => 1,
+        'model' => 2,
+        'category' => 3
+    ];
+    private array $brands_xls_indexes = [
+        'article_number' => 'A',
+        'brand' => 'B',
+        'model' => 'C',
+        'category' => 'D',
+    ];
+
     public function getData($dataContainer): array|string
     {
         return $this->$dataContainer;

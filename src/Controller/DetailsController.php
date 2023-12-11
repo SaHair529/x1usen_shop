@@ -152,7 +152,8 @@ class DetailsController extends AbstractController
         $abcpArticles = $abcpApi->searchProcessor->searchBatchArticlesByNumbers($oems);
 
         return $this->render('details/details-list.html.twig', [
-            'products' => $abcpArticles
+            'products' => $abcpArticles,
+            'descriptionArrayIndexes' => (new DataMapping())->getData('position_description_array_indexes')
         ]);
     }
 }

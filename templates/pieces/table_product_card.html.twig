@@ -1,8 +1,9 @@
 {% set productDescriptionArray = product['description']|split(';') %}
 {% set productName = productDescriptionArray[descriptionArrayIndexes['name']] %}
 {% set productImageLink = productDescriptionArray[descriptionArrayIndexes['img_link']] %}
+{% set productAdditionalImgLinks = productDescriptionArray[descriptionArrayIndexes['additional_img_links']] %}
 
-<div class="product-card table-product-card" id="{{ product['itemKey'] }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_info', {'articleNumber': product['number'], 'itemKey': product['itemKey']}) }}">
+<div class="product-card table-product-card" id="{{ product['itemKey'] }}" data-product-additional-img-links="{{ productAdditionalImgLinks }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_info', {'articleNumber': product['number'], 'itemKey': product['itemKey']}) }}">
     <div class="table-product-card__field">
         <div class="product-card__img-wrapper" style="max-width: 90%; padding: 0">
             <div class="img-zoom action-zoom-img"><i class="fa-solid fa-magnifying-glass-plus action-zoom-img"></i></div>

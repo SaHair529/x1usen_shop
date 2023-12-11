@@ -56,7 +56,8 @@ class DataMapping
         'weight' => 2,
         'length' => 3,
         'width' => 4,
-        'height' => 5
+        'height' => 5,
+        'additional_img_links' => 6
     ];
 
     private array $google_services_credentials_filenames = [

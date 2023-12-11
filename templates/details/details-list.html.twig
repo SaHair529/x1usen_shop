@@ -1,3 +1,3 @@
 {% for product in products %}
-    {% include 'pieces/product_card.html.twig' with { 'product': product } %}
+    {% include 'pieces/product_card.html.twig' with { 'product': product, 'descriptionArrayIndexes': descriptionArrayIndexes } %}
 {% endfor %}

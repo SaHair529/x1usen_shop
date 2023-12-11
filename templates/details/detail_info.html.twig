@@ -1,7 +1,3 @@
-{# TODO разобраться с дополнительными фотками товаров ABCP #}
-{# TODO разобраться с дополнительными фотками товаров ABCP #}
-{# TODO разобраться с дополнительными фотками товаров ABCP #}
-
 {% set productDescriptionArray = product['description']|split(';') %}
 {% set productName = productDescriptionArray[descriptionArrayIndexes['name']] %}
 {% set productImageLink = productDescriptionArray[descriptionArrayIndexes['img_link']] %}
@@ -9,6 +5,7 @@
 {% set productImageLength = productDescriptionArray[descriptionArrayIndexes['length']] %}
 {% set productImageWidth = productDescriptionArray[descriptionArrayIndexes['width']] %}
 {% set productImageHeight = productDescriptionArray[descriptionArrayIndexes['height']] %}
+{% set productAdditionalImgLinks = productDescriptionArray[descriptionArrayIndexes['additional_img_links']]|replace({' ': ''})|split(',') %}
 
 <div class="detail-full-info" data-detail-id="{{ product['itemKey'] }}">
     <h5 class="detail-full-info__name" style="font-weight: 300">{{ productName }}</h5>
@@ -18,14 +15,14 @@
                 <img src="{{ productImageLink }}" alt="{{ productName }}" class="img-thumbnail detail-full-info__img">
             </div>
             <div class="detail-full-info__gallery">
-{#                {% set productImageLinks = product.additionalImagesLinks|replace({' ': ''})|split(',') %}#}
-{#                {% for imageLink in productImageLinks %}#}
-{#                    {% if imageLink != '' %}#}
-{#                        <div class="detail-full-info__gallery-item js-put-to-image-wrapper">#}
-{#                            <img src="{{ imageLink }}">#}
-{#                        </div>#}
-{#                    {% endif %}#}
-{#                {% endfor %}#}
+                {% set productImageLinks = productAdditionalImgLinks %}
+                {% for imageLink in productImageLinks %}
+                    {% if imageLink != '' %}
+                        <div class="detail-full-info__gallery-item js-put-to-image-wrapper">
+                            <img src="{{ imageLink }}">
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </div>
         </div>
         <div class="detail-full-info__right">

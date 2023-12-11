@@ -1,14 +1,18 @@
+{% set productDescriptionArray = product['description']|split(';') %}
+{% set productName = productDescriptionArray[descriptionArrayIndexes['name']] %}
+{% set productImageLink = productDescriptionArray[descriptionArrayIndexes['img_link']] %}
+
 <div class="product-card small {% if hidden is defined %}hidden{% endif %}" data-product-route="{{ path('detail_info', {'articleNumber': product['number'], 'itemKey': product['itemKey']}) }}" id="{{ product['itemKey'] }}" data-product="{{ product|serialize(format='json') }}" data-product-route="{{ path('detail_page', {'id': product['itemKey']}) }}">
 {#    <p class="product-card__used small" title="code"> todo разобраться с состоянием БУ#}
 {#        {% if product.used == 1 %}Б/У{% endif %}#}
 {#    </p>#}
     <div class="product-card__img-wrapper">
         <div class="img-zoom action-zoom-img"><i class="fa-solid fa-magnifying-glass-plus action-zoom-img"></i></div>
-        <img class="product-card__img" src="#{# todo разобраться с фотками товаров {{ product.imageLink }}#}">
+        <img class="product-card__img" src="{{ productImageLink }}">
     </div>
     <div class="product-card__info">
         <h5 class="product-card__price">{{ product['price'] }} ₽</h5>
-        <p class="product-card__name">{{ product['description']|replace({"Б/У": "", "б/у": ""}) }}</p>
+        <p class="product-card__name">{{ productName }}</p>
     </div>
 </div>
 

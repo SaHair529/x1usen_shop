@@ -19,6 +19,7 @@ import CartController from './modules/cart/CartController'
 import MainController from './modules/main/MainController'
 import OrderController from './modules/order/OrderController'
 import ProductController from "./modules/product/ProductController";
+import RegistrationController from "./modules/register/RegistrationController";
 
 document.addEventListener('DOMContentLoaded', function()
 {
@@ -26,4 +27,5 @@ document.addEventListener('DOMContentLoaded', function()
     MainController.init()
     OrderController.init()
     ProductController.init()
+    RegistrationController.init()
 })
